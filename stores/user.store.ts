@@ -13,6 +13,11 @@ interface State {
 
 export const useUser = defineStore("user", {
   state: (): State => ({
-    user: null,
+    user: {
+      id: "string",
+      name: "Tim",
+      email: "tim@gmail.com",
+      projects: [{ id: "trtyfsqhgsq", name: "test" }],
+    },
   }),
 });

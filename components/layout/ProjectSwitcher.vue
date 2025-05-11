@@ -5,7 +5,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
@@ -17,7 +16,7 @@ import {
 } from '@/components/ui/sidebar'
 import { ChevronsUpDown, Plus } from 'lucide-vue-next'
 
-import { type Component, ref } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps<{
   projects: {

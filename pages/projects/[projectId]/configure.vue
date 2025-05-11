@@ -1,9 +1,5 @@
 <template>
     <h2 class="text-2xl font-bold tracking-tight">
-        Overview
+        Configure
     </h2>
 </template>
-
-<script setup>
-
-</script>

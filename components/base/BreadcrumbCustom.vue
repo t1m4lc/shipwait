@@ -12,6 +12,8 @@ withDefaults(defineProps<{
 <template>
   <Breadcrumb>
     <BreadcrumbList>
+      Projects
+      <BreadcrumbSeparator />
       <template v-for="(link, index) in links" :key="index">
         <BreadcrumbItem>
           <BreadcrumbLink v-if="index !== links.length - 1" as-child>

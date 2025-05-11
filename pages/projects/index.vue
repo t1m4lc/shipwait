@@ -1,8 +1,8 @@
 <template>
-    <!-- This page is intentionally left blank, it will redirect via middleware -->
+
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ['project-redirect']
 });  
