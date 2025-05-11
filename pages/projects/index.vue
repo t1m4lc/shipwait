@@ -4,6 +4,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['project-redirect']
+  middleware: ['project-guard']
 });  
 </script>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-vue-next';
 import { useSidebar } from '../ui/sidebar';
 
 
@@ -6,7 +7,7 @@ const props = defineProps<{
   user: {
     name: string
     email: string
-    avatar: string
+    avatar: string | null
   }
 }>()
 
@@ -23,7 +24,7 @@ const { isMobile } = useSidebar()
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage :src="user.avatar" :alt="user.name" />
+              <AvatarImage v-if="user?.avatar" :src="user?.avatar" :alt="user.name" />
               <AvatarFallback class="rounded-lg">
                 CN
               </AvatarFallback>
@@ -44,7 +45,7 @@ const { isMobile } = useSidebar()
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="user.avatar" :alt="user.name" />
+                <AvatarImage v-if="user?.avatar" :src="user?.avatar" :alt="user.name" />
                 <AvatarFallback class="rounded-lg">
                   CN
                 </AvatarFallback>

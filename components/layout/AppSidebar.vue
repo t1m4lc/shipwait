@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SquareTerminal, Bot, BookOpen, Settings2, ChartNoAxesCombined, UserPlus, HomeIcon, Home } from 'lucide-vue-next';
+import { Settings2, ChartNoAxesCombined, UserPlus, Home } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -7,22 +7,27 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
+const projectId = useRoute().params.projectId as string
+
 const data = {
   user: {
     name: 'shadcn',
     email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    avatar: null,
   },
   projects: [
     {
+      id: "1",
       name: 'Waitly',
       domain: 'wailtly.dev',
     },
     {
+      id: "2",
       name: 'Facebook',
       domain: 'facebook.com',
     },
     {
+      id: "3",
       name: 'X',
       domain: 'x.com',
     },
@@ -30,23 +35,23 @@ const data = {
   navMain: [
     {
       title: 'Overview',
-      url: 'overview',
+      pageName: 'projects-projectId',
       icon: Home
     },
     {
       title: 'Leads',
-      url: 'leads',
+      pageName: 'projects-projectId-leads',
       icon: UserPlus,
     },
     {
       title: 'Analytics',
-      url: 'analytics',
+      pageName: 'projects-projectId-analytics',
       icon: ChartNoAxesCombined,
     },
     
     {
       title: 'Configure',
-      url: 'configure',
+      pageName: 'projects-projectId-configure',
       icon: Settings2,
     },
   ]
@@ -59,7 +64,7 @@ const data = {
       <LayoutProjectSwitcher :projects="data.projects"  />
     </SidebarHeader>
     <SidebarContent>
-      <LayoutNavMain :items="data.navMain" />
+      <LayoutNavMain :items="data.navMain" :project-id="projectId" />
     </SidebarContent>
     <SidebarFooter>
       <LayoutNavUser :user="data.user" />

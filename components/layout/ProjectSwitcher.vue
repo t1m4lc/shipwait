@@ -16,17 +16,23 @@ import {
 } from '@/components/ui/sidebar'
 import { ChevronsUpDown, Plus } from 'lucide-vue-next'
 
-import { ref } from 'vue'
-
 const props = defineProps<{
   projects: {
+    id: string
     name: string
     domain: string
   }[]
 }>()
 
 const { isMobile } = useSidebar()
-const activeProject = ref(props.projects[0])
+
+const route = useRoute()
+
+const activeProject = computed(() => props.projects.find(p => p.id === route.params.projectId))
+
+function onClick(projectId: string) {
+  navigateTo({ name: "projects-projectId", params: { projectId } })
+}
 </script>
 
 <template>
@@ -34,37 +40,28 @@ const activeProject = ref(props.projects[0])
     <SidebarMenuItem>
       <DropdownMenu>
         <DropdownMenuTrigger as-child class="cursor-pointer">
-          <SidebarMenuButton
-            size="lg"
-            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          >
-            <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-semibold">
-              {{ activeProject.name.slice(0, 1) }}
+          <SidebarMenuButton size="lg"
+            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <div
+              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-semibold">
+              {{ activeProject?.name.slice(0, 1) }}
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-medium">
-                {{ activeProject.name }}
+                {{ activeProject?.name }}
               </span>
-              <span class="truncate text-xs">{{ activeProject.domain }}</span>
+              <span class="truncate text-xs">{{ activeProject?.domain }}</span>
             </div>
             <ChevronsUpDown class="ml-auto" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-          align="start"
-          :side="isMobile ? 'bottom' : 'right'"
-          :side-offset="4"
-        >
+        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg" align="start"
+          :side="isMobile ? 'bottom' : 'right'" :side-offset="4">
           <DropdownMenuLabel class="text-xs text-muted-foreground">
             Projects
           </DropdownMenuLabel>
-          <DropdownMenuItem
-            v-for="(project, index) in projects"
-            :key="project.name"
-            class="gap-2 p-2 "
-            @click="activeProject = project"
-          >
+          <DropdownMenuItem v-for="(project) in projects" :key="project.id" class="gap-2 p-2 "
+            @click="onClick(project.id)">
             <div class="flex size-6 items-center justify-center rounded-sm border text-xs">
               {{ project.name.slice(0, 1) }}
             </div>

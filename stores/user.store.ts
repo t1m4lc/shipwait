@@ -17,7 +17,7 @@ export const useUser = defineStore("user", {
       id: "string",
       name: "Tim",
       email: "tim@gmail.com",
-      projects: [{ id: "trtyfsqhgsq", name: "test" }],
+      projects: [{ id: "1", name: "Product 1" }],
     },
   }),
 });
