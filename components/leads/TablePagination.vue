@@ -23,13 +23,13 @@ defineProps<DataTablePaginationProps>()
         
         <Select
           :model-value="`${table.getState().pagination.pageSize}`"
-          @update:model-value="table.setPageSize"
+          @update:model-value="(value) => table.setPageSize(Number(value))"
         >
           <SelectTrigger class="h-8 w-[70px]">
             <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
           </SelectTrigger>
           <SelectContent side="top">
-            <SelectItem v-for="pageSize in [10, 15, 20]" :key="pageSize" :value="`${pageSize}`">
+            <SelectItem v-for="pageSize in [10, 25, 50]" :key="pageSize" :value="`${pageSize}`">
               {{ pageSize }}
             </SelectItem>
           </SelectContent>

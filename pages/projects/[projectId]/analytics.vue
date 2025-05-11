@@ -1,8 +1,8 @@
 <script setup>
-const route = useRoute();
-const projectId = route.params.projectId;
+import { BarChart3, Construction } from 'lucide-vue-next'
 
 const title = ref('Analytics')
+const subtitle = ref("Data that actually matters")
 
 useHead({
   title
@@ -11,9 +11,23 @@ useHead({
 </script>
 
 <template>
-  <h1 class="text-2xl font-bold tracking-tight">
-    {{ title }}
-  </h1>
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold tracking-tight">
+      {{ title }}
+    </h1>
+    <p class="text-muted-foreground">
+      {{ subtitle }}
+    </p>
+  </div>
 
-  <p>project ID: {{ projectId }}</p>
+  <div
+    class="flex flex-col items-center justify-center h-[70vh] border-2 border-dashed border-muted-foreground/25 rounded-lg p-8">
+    <Construction class="size-16 mb-4 text-muted-foreground/70" />
+    <h3 class="text-xl font-medium mb-2">No analytics data available</h3>
+    <p class="text-muted-foreground text-center max-w-md">
+      This feature is currently under construction. Have feedback or suggestions?
+      <NuxtLink to="https://x.com/t1m4lc" external target="_blank" class="text-primary hover:underline">Let me know!
+      </NuxtLink>
+    </p>
+  </div>
 </template>

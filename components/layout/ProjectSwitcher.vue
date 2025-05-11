@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtLink } from '#components';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -73,9 +74,9 @@ function onClick(projectId: string) {
             <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
               <Plus class="size-4" />
             </div>
-            <div class="font-medium text-muted-foreground">
-              Add project
-            </div>
+            <NuxtLink to="/projects/create" class="font-medium text-muted-foreground">
+              Add new project
+            </NuxtLink>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

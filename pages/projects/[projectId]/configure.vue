@@ -1,8 +1,6 @@
 <script setup>
-const route = useRoute();
-const projectId = route.params.projectId;
-
 const title = ref('Configure')
+const subtitle = ref("Tweak it 'til it's perfect")
 
 useHead({
   title
@@ -11,9 +9,12 @@ useHead({
 </script>
 
 <template>
-  <h1 class="text-2xl font-bold tracking-tight">
-    {{ title }}
-  </h1>
-
-  <p>project ID: {{ projectId }}</p>
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold tracking-tight">
+      {{ title }}
+    </h1>
+    <p class="text-muted-foreground">
+     {{ subtitle }}
+    </p>
+  </div>
 </template>
