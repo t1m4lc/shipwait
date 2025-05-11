@@ -20,34 +20,33 @@ import { ChevronsUpDown, Plus } from 'lucide-vue-next'
 import { type Component, ref } from 'vue'
 
 const props = defineProps<{
-  teams: {
+  projects: {
     name: string
-    logo: Component
-    plan: string
+    domain: string
   }[]
 }>()
 
 const { isMobile } = useSidebar()
-const activeTeam = ref(props.teams[0])
+const activeProject = ref(props.projects[0])
 </script>
 
 <template>
   <SidebarMenu>
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger as-child>
+        <DropdownMenuTrigger as-child class="cursor-pointer">
           <SidebarMenuButton
             size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
-            <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <component :is="activeTeam.logo" class="size-4" />
+            <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-semibold">
+              {{ activeProject.name.slice(0, 1) }}
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-medium">
-                {{ activeTeam.name }}
+                {{ activeProject.name }}
               </span>
-              <span class="truncate text-xs">{{ activeTeam.plan }}</span>
+              <span class="truncate text-xs">{{ activeProject.domain }}</span>
             </div>
             <ChevronsUpDown class="ml-auto" />
           </SidebarMenuButton>
@@ -59,19 +58,19 @@ const activeTeam = ref(props.teams[0])
           :side-offset="4"
         >
           <DropdownMenuLabel class="text-xs text-muted-foreground">
-            Teams
+            Projects
           </DropdownMenuLabel>
           <DropdownMenuItem
-            v-for="(team, index) in teams"
-            :key="team.name"
-            class="gap-2 p-2"
-            @click="activeTeam = team"
+            v-for="(project, index) in projects"
+            :key="project.name"
+            class="gap-2 p-2 "
+            @click="activeProject = project"
           >
-            <div class="flex size-6 items-center justify-center rounded-sm border">
-              <component :is="team.logo" class="size-3.5 shrink-0" />
+            <div class="flex size-6 items-center justify-center rounded-sm border text-xs">
+              {{ project.name.slice(0, 1) }}
             </div>
-            {{ team.name }}
-            <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
+            {{ project.name }}
+            <!-- <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut> -->
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem class="gap-2 p-2">
@@ -79,7 +78,7 @@ const activeTeam = ref(props.teams[0])
               <Plus class="size-4" />
             </div>
             <div class="font-medium text-muted-foreground">
-              Add team
+              Add project
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
