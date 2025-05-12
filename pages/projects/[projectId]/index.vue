@@ -1,4 +1,6 @@
 <script setup>
+import { LayoutDashboard } from 'lucide-vue-next'
+
 const title = ref('Overview')
 const subtitle = ref("Your empire at a glance")
 
@@ -16,5 +18,13 @@ useHead({
     <p class="text-muted-foreground">
      {{ subtitle }}
     </p>
+  </div>
+
+  <div class="h-[70vh]">
+    <Empty title="No overview for now" :icon="LayoutDashboard">
+      This feature is coming soon! Got feedback or ideas? <br/>
+      <NuxtLink to="https://x.com/t1m4lc" external target="_blank" class="text-primary hover:underline">Let me know!
+      </NuxtLink>
+    </Empty>
   </div>
 </template>

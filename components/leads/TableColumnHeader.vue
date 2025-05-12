@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="column.getCanSort()" :class="cn('flex items-center space-x-2', $attrs.class ?? '')">
+  <div v-if="column.getCanSort()" :class="cn('flex items-center space-x-2 py-2', $attrs.class ?? '')">
     <Button
       variant="ghost"
       size="sm"
