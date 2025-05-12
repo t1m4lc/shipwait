@@ -14,12 +14,22 @@ export const columns: ColumnDef<Lead>[] = [
       const dayjs = useDayjs();
       const formatted = dayjs(date).format("lll");
 
-      return h("div", { class: "ml-4 font-medium" }, formatted);
+      return h("div", { class: "ml-4" }, formatted);
     },
     sortingFn: "datetime",
     size: 160,
-    minSize: 160,
     maxSize: 160,
+  },
+  {
+    accessorKey: "email",
+    header: ({ column }) =>
+      h(LeadsTableColumnHeader, { column, title: "Email" }),
+    cell: ({ row }) =>
+      h("div", { class: " truncate font-medium" }, row.getValue("email")),
+    enableSorting: true,
+    size: 250,
+    minSize: 250,
+    maxSize: 250,
   },
   {
     accessorKey: "country",
@@ -44,22 +54,8 @@ export const columns: ColumnDef<Lead>[] = [
       return value.includes(row.getValue(id));
     },
     size: 140,
-    minSize: 140,
     maxSize: 140,
   },
-  {
-    accessorKey: "email",
-    header: ({ column }) =>
-      h(LeadsTableColumnHeader, { column, title: "Email" }),
-    cell: ({ row }) =>
-      h("div", { class: " truncate font-medium" }, row.getValue("email")),
-    enableSorting: true,
-    enableHiding: false,
-    size: 250,
-    minSize: 250,
-    maxSize: 250,
-  },
-
   {
     accessorKey: "device",
     header: ({ column }) =>
@@ -81,7 +77,7 @@ export const columns: ColumnDef<Lead>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-    size: 100, // Fixed width for device column
+    size: 100,
     minSize: 100,
     maxSize: 100,
   },
