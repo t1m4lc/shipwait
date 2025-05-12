@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { LucideIcon } from 'lucide-vue-next';
+import { Send, CircleHelp } from 'lucide-vue-next';
+
 defineProps<{
   items: {
     title: string
@@ -22,6 +25,37 @@ defineProps<{
                     >
                     <component :is="item.icon" />
                     <span>{{item.title}}</span>
+                    </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
+      <SidebarGroup class="mt-auto">
+        <SidebarGroupContent>
+          <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild size="sm">
+                    <NuxtLink 
+                     to="https://x.com/t1m4lc"
+                    external target="_blank" 
+                    activeClass="bg-accent font-medium"
+                    >
+                      <CircleHelp />
+                    <span>Help & Support</span>
+                    </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild size="sm">
+                    <NuxtLink 
+                    to="https://insigh.to/b/waitlydev"
+                    external target="_blank" 
+                    activeClass="bg-accent font-medium"
+                    >
+                    <Send />
+                    <span>Feedback</span>
                     </NuxtLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
