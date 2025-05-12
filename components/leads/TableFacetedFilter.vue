@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Column } from '@tanstack/vue-table'
 import type { Component } from 'vue'
-import type { Task } from './data/schema'
+import type { Lead } from './data/schema'
 import { cn } from '@/lib/utils'
 import { Check, PlusCircle } from 'lucide-vue-next'
 
 interface DataTableFacetedFilter {
-  column?: Column<Task, any>
+  column?: Column<Lead, any>
   title?: string
   options: {
     label: string
@@ -59,7 +59,7 @@ const selectedValues = computed(() => new Set(props.column?.getFilterValue() as 
         </template>
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-[200px] p-0" align="start">
+    <PopoverContent class="w-[250px] p-0" align="start">
       <Command>
         <CommandInput :placeholder="title" />
         <CommandList>

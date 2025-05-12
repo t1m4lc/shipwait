@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { FlexRender, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useVueTable, type ColumnDef, type ColumnFiltersState, type SortingState } from '@tanstack/vue-table';
-import type { Task } from './data/schema';
+import type { Lead } from './data/schema';
 import { valueUpdater } from '../ui/table/utils';
 import Table from '../ui/table/Table.vue';
 import TableToolbar from './TableToolbar.vue';
 import TablePagination from './TablePagination.vue';
 
 interface DataTableProps {
-  columns: ColumnDef<Task, any>[]
-  data: Task[]
+  columns: ColumnDef<Lead, any>[]
+  data: Lead[]
 }
 const props = defineProps<DataTableProps>()
 
-const sorting = ref<SortingState>([])
+// Initialize sorting with createdAt in descending order
+const sorting = ref<SortingState>([
+  {
+    id: 'createdAt',
+    desc: true
+  }
+])
 const columnFilters = ref<ColumnFiltersState>([])
 
 

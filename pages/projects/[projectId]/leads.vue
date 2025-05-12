@@ -1,6 +1,6 @@
 <script setup>
 import { columns } from '~/components/leads/columns';
-import tasks from '~/components/leads/data/tasks.json';
+import leads from '~/components/leads/data/leads.json';
 
 const title = ref('Leads')
 const subtitle = ref('Meet your future customers')
@@ -21,5 +21,5 @@ useHead({
     </p>
   </div>
 
-  <LeadsTable :data="tasks" :columns="columns" />
+  <LeadsTable :data="leads" :columns="columns" />
 </template>

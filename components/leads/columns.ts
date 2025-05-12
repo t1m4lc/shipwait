@@ -1,52 +1,42 @@
 import type { ColumnDef } from "@tanstack/vue-table";
-import type { Task } from "~/components/leads/data/schema";
+import type { Lead } from "~/components/leads/data/schema";
 import LeadsTableColumnHeader from "./TableColumnHeader.vue";
-import Badge from "../ui/badge/Badge.vue";
-import { labels, priorities, statuses } from "./data/data";
+import { countries, devices } from "./data/data";
+import { formatDate } from "@vueuse/core";
 
-export const columns: ColumnDef<Task>[] = [
+export const columns: ColumnDef<Lead>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "createdAt",
     header: ({ column }) =>
-      h(LeadsTableColumnHeader, { column, title: "Task" }),
-    cell: ({ row }) => h("div", { class: "w-20" }, row.getValue("id")),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) =>
-      h(LeadsTableColumnHeader, { column, title: "Title" }),
-
+      h(LeadsTableColumnHeader, { column, title: "Date" }),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      const date = new Date(row.getValue("createdAt"));
 
-      return h("div", { class: "flex space-x-2" }, [
-        label ? h(Badge, { variant: "outline" }, () => label.label) : null,
-        h(
-          "span",
-          { class: "max-w-[500px] truncate font-medium" },
-          row.getValue("title")
-        ),
-      ]);
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) =>
-      h(LeadsTableColumnHeader, { column, title: "Status" }),
-
-    cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status")
+      return h(
+        "div",
+        { class: "font-medium" },
+        formatDate(date, "MM/dd/yyyy h:mm a")
       );
+    },
+    sortingFn: "datetime",
+  },
+  {
+    accessorKey: "country",
+    header: ({ column }) =>
+      h(LeadsTableColumnHeader, { column, title: "Country" }),
 
-      if (!status) return null;
+    cell: ({ row }) => {
+      const countryCode = row.getValue("country") as string;
+      const country = countries[countryCode];
 
-      return h("div", { class: "flex w-[100px] items-center" }, [
-        status.icon &&
-          h(status.icon, { class: "mr-2 h-4 w-4 text-muted-foreground" }),
-        h("span", status.label),
+      // Use the useCountryFlag composable to get the flag emoji
+      const { countryCodeToFlag } = useCountryFlag();
+      const flag = countryCodeToFlag(countryCode);
+
+      return h("div", { class: "flex items-center" }, [
+        // Display the flag with some spacing
+        h("span", { class: "mr-2" }, flag),
+        h("span", { class: "truncate font-medium" }, country),
       ]);
     },
     filterFn: (row, id, value) => {
@@ -54,20 +44,35 @@ export const columns: ColumnDef<Task>[] = [
     },
   },
   {
-    accessorKey: "priority",
+    accessorKey: "email",
     header: ({ column }) =>
-      h(LeadsTableColumnHeader, { column, title: "Priority" }),
+      h(LeadsTableColumnHeader, { column, title: "Email" }),
+    cell: ({ row }) =>
+      h(
+        "div",
+        { class: "max-w-[250px] truncate font-medium" },
+        row.getValue("email")
+      ),
+    enableSorting: true,
+    enableHiding: false,
+  },
+
+  {
+    accessorKey: "device",
+    header: ({ column }) =>
+      h(LeadsTableColumnHeader, { column, title: "Device" }),
+
     cell: ({ row }) => {
-      const priority = priorities.find(
-        (priority) => priority.value === row.getValue("priority")
+      const device = devices.find(
+        (device) => device.value === row.getValue("device")
       );
 
-      if (!priority) return null;
+      if (!device) return null;
 
-      return h("div", { class: "flex items-center" }, [
-        priority.icon &&
-          h(priority.icon, { class: "mr-2 h-4 w-4 text-muted-foreground" }),
-        h("span", {}, priority.label),
+      return h("div", { class: "flex w-[100px] items-center" }, [
+        device.icon &&
+          h(device.icon, { class: "mr-2 h-4 w-4 text-muted-foreground" }),
+        h("span", device.label),
       ]);
     },
     filterFn: (row, id, value) => {

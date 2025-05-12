@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { Column } from '@tanstack/vue-table'
-import type { Task } from './data/schema';
+import type { Lead } from './data/schema';
 import { cn } from '@/lib/utils'
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-vue-next'
 
 interface DataTableColumnHeaderProps {
-  column: Column<Task, any>
+  column: Column<Lead, any>
   title: string
 }
 
 defineProps<DataTableColumnHeaderProps>()
 
-function cycleSorting(column: Column<Task, any>) {
+function cycleSorting(column: Column<Lead, any>) {
   const currentSort = column.getIsSorted()
   
   if (currentSort === false) {
