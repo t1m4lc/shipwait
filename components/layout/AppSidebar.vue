@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings2, ChartNoAxesCombined, UserPlus, Home } from 'lucide-vue-next';
+import { Settings2, ChartNoAxesCombined, UserPlus, Eye } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -36,7 +36,7 @@ const data = {
     {
       title: 'Overview',
       pageName: 'projects-projectId',
-      icon: Home
+      icon: Eye
     },
     {
       title: 'Leads',

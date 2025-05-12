@@ -9,6 +9,9 @@ useHead({
   title
 })
 
+console.log(useRoute().name);
+
+
 </script>
 
 <template>

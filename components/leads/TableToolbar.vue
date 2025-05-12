@@ -63,6 +63,5 @@ const countryOptions = computed((): { value: string; label: string }[] => {
         </div>
       </div>
     </div>
-    <DataTableViewOptions :table="table" />
   </div>
 </template>
