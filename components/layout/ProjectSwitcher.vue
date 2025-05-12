@@ -27,9 +27,9 @@ const props = defineProps<{
 
 const { isMobile } = useSidebar()
 
-const route = useRoute()
+const store = useProjects()
 
-const activeProject = computed(() => props.projects.find(p => p.id === route.params.projectId))
+const activeProject = computed(() => props.projects.find(p => p.id === store.selectedProjectId))
 
 function onClick(projectId: string) {
   navigateTo({ name: "projects-projectId", params: { projectId } })

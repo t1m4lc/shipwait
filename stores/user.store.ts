@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Project, User } from "~/types/project";
+import type { User } from "~/types/user";
 
 interface State {
   user: User | null;
@@ -17,7 +17,6 @@ export const useUser = defineStore("user", {
       id: "string",
       name: "Tim",
       email: "tim@gmail.com",
-      projects: [{ id: "1", name: "Product 1" }],
     },
   }),
 });

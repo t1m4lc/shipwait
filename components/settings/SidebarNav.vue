@@ -6,29 +6,18 @@ interface Item {
   href: string
 }
 
-const route = useRoute()
-const projectId = route.params.projectId as string
-
-// Éléments de navigation par défaut pour les pages de configuration
 const sidebarNavItems: Item[] = [
   {
-    title: 'General',
-    href: `/projects/${projectId}/configure/general`,
+    title: 'Profile',
+    href: `/settings/profile`,
   },
   {
-    title: 'Collection rules',
-    href: `/projects/${projectId}/configure/rules`,
-  },
-  {
-    title: 'Submission feedback',
-    href: `/projects/${projectId}/configure/feedback`,
-  },
-  {
-    title: 'Integration',
-    href: `/projects/${projectId}/configure/integration`,
+    title: 'Subscriptions',
+    href: `/settings/subscriptions`,
   },
 ]
 
+const route = useRoute()
 </script>
 
 <template>

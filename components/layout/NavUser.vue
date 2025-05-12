@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-vue-next';
+import { ChevronsUpDown, CreditCard, CircleUser, LogOut } from 'lucide-vue-next';
 import { useSidebar } from '../ui/sidebar';
+import { useRouter } from '#app';
 
 
 const props = defineProps<{
@@ -12,6 +13,13 @@ const props = defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+
+const logout = async () => {
+  // Ici, vous pourriez avoir une fonction de déconnexion
+  // par exemple: await useAuth().logout()
+  console.log('logout');
+  
+}
 </script>
 
 <template>
@@ -57,29 +65,25 @@ const { isMobile } = useSidebar()
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
+          <!-- <DropdownMenuGroup>
+            <DropdownMenuItem @click="navigateTo('')">
               <Sparkles />
               Upgrade to Pro
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator /> -->
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <BadgeCheck />
-              Account
+            <DropdownMenuItem @click="navigateTo('/settings/profile')">
+              <CircleUser />
+              Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem @click="navigateTo('/settings/subscriptions')">
               <CreditCard />
-              Billing
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell />
-              Notifications
+              Subscriptions
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem @click="logout">
             <LogOut />
             Log out
           </DropdownMenuItem>

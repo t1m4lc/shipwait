@@ -1,14 +1,14 @@
-import { useUser } from "~/stores/user.store";
+import { useProjects } from "~/stores/projects.store";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const id = to.params.projectId as string;
-  const store = useUser();
+  const storeProject = useProjects();
 
   try {
     await $fetch(`/api/projects/${id}`);
     return;
   } catch (error) {
-    const fallbackProject = store.user?.projects?.[0];
+    const fallbackProject = storeProject.projects?.[0];
 
     // Prevent infinite redirect loop by not redirecting to the same project ID
     if (fallbackProject?.id) {

@@ -7,7 +7,8 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-const projectId = useRoute().params.projectId as string
+  const store = useProjects();
+  const projectId = store.selectedProjectId
 
 const data = {
   user: {
@@ -15,23 +16,6 @@ const data = {
     email: 'm@example.com',
     avatar: null,
   },
-  projects: [
-    {
-      id: "1",
-      name: 'Waitly',
-      domain: 'wailtly.dev',
-    },
-    {
-      id: "2",
-      name: 'Facebook',
-      domain: 'facebook.com',
-    },
-    {
-      id: "3",
-      name: 'X',
-      domain: 'x.com',
-    },
-  ],
   navMain: [
     {
       title: 'Overview',
@@ -61,7 +45,7 @@ const data = {
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <LayoutProjectSwitcher :projects="data.projects"  />
+      <LayoutProjectSwitcher :projects="store.projects"  />
     </SidebarHeader>
     <SidebarContent>
       <LayoutNavMain :items="data.navMain" :project-id="projectId" />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-const title = ref('Configure')
-const subtitle = ref("Customize the behavior of your email collection flow.")
+const title = ref('Settings')
+const subtitle = ref("Manage your account settings and more.")
 </script>
 
 <template>
@@ -16,7 +16,7 @@ const subtitle = ref("Customize the behavior of your email collection flow.")
     </div>
     <div class="flex flex-col lg:flex-row space-y-6 lg:space-x-12 lg:space-y-0">
       <div class="w-full overflow-x-auto pb-2 lg:w-1/6 lg:pb-0">
-        <ConfigureSidebarNav />
+        <SettingsSidebarNav />
       </div>
       <div class="flex-1 lg:max-w-2xl">
         <div class="space-y-6">
