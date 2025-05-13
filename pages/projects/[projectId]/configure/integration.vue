@@ -8,12 +8,9 @@ useHead({
 const project = ref('some-project-id')
 const token = ref('some-token')
 
-const snippet = ref(`
-<script defer src="https://cdn.monwaitlist.io/waitlist.js?project=${project.value}&token=${token.value}><\/script>`)
+const snippet = ref(`<script defer src="https://cdn.monwaitlist.io/waitlist.js?project=${project.value}&token=${token.value}><\/script>`)
 
-const code = ref(`
-  <input data-waitly type='Enter your email' />
-`)
+const code = ref(`<input data-waitly type='email' />`)
 
 </script>
 
@@ -28,19 +25,19 @@ const code = ref(`
           Paste the following snippet at the end of your HTML file, just before the closing `<\ /body>` tag:
         </p>
 
-        <MacOSCode title="https://waitly.dev" class="mt-3">
-          {{ code }}
-        </MacOSCode>
+        <CodeDisplay :lineNumbers="true" language="javascript" class="mt-3">
+          {{ snippet }}
+        </CodeDisplay>
+
       </li>
       <li>
-       <h3 class="text-lg font-semibold text-primary mb-2">
-        2. Mark your email input
-       </h3>
+        <h3 class="text-lg font-semibold text-primary mb-2">
+          2. Mark your email input
+        </h3>
         <p>Add the data-waitly attribute to the input field where users enter their email:
-
-          <MacOSCode title="https://waitly.dev" class="mt-3">
+          <CodeDisplay :lineNumbers="true" language="javascript" class="mt-3">
             {{ code }}
-          </MacOSCode>
+          </CodeDisplay>
         </p>
       </li>
 
@@ -50,7 +47,7 @@ const code = ref(`
         </h3>
         <p>
           <br>
-          That's it. 
+          That's it.
           <br>
           <br>
           Test your form, your leads will start appearing automatically on your
