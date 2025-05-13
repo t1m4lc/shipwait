@@ -13,19 +13,19 @@ const projectId = route.params.projectId as string
 const sidebarNavItems: Item[] = [
   {
     title: 'General',
-    href: `/projects/${projectId}/configure/general`,
+    href: `/admin/projects/${projectId}/configure`,
   },
   {
     title: 'Collection rules',
-    href: `/projects/${projectId}/configure/rules`,
+    href: `/admin/projects/${projectId}/configure/rules`,
   },
   {
     title: 'Submission feedback',
-    href: `/projects/${projectId}/configure/feedback`,
+    href: `/admin/projects/${projectId}/configure/feedback`,
   },
   {
     title: 'Integration',
-    href: `/projects/${projectId}/configure/integration`,
+    href: `/admin/projects/${projectId}/configure/integration`,
   },
 ]
 

@@ -74,7 +74,7 @@ function onClick(projectId: string) {
             <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
               <Plus class="size-4" />
             </div>
-            <NuxtLink to="/projects/create" class="font-medium text-muted-foreground">
+            <NuxtLink to="/admin/projects/create" class="font-medium text-muted-foreground">
               Add new project
             </NuxtLink>
           </DropdownMenuItem>

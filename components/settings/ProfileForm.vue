@@ -39,7 +39,6 @@ const onSubmit = handleSubmit(() => {
 </script>
 
 <template>
-
   <form class="space-y-8" @submit="onSubmit">
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>

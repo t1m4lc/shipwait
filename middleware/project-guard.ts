@@ -4,17 +4,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const id = to.params.projectId as string;
   const storeProject = useProjects();
 
-  try {
-    await $fetch(`/api/projects/${id}`);
-    return;
-  } catch (error) {
-    const fallbackProject = storeProject.projects?.[0];
+  // TODO check projectIdlist api
+  const projectIdList: string[] = ["1"];
 
-    // Prevent infinite redirect loop by not redirecting to the same project ID
-    if (fallbackProject?.id) {
-      return navigateTo(`/projects/${fallbackProject.id}`);
-    } else {
-      return navigateTo("/projects/create");
-    }
+  if (projectIdList.length === 0) {
+    return navigateTo("/admin/projects/create");
   }
+
+  if (!id) {
+    return navigateTo(`/admin/projects/${projectIdList[0]}`);
+  }
+
+  return true;
 });

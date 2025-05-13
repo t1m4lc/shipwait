@@ -4,7 +4,7 @@
 <script setup lang="ts">
 definePageMeta({
     middleware: [
-        () => navigateTo('/settings/profile')
+        () => navigateTo('/admin/settings/profile')
     ]
 });
 </script>

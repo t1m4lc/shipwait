@@ -1,31 +1,72 @@
-<template>
-  <form>
-    <div class="grid gap-6">
-      <div class="grid gap-6">
-        <div class="grid gap-2">
-          <Label html-for="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </div>
-        <div class="grid gap-2">
-          <div class="flex items-center">
-            <Label html-for="password">Password</Label>
-            <a href="#" class="ml-auto text-xs underline-offset-4 hover:underline">
-              Forgot your password?
-            </a>
-          </div>
-          <Input id="password" type="password" required />
-        </div>
-        <Button type="submit" class="w-full">
-          Login
-        </Button>
-      </div>
-      <div class="text-center text-sm">
-        Don't have an account yet?
+<script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+import { toast } from 'vue-sonner'
 
-        <NuxtLink to="register" class="underline underline-offset-4 hover:text-primary">
-          Sign up
-        </NuxtLink>
-      </div>
+const loginFormSchema = toTypedSchema(z.object({
+  email: z.string().min(1, { message: 'Field is required' }).email('Enter a valid email.'),
+  password: z.string().min(1, { message: 'Field is required' }),
+}))
+
+const { handleSubmit } = useForm({
+  validationSchema: loginFormSchema,
+  initialValues: {
+    email: '',
+    password: '',
+  },
+})
+
+
+const supabase = useSupabaseClient()
+
+const onSubmit = handleSubmit(async (values, actions) => {
+  const { error } = await supabase.auth.signInWithPassword(values)
+  if (error) console.log(error)
+
+  actions.resetForm();
+});
+
+
+// const onSubmit = handleSubmit(() => {
+//   toast('Updated with success!', {
+//     description: 'Project General updated.',
+//     action: {
+//       label: 'Undo',
+//       onClick: () => console.log('Undo'),
+//     },
+//   });
+// })
+</script>
+
+<template>
+
+  <form class="space-y-8" @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="email">
+      <FormItem>
+        <FormLabel>Email</FormLabel>
+        <FormControl>
+          <Input type="text" placeholder="Type your email" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <FormField v-slot="{ componentField }" name="password">
+      <FormItem>
+        <FormLabel>Password</FormLabel>
+        <FormControl>
+          <Input type="password" v-bind="componentField" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+
+    <div class="flex justify-start">
+      <Button type="submit">
+        Login
+      </Button>
     </div>
   </form>
 </template>

@@ -19,23 +19,23 @@ const data = {
   navMain: [
     {
       title: 'Overview',
-      pageName: 'projects-projectId',
+      pageName: 'admin-projects-projectId',
       icon: Eye
     },
     {
       title: 'Leads',
-      pageName: 'projects-projectId-leads',
+      pageName: 'admin-projects-projectId-leads',
       icon: UserPlus,
     },
     {
       title: 'Analytics',
-      pageName: 'projects-projectId-analytics',
+      pageName: 'admin-projects-projectId-analytics',
       icon: ChartNoAxesCombined,
     },
     
     {
       title: 'Configure',
-      pageName: 'projects-projectId-configure',
+      pageName: 'admin-projects-projectId-configure',
       icon: Settings2,
     },
   ]
