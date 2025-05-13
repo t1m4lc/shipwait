@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import { toTypedSchema } from '@vee-validate/zod'
-import { Check, Circle, Dot } from 'lucide-vue-next'
-import { h, ref, markRaw } from 'vue'
+import { Check, Circle, Dot, Loader2, MessageCircle, ExternalLink, XCircle } from 'lucide-vue-next'
+import { ref, computed } from 'vue'
 import { toast } from 'vue-sonner'
 import * as z from 'zod'
 
@@ -13,7 +13,7 @@ const formSchema = [
     }),
     z.object({
         submitBehaviour: z.enum(['message', 'redirect', 'none'], { required_error: 'Please select a submit behaviour' }),
-        message: z.string().optional(),
+        message: z.string().optional().default('Thank you for joining the waitlist!'),
         redirectUrl: z.string().optional(),
     }).superRefine((data, ctx) => {
         if (data.submitBehaviour === 'message' && (!data.message || data.message.length === 0)) {
@@ -46,37 +46,74 @@ const formSchema = [
 ]
 
 const stepIndex = ref(1)
+const createdProject = ref<any>(null)
+const isSubmitting = ref(false)
+
+const snippet = computed(() => {
+    if (!createdProject.value) return ''
+    return `<script defer src="https://cdn.monwaitlist.io/waitlist.js?project=${createdProject.value.id}&token=${createdProject.value.token}"><\/script>`
+})
 const steps = [
     {
         step: 1,
-        title: 'Details',
-        description: 'Enter the project name and domain',
+        title: 'General',
+        description: 'Basic informations',
     },
     {
         step: 2,
-        title: 'Submit behavior',
-        description: 'Choose what happens after a user subscribes',
+        title: 'Behavior',
+        description: 'After someone subscribes',
+    },
+    {
+        step: 3,
+        title: 'Configure',
+        description: 'Connect to your site',
     },
 ]
 
-function onSubmit(values: any) {
-    alert(JSON.stringify(values, null, 2));
+async function onSubmit(values: any) {
+    isSubmitting.value = true
 
-    navigateTo('/')
+    try {
+        // Replace with actual API call
+        // const { data } = await $fetch('/api/projects/create', { method: 'POST', body: values })
+        // createdProject.value = data.project
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        // Simulate successful project creation
+        createdProject.value = {
+            id: 'demo-' + Math.random().toString(36).substring(2, 8),
+            name: values.name,
+            domain: values.domain,
+            token: 'demo-token-' + Math.random().toString(36).substring(2, 8)
+        }
+
+    } catch (e) {
+        toast.error('Failed to create project')
+    } finally {
+        stepIndex.value = 3
+        isSubmitting.value = false
+    }
 }
 </script>
 
 <template>
     <Form v-slot="{ meta, values, validate }" keep-values
-        :validation-schema="toTypedSchema(formSchema[stepIndex - 1])">
+        :validation-schema="toTypedSchema(formSchema[stepIndex - 1] || formSchema[0])" :initial-values="{
+            name: '',
+            domain: '',
+            submitBehaviour: 'message',
+            message: 'Thank you for joining the waitlist!',
+            redirectUrl: ''
+        }">
         <Stepper v-slot="{ isNextDisabled, isPrevDisabled, nextStep, prevStep }" v-model="stepIndex"
             class="block w-full">
-            <form @submit="(e) => {
-                e.preventDefault()
-                validate()
-
-                if (stepIndex === steps.length && meta.valid) {
-                    onSubmit(values)
+            <form @submit.prevent="async () => {
+                await validate()
+                if (stepIndex === 2 && meta.valid) {
+                    await onSubmit(values)
                 }
             }">
                 <div class="flex w-full flex-start gap-2">
@@ -85,14 +122,15 @@ function onSubmit(values: any) {
                         <StepperSeparator v-if="step.step !== steps[steps.length - 1].step"
                             class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
 
+
                         <StepperTrigger as-child>
                             <Button :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'"
                                 size="icon" class="z-10 rounded-full shrink-0"
-                                :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']"
-                                :disabled="state !== 'completed' && !meta.valid">
+                                :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']">
                                 <Check v-if="state === 'completed'" class="size-5" />
-                                <Circle v-if="state === 'active'" />
-                                <Dot v-if="state === 'inactive'" />
+                                <Loader2 v-else-if="isSubmitting && step.step === 2" class="size-5 animate-spin" />
+                                <Circle v-else-if="state === 'active'" />
+                                <Dot v-else-if="state === 'inactive'" />
                             </Button>
                         </StepperTrigger>
 
@@ -115,7 +153,10 @@ function onSubmit(values: any) {
                             <FormItem>
                                 <FormLabel>Project Name</FormLabel>
                                 <FormControl>
-                                    <Input type="text" v-bind="componentField" />
+                                    <Input type="text" v-bind="componentField" @keydown.enter.prevent="async () => {
+                                        await validate();
+                                        if (meta.valid) nextStep();
+                                    }" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -124,7 +165,10 @@ function onSubmit(values: any) {
                             <FormItem>
                                 <FormLabel>Domain</FormLabel>
                                 <FormControl>
-                                    <Input type="text" v-bind="componentField" />
+                                    <Input type="text" v-bind="componentField" @keydown.enter.prevent="async () => {
+                                        await validate();
+                                        if (meta.valid) nextStep();
+                                    }" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -135,20 +179,63 @@ function onSubmit(values: any) {
                         <FormField v-slot="{ componentField }" name="submitBehaviour">
                             <FormItem>
                                 <FormLabel>Submit behaviour</FormLabel>
+
                                 <FormControl>
-                                    <RadioGroup v-bind="componentField" class="flex gap-4">
-                                        <RadioGroupItem value="message" id="message" />
-                                        <FormLabel for="message">Message</FormLabel>
-                                        <RadioGroupItem value="redirect" id="redirect" />
-                                        <FormLabel for="redirect">Redirect</FormLabel>
-                                        <RadioGroupItem value="none" id="none" />
-                                        <FormLabel for="none">None</FormLabel>
+                                    <RadioGroup class="flex justify-start gap-8 pt-2" v-bind="componentField">
+                                        <FormItem>
+                                            <FormLabel
+                                                class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
+                                                <FormControl>
+                                                    <RadioGroupItem value="message" class="sr-only" />
+                                                </FormControl>
+
+                                                <div
+                                                    class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
+                                                    <MessageCircle class="h-6 w-6" />
+                                                </div>
+
+                                                <span class="text-sm font-medium">Message</span>
+                                            </FormLabel>
+                                        </FormItem>
+
+                                        <FormItem>
+                                            <FormLabel
+                                                class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
+                                                <FormControl>
+                                                    <RadioGroupItem value="redirect" class="sr-only" />
+                                                </FormControl>
+
+                                                <div
+                                                    class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
+                                                    <ExternalLink class="h-6 w-6" />
+                                                </div>
+
+                                                <span class="text-sm font-medium">Redirect</span>
+                                            </FormLabel>
+                                        </FormItem>
+
+                                        <FormItem>
+                                            <FormLabel
+                                                class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
+                                                <FormControl>
+                                                    <RadioGroupItem value="none" class="sr-only" />
+                                                </FormControl>
+
+                                                <div
+                                                    class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
+                                                    <XCircle class="h-6 w-6" />
+                                                </div>
+
+                                                <span class="text-sm font-medium">None</span>
+                                            </FormLabel>
+                                        </FormItem>
                                     </RadioGroup>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         </FormField>
-                        <FormField v-if="values.submitBehaviour === 'message'" v-slot="{ componentField }" name="message">
+                        <FormField v-if="values.submitBehaviour === 'message'" v-slot="{ componentField }"
+                            name="message">
                             <FormItem>
                                 <FormLabel>Message to display</FormLabel>
                                 <FormControl>
@@ -157,7 +244,8 @@ function onSubmit(values: any) {
                                 <FormMessage />
                             </FormItem>
                         </FormField>
-                        <FormField v-if="values.submitBehaviour === 'redirect'" v-slot="{ componentField }" name="redirectUrl">
+                        <FormField v-if="values.submitBehaviour === 'redirect'" v-slot="{ componentField }"
+                            name="redirectUrl">
                             <FormItem>
                                 <FormLabel>Redirection URL</FormLabel>
                                 <FormControl>
@@ -167,27 +255,51 @@ function onSubmit(values: any) {
                             </FormItem>
                         </FormField>
                     </template>
+
+                    <template v-if="stepIndex === 3">
+                        <div class="flex flex-col items-center gap-6 py-4">
+                            <div class="text-center">
+                                <h3 class="text-lg font-semibold mb-2">Project created 🎉</h3>
+                                <p class="text-muted-foreground">
+                                    1- Add the code snippet to your website's <code>&lt;head&gt;</code> section.
+                                </p>
+                                <p class="text-muted-foreground">
+                                    2- Add the <code>data-waitly</code> attribute to your email input to bind to Waitly
+                                    script.
+                                </p>
+                            </div>
+
+                            <div class="w-full max-w-2xl">
+                                <CodeDisplay language="html" :lineNumbers="true" :content="snippet" />
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
-                <div class="flex items-center justify-between mt-4">
+                <div class="flex items-center justify-between mt-8">
                     <NuxtLink v-if="stepIndex === 1" to="/">
                         <Button variant="outline" size="sm">
-                            Abort
+                            Cancel
                         </Button>
                     </NuxtLink>
-
-                    <Button v-else :disabled="isPrevDisabled" variant="outline" size="sm" @click="prevStep()">
+                    <Button v-else-if="stepIndex < 3" :disabled="isPrevDisabled || isSubmitting" variant="outline"
+                        size="sm" @click="prevStep()">
                         Back
                     </Button>
+                    <div v-else></div>
 
-                    <div class="flex items-center gap-3">
-                        <Button v-if="stepIndex !== 2" :type="meta.valid ? 'button' : 'submit'"
-                            :disabled="isNextDisabled" size="sm" @click="meta.valid && nextStep()">
+                    <div class="flex items-center gap-3" :class="stepIndex === 3 ? 'justify-center w-full' : ''">
+                        <Button v-if="stepIndex === 1" type="button" :disabled="isNextDisabled" size="sm"
+                            @click="meta.valid && nextStep()">
                             Next
                         </Button>
-                        <Button v-if="stepIndex === 2" size="sm" type="submit">
-                            Submit
+                        <Button v-if="stepIndex === 2" size="sm" type="submit" :disabled="!meta.valid || isSubmitting">
+                            <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
+                            Create Project
                         </Button>
+                        <NuxtLink v-if="stepIndex === 3" :to="`/projects/${createdProject?.id}`">
+                            <Button size="sm" variant="default">Go to Dashboard</Button>
+                        </NuxtLink>
                     </div>
                 </div>
             </form>

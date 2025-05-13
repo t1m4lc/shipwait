@@ -22,13 +22,12 @@ const code = ref(`<input data-waitly type='email' />`)
           1. Embed the script
         </h3>
         <p>
-          Paste the following snippet at the end of your HTML file, just before the closing `<\ /body>` tag:
+          Add this code snippet to your website's <code>&lt;head&gt;</code> section
         </p>
 
         <CodeDisplay :lineNumbers="true" language="javascript" class="mt-3">
           {{ snippet }}
         </CodeDisplay>
-
       </li>
       <li>
         <h3 class="text-lg font-semibold text-primary mb-2">

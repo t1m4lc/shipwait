@@ -15,7 +15,7 @@ definePageMeta({
             Create a new project
           </CardTitle>
           <CardDescription>
-            Fill in the details below to create your new project
+            Enter your project details below
           </CardDescription>
         </CardHeader>
         <CardContent>
