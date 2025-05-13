@@ -1,78 +1,32 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-
-import { Stepper, StepperDescription, StepperItem, StepperSeparator, StepperTitle, StepperTrigger } from '@/components/ui/stepper'
-import { Check, Circle, Dot } from 'lucide-vue-next'
-
 definePageMeta({
   layout: 'blank',
 })
-
-const steps = [
-  {
-    step: 1,
-    title: 'Your details',
-    description: 'Provide your name and email',
-  },
-  {
-    step: 2,
-    title: 'Company details',
-    description: 'A few details about your company',
-  },
-  {
-    step: 3,
-    title: 'Invite your team',
-    description: 'Start collaborating with your team',
-  },
-]
 </script>
 
 <template>
-  <h2 class="text-2xl font-bold tracking-tight">
-    Create
-  </h2>
+  <div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
+    <div class="w-full max-w-sm md:max-w-3xl">
 
-
-  <!-- <Stepper class="flex w-full items-start gap-2">
-    <StepperItem
-      v-for="step in steps"
-      :key="step.step"
-      v-slot="{ state }"
-      class="relative flex w-full flex-col items-center justify-center"
-      :step="step.step"
-    >
-      <StepperSeparator
-        v-if="step.step !== steps[steps.length - 1].step"
-        class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary"
-      />
-
-      <StepperTrigger as-child>
-        <Button
-          :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'"
-          size="icon"
-          class="z-10 rounded-full shrink-0"
-          :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']"
-        >
-          <Check v-if="state === 'completed'" class="size-5" />
-          <Circle v-if="state === 'active'" />
-          <Dot v-if="state === 'inactive'" />
-        </Button>
-      </StepperTrigger>
-
-      <div class="mt-5 flex flex-col items-center text-center">
-        <StepperTitle
-          :class="[state === 'active' && 'text-primary']"
-          class="text-sm font-semibold transition lg:text-base"
-        >
-          {{ step.title }}
-        </StepperTitle>
-        <StepperDescription
-          :class="[state === 'active' && 'text-primary']"
-          class="sr-only text-xs text-muted-foreground transition md:not-sr-only lg:text-sm"
-        >
-          {{ step.description }}
-        </StepperDescription>
+      <div class="flex flex-col gap-6">
+        <Card>
+        <CardHeader class="text-center">
+          <CardTitle class="text-xl">
+            Create a new project
+          </CardTitle>
+          <CardDescription>
+            Fill in the details below to create your new project
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CreateProjectForm />
+        </CardContent>
+      </Card>
+        <div
+          class="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
+          A new project is the first step towards making your ideas a reality.
+        </div>
       </div>
-    </StepperItem>
-  </Stepper> -->
+    </div>
+  </div>
 </template>

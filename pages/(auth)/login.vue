@@ -7,7 +7,36 @@
         </div>
         Waitly
       </NuxtLink>
-      <LoginForm />
+      
+      <div class="flex flex-col gap-6">
+        <Card>
+          <CardHeader class="text-center">
+            <CardTitle class="text-xl">
+              Welcome back
+            </CardTitle>
+            <CardDescription>
+              Login with your email and password to continue
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LoginForm />
+
+          </CardContent>
+        </Card>
+        <div
+          class="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
+          By clicking and continue, you agree to our
+          <NuxtLink to="terms">
+            Terms of Service
+          </NuxtLink>
+          and
+          <NuxtLink to="privacy">
+            Privacy Policy
+          </NuxtLink>
+          .
+        </div>
+      </div>
+
     </div>
   </div>
 </template>

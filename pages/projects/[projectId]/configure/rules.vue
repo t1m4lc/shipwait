@@ -4,7 +4,6 @@
     <!-- Collection Rules
 - Max email limit
 -Collection end date
--Duplicate email policy
 
 Messages
 -Success message
