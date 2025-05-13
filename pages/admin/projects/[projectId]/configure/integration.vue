@@ -25,7 +25,7 @@ const code = ref(`<input data-waitly type='email' />`)
           Add this code snippet to your website's <code>&lt;head&gt;</code> section
         </p>
 
-        <CodeDisplay :lineNumbers="true" language="javascript" class="mt-3">
+        <CodeDisplay :lineNumbers="true" language="html" class="mt-3">
           {{ snippet }}
         </CodeDisplay>
       </li>
@@ -34,7 +34,7 @@ const code = ref(`<input data-waitly type='email' />`)
           2. Mark your email input
         </h3>
         <p>Add the data-waitly attribute to the input field where users enter their email:
-          <CodeDisplay :lineNumbers="true" language="javascript" class="mt-3">
+          <CodeDisplay :lineNumbers="true" language="html" class="mt-3">
             {{ code }}
           </CodeDisplay>
         </p>
@@ -50,7 +50,7 @@ const code = ref(`<input data-waitly type='email' />`)
           <br>
           <br>
           Test your form, your leads will start appearing automatically on your
-          <NuxtLink :to="{ name: 'projects-projectId' }" class="text-primary hover:underline font-semibold">
+          <NuxtLink :to="{ name: 'admin-projects-projectId' }" class="text-primary hover:underline font-semibold">
             dashboard
           </NuxtLink>.
         </p>

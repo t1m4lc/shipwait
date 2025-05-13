@@ -1,4 +1,6 @@
-<script setup>
+<script setup lang="ts">
+import { INSIGHTO } from '@/stores/links'
+
 import { LayoutDashboard } from 'lucide-vue-next'
 
 const title = ref('Overview')
@@ -23,7 +25,7 @@ useHead({
   <div class="h-[70vh]">
     <Empty title="No overview for now" :icon="LayoutDashboard">
       This feature is coming soon! Got feedback or ideas? <br/>
-      <NuxtLink to="https://x.com/t1m4lc" external target="_blank" class="text-primary hover:underline">Let me know!
+      <NuxtLink :to="INSIGHTO" external target="_blank" class="text-primary hover:underline">Let me know!
       </NuxtLink>
     </Empty>
   </div>

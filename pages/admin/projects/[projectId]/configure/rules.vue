@@ -1,7 +1,11 @@
+<script setup lang="ts">
+import { INSIGHTO } from '@/stores/links'
+</script>
+
 <template>
-  <ConfigureLayout>
-    <!-- <ConfigureRulesForm /> -->
-    <!-- Collection Rules
+
+<!-- <ConfigureRulesForm /> -->
+<!-- Collection Rules
 - Max email limit
 -Collection end date
 
@@ -9,11 +13,12 @@ Messages
 -Success message
 -Duplicate message
 -Error message -->
+  <ConfigureLayout>
 
     <p>🚧 "Collection rules" is under construction</p>
 
     <p>
-      Got feedback or ideas? <NuxtLink to="https://x.com/t1m4lc" external target="_blank"
+      Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank"
         class="text-primary underline hover:underline">Let me know!
       </NuxtLink>
     </p>

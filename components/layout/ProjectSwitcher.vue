@@ -32,7 +32,7 @@ const store = useProjects()
 const activeProject = computed(() => props.projects.find(p => p.id === store.selectedProjectId))
 
 function onClick(projectId: string) {
-  navigateTo({ name: "projects-projectId", params: { projectId } })
+  navigateTo({ name: "admin-projects-projectId", params: { projectId } })
 }
 </script>
 
