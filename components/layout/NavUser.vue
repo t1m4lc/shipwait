@@ -73,11 +73,11 @@ const logout = async () => {
           </DropdownMenuGroup>
           <DropdownMenuSeparator /> -->
           <DropdownMenuGroup>
-            <DropdownMenuItem @click="navigateTo('/admin/settings/profile')">
+            <DropdownMenuItem @click="navigateTo('/dashboard/settings/profile')">
               <CircleUser />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem @click="navigateTo('/admin/settings/subscriptions')">
+            <DropdownMenuItem @click="navigateTo('/dashboard/settings/subscriptions')">
               <CreditCard />
               Subscriptions
             </DropdownMenuItem>

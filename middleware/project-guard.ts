@@ -8,11 +8,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const projectIdList: string[] = ["1"];
 
   if (projectIdList.length === 0) {
-    return navigateTo("/admin/projects/create");
+    return navigateTo("/dashboard/projects/create");
   }
 
   if (!id) {
-    return navigateTo(`/admin/projects/${projectIdList[0]}`);
+    return navigateTo(`/dashboard/projects/${projectIdList[0]}`);
   }
 
   return true;

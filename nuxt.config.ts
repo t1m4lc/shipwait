@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: "/login",
       callback: "/confirm",
-      include: ["/admin(/*)?"],
+      include: ["/dashboard(/*)?"],
       exclude: [],
       saveRedirectToCookie: true,
     },

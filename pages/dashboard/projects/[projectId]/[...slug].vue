@@ -2,7 +2,7 @@
 definePageMeta({
   middleware(to) {
     const projectId = to.params.projectId;
-    return { path: `/admin/projects/${projectId}/overview` };
+    return { path: `/dashboard/projects/${projectId}/overview` };
   }
 });
 </script>

@@ -277,7 +277,7 @@ async function onSubmit(values: any) {
                 </div>
 
                 <div class="flex items-center justify-between mt-8">
-                    <NuxtLink v-if="stepIndex === 1" to="/admin">
+                    <NuxtLink v-if="stepIndex === 1" to="/dashboard">
                         <Button variant="outline" size="sm">
                             Cancel
                         </Button>
@@ -297,7 +297,7 @@ async function onSubmit(values: any) {
                             <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
                             Create Project
                         </Button>
-                        <NuxtLink v-if="stepIndex === 3" :to="`/admin/projects/${createdProject?.id}`">
+                        <NuxtLink v-if="stepIndex === 3" :to="`/dashboard/projects/${createdProject?.id}`">
                             <Button size="sm" variant="default">Go to Dashboard</Button>
                         </NuxtLink>
                     </div>

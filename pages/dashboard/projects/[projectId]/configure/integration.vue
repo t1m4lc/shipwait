@@ -50,7 +50,7 @@ const code = ref(`<input data-waitly type='email' />`)
           <br>
           <br>
           Test your form, your leads will start appearing automatically on your
-          <NuxtLink :to="{ name: 'admin-projects-projectId' }" class="text-primary hover:underline font-semibold">
+          <NuxtLink :to="{ name: 'dashboard-projects-projectId' }" class="text-primary hover:underline font-semibold">
             dashboard
           </NuxtLink>.
         </p>

@@ -7,7 +7,7 @@ watch(user, () => {
     // Get redirect path, and clear it from the cookie
     const path = redirectInfo.pluck()
     // Redirect to the saved path, or fallback to home
-    return navigateTo(path || '/admin') 
+    return navigateTo(path || '/dashboard') 
   }
 }, { immediate: true })
 </script>

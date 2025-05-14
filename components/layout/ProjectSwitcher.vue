@@ -32,7 +32,7 @@ const store = useProjects()
 const activeProject = computed(() => props.projects.find(p => p.id === store.selectedProjectId))
 
 function onClick(projectId: string) {
-  navigateTo({ name: "admin-projects-projectId", params: { projectId } })
+  navigateTo({ name: "dashboard-projects-projectId", params: { projectId } })
 }
 </script>
 
@@ -74,7 +74,7 @@ function onClick(projectId: string) {
             <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
               <Plus class="size-4" />
             </div>
-            <NuxtLink to="/admin/projects/create" class="font-medium text-muted-foreground">
+            <NuxtLink to="/dashboard/projects/create" class="font-medium text-muted-foreground">
               Add new project
             </NuxtLink>
           </DropdownMenuItem>
