@@ -24,11 +24,9 @@ onMounted(() => {
   }
 });
 
-function onCopy(source: string) {
-  useClipboard({ source }).copy(source)
-    .finally(() => toast('Coppied to clipboad', {
-      description: '',
-    }))
+async function onCopy(source: string) {
+  await useClipboard({ source }).copy(source)
+  toast('Coppied to clipboad')
 }
 
 </script>
@@ -41,7 +39,7 @@ function onCopy(source: string) {
       <div class="font-medium text-sm dark:text-gray-200 text-gray-700">
         {{ title }}
       </div>
-      <Button @click="onCopy(contentRef?.textContent || '')" variant="outline">
+      <Button type="button" @click="onCopy(contentRef?.textContent || '')" variant="outline">
         <Copy />
       </Button>
 

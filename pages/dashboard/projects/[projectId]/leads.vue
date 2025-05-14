@@ -28,7 +28,6 @@ const { data: leads, pending: loading, refresh } = useAsyncData(
     if (error) throw error;
     return data;
   },
-
 )
 </script>
 
