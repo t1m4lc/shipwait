@@ -7,25 +7,26 @@ interface Item {
 }
 
 const route = useRoute()
-const projectId = route.params.projectId as string
+const store = useProjectsStore()
+const {selectedProjectId} = storeToRefs(store)
 
 // Éléments de navigation par défaut pour les pages de configuration
 const sidebarNavItems: Item[] = [
   {
     title: 'General',
-    href: `/dashboard/projects/${projectId}/configure`,
+    href: `/dashboard/projects/${selectedProjectId.value}/configure`,
   },
   {
     title: 'Collection rules',
-    href: `/dashboard/projects/${projectId}/configure/rules`,
+    href: `/dashboard/projects/${selectedProjectId.value}/configure/rules`,
   },
   {
     title: 'Submission feedback',
-    href: `/dashboard/projects/${projectId}/configure/feedback`,
+    href: `/dashboard/projects/${selectedProjectId.value}/configure/feedback`,
   },
   {
     title: 'Integration',
-    href: `/dashboard/projects/${projectId}/configure/integration`,
+    href: `/dashboard/projects/${selectedProjectId.value}/configure/integration`,
   },
 ]
 

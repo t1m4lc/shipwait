@@ -11,7 +11,9 @@ useHead({
 
 console.log(useRoute().name);
 
-
+definePageMeta({
+  middleware: ['project-id']
+})
 </script>
 
 <template>

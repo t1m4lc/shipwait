@@ -12,6 +12,9 @@ const snippet = ref(`<script defer src="https://cdn.monwaitlist.io/waitlist.js?p
 
 const code = ref(`<input data-waitly type='email' />`)
 
+definePageMeta({
+  middleware: ['project-id']
+})
 </script>
 
 <template>

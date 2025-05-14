@@ -10,6 +10,9 @@ useHead({
   title
 })
 
+definePageMeta({
+  middleware: ['project-id']
+})
 </script>
 
 <template>
@@ -18,13 +21,13 @@ useHead({
       {{ title }}
     </h1>
     <p class="text-muted-foreground">
-     {{ subtitle }}
+      {{ subtitle }}
     </p>
   </div>
 
   <div class="h-[70vh]">
     <Empty title="No overview for now" :icon="LayoutDashboard">
-      This feature is coming soon! Got feedback or ideas? <br/>
+      This feature is coming soon! Got feedback or ideas? <br />
       <NuxtLink :to="INSIGHTO" external target="_blank" class="text-primary hover:underline">Let me know!
       </NuxtLink>
     </Empty>

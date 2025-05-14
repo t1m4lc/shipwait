@@ -3,13 +3,20 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
-  devtools: { enabled: process.env.NODE_ENV === "development" },
+  devtools: {
+    enabled: process.env.NODE_ENV === "development",
+
+    timeline: {
+      enabled: true,
+    },
+  },
   modules: [
     "@nuxt/content",
     "@nuxt/eslint",
     "@pinia/nuxt",
     "shadcn-nuxt",
     "@nuxtjs/supabase",
+    "pinia-plugin-persistedstate/nuxt",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {

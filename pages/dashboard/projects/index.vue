@@ -1,10 +1,9 @@
 <template>
   <p>Redirecting...</p>
-  </template>
-  
-  <script setup lang="ts">
-  definePageMeta({
-    middleware: ['project-guard']
-  });  
-  </script>
-  
+</template>
+
+<script setup lang="ts">
+definePageMeta({
+  middleware: ['projects']
+})
+</script>

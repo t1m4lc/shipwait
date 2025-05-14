@@ -7,6 +7,9 @@ useHead({
   title
 })
 
+definePageMeta({
+  middleware: ['project-id']
+})
 </script>
 
 <template>

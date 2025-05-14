@@ -7,8 +7,8 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-  const store = useProjects();
-  const projectId = store.selectedProjectId
+  const store = useProjectsStore();
+  const {selectedProjectId} = storeToRefs(store)
 
 const data = {
   user: {
@@ -48,7 +48,7 @@ const data = {
       <LayoutProjectSwitcher :projects="store.projects"  />
     </SidebarHeader>
     <SidebarContent>
-      <LayoutNavMain :items="data.navMain" :project-id="projectId" />
+      <LayoutNavMain :items="data.navMain" :project-id="selectedProjectId" />
     </SidebarContent>
     <SidebarFooter>
       <LayoutNavUser :user="data.user" />

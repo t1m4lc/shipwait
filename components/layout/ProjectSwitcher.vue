@@ -27,12 +27,13 @@ const props = defineProps<{
 
 const { isMobile } = useSidebar()
 
-const store = useProjects()
+const store = useProjectsStore()
 
-const activeProject = computed(() => props.projects.find(p => p.id === store.selectedProjectId))
+const { selectedProject } = storeToRefs(store);
 
 function onClick(projectId: string) {
   navigateTo({ name: "dashboard-projects-projectId", params: { projectId } })
+  store.setSelectedProjectId(projectId)
 }
 </script>
 
@@ -45,13 +46,13 @@ function onClick(projectId: string) {
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
             <div
               class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-semibold">
-              {{ activeProject?.name.slice(0, 1) }}
+              {{ selectedProject?.name.slice(0, 1) }}
             </div>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-medium">
-                {{ activeProject?.name }}
+                {{ selectedProject?.name }}
               </span>
-              <span class="truncate text-xs">{{ activeProject?.domain }}</span>
+              <span class="truncate text-xs">{{ selectedProject?.domain }}</span>
             </div>
             <ChevronsUpDown class="ml-auto" />
           </SidebarMenuButton>
@@ -61,7 +62,7 @@ function onClick(projectId: string) {
           <DropdownMenuLabel class="text-xs text-muted-foreground">
             Projects
           </DropdownMenuLabel>
-          <DropdownMenuItem v-for="(project) in projects" :key="project.id" class="gap-2 p-2 "
+          <DropdownMenuItem v-for="(project) in projects" :key="project.id" class="gap-2 p-2"
             @click="onClick(project.id)">
             <div class="flex size-6 items-center justify-center rounded-sm border text-xs">
               {{ project.name.slice(0, 1) }}

@@ -9,6 +9,9 @@ const subtitle = ref("Data that actually matters")
 useHead({
   title
 })
+definePageMeta({
+  middleware: ['project-id']
+})
 </script>
 
 <template>
