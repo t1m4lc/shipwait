@@ -25,7 +25,6 @@ const generalFormSchema = toTypedSchema(z.object({
     ),
 }))
 
-
 const store = useProjectsStore();
 const { selectedProject } = storeToRefs(store)
 
