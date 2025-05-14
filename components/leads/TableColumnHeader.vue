@@ -3,15 +3,16 @@ import type { Column } from '@tanstack/vue-table'
 import type { Lead } from './data/schema';
 import { cn } from '@/lib/utils'
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-vue-next'
+import type { Tables } from '~/types/supabase';
 
 interface DataTableColumnHeaderProps {
-  column: Column<Lead, any>
+  column: Column<Tables<'leads'>, any>
   title: string
 }
 
 defineProps<DataTableColumnHeaderProps>()
 
-function cycleSorting(column: Column<Lead, any>) {
+function cycleSorting(column: Column<Tables<'leads'>, any>) {
   const currentSort = column.getIsSorted()
   
   if (currentSort === false) {

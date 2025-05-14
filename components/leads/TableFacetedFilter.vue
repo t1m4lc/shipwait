@@ -4,9 +4,10 @@ import type { Component } from 'vue'
 import type { Lead } from './data/schema'
 import { cn } from '@/lib/utils'
 import { Check, PlusCircle } from 'lucide-vue-next'
+import type { Tables } from '~/types/supabase'
 
 interface DataTableFacetedFilter {
-  column?: Column<Lead, any>
+  column?: Column<Tables<'leads'>, any>
   title?: string
   options: {
     label: string

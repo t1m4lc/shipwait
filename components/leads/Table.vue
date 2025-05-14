@@ -5,17 +5,19 @@ import { valueUpdater } from '../ui/table/utils';
 import Table from '../ui/table/Table.vue';
 import TableToolbar from './TableToolbar.vue';
 import TablePagination from './TablePagination.vue';
+import type { Tables } from '~/types/supabase';
 
 interface DataTableProps {
-  columns: ColumnDef<Lead, any>[]
-  data: Lead[]
+  columns: ColumnDef<Tables<'leads'>, any>[]
+  data: Tables<'leads'>[]
+  loading: boolean
 }
 const props = defineProps<DataTableProps>()
 
 // Initialize sorting with createdAt in descending order
 const sorting = ref<SortingState>([
   {
-    id: 'createdAt',
+    id: 'created_at',
     desc: true
   }
 ])
@@ -39,11 +41,14 @@ const table = useVueTable({
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
 })
+
+const emit = defineEmits(['refetch-leads']);
+
 </script>
 
 <template>
   <div class="space-y-4">
-    <TableToolbar :table="table" />
+    <TableToolbar :table="table" @refetch-leads="emit('refetch-leads')" :loading="loading" />
     <div class="rounded-md border">
       <Table>
         <TableHeader>
@@ -71,7 +76,12 @@ const table = useVueTable({
               :colspan="columns.length"
               class="h-24 text-center"
             >
-              No results.
+            <span v-if="data?.length">
+                No leads found. Adjust your filters.
+            </span>
+            <span v-else>
+              No leads yet, just a matter of time!
+            </span>
             </TableCell>
           </TableRow>
         </TableBody>

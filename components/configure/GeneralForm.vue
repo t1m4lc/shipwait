@@ -20,22 +20,21 @@ const generalFormSchema = toTypedSchema(z.object({
     }),
 }))
 
+const store = useProjectsStore();
+const {selectedProject} = storeToRefs(store)
+
 const { handleSubmit } = useForm({
   validationSchema: generalFormSchema,
   initialValues: {
-    name: '',
-    domain: '',
+    name: selectedProject.value?.name || '',
+    domain: selectedProject.value?.domain || '',
   },
 })
 
 const onSubmit = handleSubmit(() => {
-  toast('Updated with success!', {
-          description: 'Project General updated.',
-          action: {
-            label: 'Undo',
-            onClick: () => console.log('Undo'),
-          },
-        });
+  toast('Updated successfully!', {
+    description: 'The general project settings have been saved.',
+  });
 })
 </script>
 
@@ -62,7 +61,7 @@ const onSubmit = handleSubmit(() => {
           <Input type="text" placeholder="Type a domain" v-bind="componentField" />
         </FormControl>
         <FormDescription>
-            Enter the domain name where your code snippet will be used (e.g., example.com). The code will only work on this specific domain.
+            Enter the domain name where your code snippet will be used (e.g., example.com).
         </FormDescription>
         <FormMessage />
       </FormItem>

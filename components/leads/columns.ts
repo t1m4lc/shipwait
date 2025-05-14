@@ -1,16 +1,17 @@
 import type { ColumnDef } from "@tanstack/vue-table";
-import type { Lead } from "~/components/leads/data/schema";
 import LeadsTableColumnHeader from "./TableColumnHeader.vue";
 import { countries, devices } from "./data/data";
-import { formatDate } from "@vueuse/core";
+import type { Tables } from "~/types/supabase";
 
-export const columns: ColumnDef<Lead>[] = [
+type LeadRow = Tables<"leads">;
+
+export const columns: ColumnDef<LeadRow>[] = [
   {
-    accessorKey: "createdAt",
+    accessorKey: "created_at",
     header: ({ column }) =>
       h(LeadsTableColumnHeader, { column, title: "Date", class: "ml-4" }),
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
+      const date = new Date(row.getValue("created_at"));
       const dayjs = useDayjs();
       const formatted = dayjs(date).format("lll");
 
@@ -57,13 +58,13 @@ export const columns: ColumnDef<Lead>[] = [
     maxSize: 140,
   },
   {
-    accessorKey: "device",
+    accessorKey: "device_type",
     header: ({ column }) =>
       h(LeadsTableColumnHeader, { column, title: "Device" }),
 
     cell: ({ row }) => {
       const device = devices.find(
-        (device) => device.value === row.getValue("device")
+        (device) => device.value === row.getValue("device_type")
       );
 
       if (!device) return null;

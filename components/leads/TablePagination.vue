@@ -2,10 +2,11 @@
 import type { Table } from '@tanstack/vue-table'
 import type { Lead } from './data/schema';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-vue-next';
+import type { Tables } from '~/types/supabase';
 
 
 interface DataTablePaginationProps {
-  table: Table<Lead>
+  table: Table<Tables<'leads'>>
 }
 defineProps<DataTablePaginationProps>()
 </script>

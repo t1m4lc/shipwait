@@ -52,7 +52,7 @@ const onSubmit = handleSubmit(() => {
 
     <FormField v-slot="{ componentField }" name="email">
       <FormItem>
-        <FormLabel>Site email</FormLabel>
+        <FormLabel>Email</FormLabel>
         <FormControl>
           <Input type="email" placeholder="Type your email" v-bind="componentField" />
         </FormControl>

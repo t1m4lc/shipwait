@@ -32,7 +32,8 @@ const store = useProjectsStore()
 const { selectedProject } = storeToRefs(store);
 
 function onClick(projectId: string) {
-  navigateTo({ name: "dashboard-projects-projectId", params: { projectId } })
+  const route = useRoute()
+  navigateTo({ name: route.name as string, params: { ...route.params, projectId } })
   store.setSelectedProjectId(projectId)
 }
 </script>
@@ -62,7 +63,7 @@ function onClick(projectId: string) {
           <DropdownMenuLabel class="text-xs text-muted-foreground">
             Projects
           </DropdownMenuLabel>
-          <DropdownMenuItem v-for="(project) in projects" :key="project.id" class="gap-2 p-2"
+          <DropdownMenuItem v-for="(project) in props.projects" :key="project.id" class="gap-2 p-2"
             @click="onClick(project.id)">
             <div class="flex size-6 items-center justify-center rounded-sm border text-xs">
               {{ project.name.slice(0, 1) }}

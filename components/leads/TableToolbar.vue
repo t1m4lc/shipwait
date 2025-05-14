@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
-import type { Lead } from './data/schema';
 import { countries, devices } from './data/data';
 import { RefreshCw, X } from 'lucide-vue-next';
 import TableFacetedFilter from './TableFacetedFilter.vue';
+import type { Tables } from '~/types/supabase';
 
 interface DataTableToolbarProps {
-  table: Table<Lead>
+  table: Table<Tables<'leads'>>
+    loading: boolean
 }
 
 const props = defineProps<DataTableToolbarProps>()
@@ -20,7 +21,7 @@ const countryOptions = computed((): { value: string; label: string }[] => {
     props.table.getCoreRowModel().rows.map(row => row.original.country)
   )
   return Array.from(uniqueCountries)
-    .filter(Boolean)
+    .filter((country): country is string => typeof country === 'string' && !!country)
     .map(country => {
       const flag = countryCodeToFlag(country);
 
@@ -30,6 +31,9 @@ const countryOptions = computed((): { value: string; label: string }[] => {
       })
     })
 })
+
+const emit = defineEmits(['refetch-leads']);
+
 </script>
 
 <template>
@@ -46,7 +50,7 @@ const countryOptions = computed((): { value: string; label: string }[] => {
             <TableFacetedFilter v-if="table.getColumn('country')" :column="table.getColumn('country')" title="Country"
               :options="countryOptions" />
 
-            <TableFacetedFilter v-if="table.getColumn('device')" :column="table.getColumn('device')" title="Device"
+            <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')" title="Device"
               :options="devices" />
 
             <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()">
@@ -55,9 +59,8 @@ const countryOptions = computed((): { value: string; label: string }[] => {
             </Button>
           </div>
 
-          <!-- TODO refetch -->
-          <Button variant="outline" class="h-8 px-2 lg:px-3" @click="">
-            <RefreshCw class="size-4" />
+          <Button variant="outline" class="h-8 px-2 lg:px-3" @click="emit('refetch-leads')">
+            <RefreshCw class="size-4" :class="{ 'animate-spin': loading }" />
             Refetch
           </Button>
         </div>
