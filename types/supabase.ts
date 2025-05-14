@@ -65,7 +65,6 @@ export type Database = {
       }
       projects: {
         Row: {
-          api_token: string
           created_at: string
           domain: string
           id: string
@@ -73,7 +72,6 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          api_token?: string
           created_at?: string
           domain: string
           id?: string
@@ -81,7 +79,6 @@ export type Database = {
           user_id: string
         }
         Update: {
-          api_token?: string
           created_at?: string
           domain?: string
           id?: string

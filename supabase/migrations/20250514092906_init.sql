@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS projects (
   user_id    UUID      NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name       TEXT      NOT NULL,
   domain     TEXT      NOT NULL,
-  api_token  UUID      NOT NULL UNIQUE DEFAULT gen_random_uuid(),
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

@@ -10,7 +10,6 @@ import generateSnippet from '~/utils/snippet'
 
 interface CreatedProject {
     id: string;
-    api_token: string
 }
 
 const generalSchema = z.object({
@@ -87,12 +86,12 @@ const snippet = computed(() => {
     console.log('Computing snippet with createdProject:', createdProject.value);
 
     if (!createdProject.value) return '';
-    if (!createdProject.value.id || !createdProject.value.api_token) {
+    if (!createdProject.value.id) {
         console.warn('Missing required project properties:', createdProject.value);
         return '';
     }
 
-    const result = generateSnippet(createdProject.value.id, createdProject.value.api_token);
+    const result = generateSnippet(createdProject.value.id);
     console.log('Generated snippet result:', result);
     return result;
 });
@@ -135,7 +134,7 @@ const createProject = async (payload: Partial<Tables<'projects'>>) => {
     return await client
         .from('projects')
         .insert(insertPayload)
-        .select(`id, api_token`)
+        .select(`id`)
         .single()
 }
 
