@@ -8,6 +8,7 @@ import type { Tables } from '~/types/supabase';
 interface DataTableToolbarProps {
   table: Table<Tables<'leads'>>
   loading: boolean
+  disabled: boolean,
 }
 
 const props = defineProps<DataTableToolbarProps>()
@@ -43,23 +44,24 @@ const emit = defineEmits(['refetch-leads']);
         <Input placeholder="Filter emails..."
           :model-value="(table.getColumn('email')?.getFilterValue() as string) ?? ''"
           class="h-10 md:h-8 w-full min-w-[220px] md:w-[250px]"
-          @input="table.getColumn('email')?.setFilterValue($event.target.value)" />
+          @input="table.getColumn('email')?.setFilterValue($event.target.value)" :disabled="disabled" />
 
         <div class="flex gap-4 justify-between w-full">
           <div class="flex gap-2 overflow-y-auto">
             <TableFacetedFilter v-if="table.getColumn('country')" :column="table.getColumn('country')" title="Country"
-              :options="countryOptions" />
+              :options="countryOptions" :disabled="disabled" />
 
             <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')"
-              title="Device" :options="devices" />
+              title="Device" :options="devices" :disabled="disabled" />
 
-            <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()">
+            <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()"
+              :disabled="disabled">
               Reset
               <X class="size-4" />
             </Button>
           </div>
 
-          <Button variant="outline" class="h-8 px-2 lg:px-3" @click="emit('refetch-leads')">
+          <Button variant="outline" class="h-8 px-2 lg:px-3" @click="emit('refetch-leads')" :disabled="loading">
             <RefreshCw class="size-4" :class="{ 'animate-spin': loading }" />
             Refetch
           </Button>

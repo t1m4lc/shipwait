@@ -17,7 +17,6 @@ const { selectedProject } = storeToRefs(store)
       :to="{ name: 'dashboard-projects-projectId-configure-integration', params: { projectId: selectedProject?.id } }">
 
       <Button variant="outline" class="rounded-full group">
-
         <Plug class="group-hover:text-yellow-500 transition-colors" />
         <span class="pr-1.5 font-semibold">Connect</span>
       </Button>
