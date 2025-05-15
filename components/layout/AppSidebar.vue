@@ -7,8 +7,8 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-  const store = useProjectsStore();
-  const {selectedProjectId} = storeToRefs(store)
+const store = useProjectsStore();
+const { selectedProjectId } = storeToRefs(store)
 
 const data = {
   user: {
@@ -17,22 +17,21 @@ const data = {
     avatar: null,
   },
   navMain: [
-    {
-      title: 'Overview',
-      pageName: 'dashboard-projects-projectId',
-      icon: Eye
-    },
+    // {
+    //   title: 'Overview',
+    //   pageName: 'dashboard-projects-projectId',
+    //   icon: Eye
+    // },
     {
       title: 'Leads',
       pageName: 'dashboard-projects-projectId-leads',
       icon: UserPlus,
     },
-    {
-      title: 'Analytics',
-      pageName: 'dashboard-projects-projectId-analytics',
-      icon: ChartNoAxesCombined,
-    },
-    
+    // {
+    //   title: 'Analytics',
+    //   pageName: 'dashboard-projects-projectId-analytics',
+    //   icon: ChartNoAxesCombined,
+    // },
     {
       title: 'Configure',
       pageName: 'dashboard-projects-projectId-configure',
@@ -45,7 +44,7 @@ const data = {
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <LayoutProjectSwitcher :projects="store.projects"  />
+      <LayoutProjectSwitcher :projects="store.projects" />
     </SidebarHeader>
     <SidebarContent>
       <LayoutNavMain :items="data.navMain" :project-id="selectedProjectId" />

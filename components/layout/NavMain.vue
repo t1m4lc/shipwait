@@ -14,7 +14,7 @@ defineProps<{
 
 <template>
 <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupLabel>Waitlist</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
               <SidebarMenuItem v-for="item in items" :key="item.title">

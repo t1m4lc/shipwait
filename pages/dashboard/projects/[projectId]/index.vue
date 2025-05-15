@@ -1,4 +1,15 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['project-id'],
+  redirect: to => {
+    return `/dashboard/projects/${to.params.projectId}/leads`;
+  }
+});
+</script>
+
+
+<!-- OTHERVIEW WIP -->
+<!-- <script setup lang="ts">
 import { INSIGHTO } from '@/stores/links'
 
 import { LayoutDashboard } from 'lucide-vue-next'
@@ -32,4 +43,4 @@ definePageMeta({
       </NuxtLink>
     </Empty>
   </div>
-</template>
+</template> -->
