@@ -83,17 +83,13 @@ const { values, meta, validate } = useForm<FormValues>({
 });
 
 const snippet = computed(() => {
-    console.log('Computing snippet with createdProject:', createdProject.value);
-
     if (!createdProject.value) return '';
     if (!createdProject.value.id) {
         console.warn('Missing required project properties:', createdProject.value);
         return '';
     }
 
-    const result = generateSnippet(createdProject.value.id);
-    console.log('Generated snippet result:', result);
-    return result;
+    return generateSnippet(createdProject.value.id);
 });
 
 const steps = [
@@ -116,6 +112,9 @@ const steps = [
 
 const client = useSupabaseClient<Database>()
 const user = useSupabaseUser()
+
+const store = useProjectsStore()
+const { projects } = storeToRefs(store)
 
 const createProject = async (payload: Partial<Tables<'projects'>>) => {
     console.log("payload", payload);
@@ -151,11 +150,8 @@ async function onSubmit(): Promise<void> {
 
     const { error, data: project } = await createProject({ name, domain })
 
-    console.log('project', project);
-
 
     if (project) {
-        // Set created project ID for the snippet
         createdProject.value = { ...project };
 
         console.log('createdProject value:', createdProject.value);
@@ -188,7 +184,6 @@ async function onSubmit(): Promise<void> {
     isSubmitting.value = false
 }
 
-// Handle navigation between steps
 async function handleNextStep() {
     const result = await validate();
     if (result.valid) {
@@ -365,17 +360,16 @@ function handlePrevStep() {
                 </template>
             </div>
 
-            <div class="flex items-center justify-between mt-8">
-                <NuxtLink v-if="stepIndex === 1" to="/dashboard">
+            <div class="flex items-center mt-8 gap-4" :class="projects.length ? 'justify-between' : 'justify-end'">
+                <NuxtLink v-if="stepIndex === 1 && projects.length" to="/dashboard">
                     <Button variant="outline" size="sm">
                         Cancel
                     </Button>
                 </NuxtLink>
-                <Button v-else-if="stepIndex < 3" :disabled="isSubmitting" variant="outline" size="sm"
+                <Button v-else-if="stepIndex === 2" :disabled="isSubmitting" variant="outline" size="sm"
                     @click="handlePrevStep">
                     Back
                 </Button>
-                <div v-else></div>
 
                 <div class="flex items-center gap-3" :class="stepIndex === 3 ? 'justify-center w-full' : ''">
                     <Button v-if="stepIndex === 1" type="button" :disabled="!meta.valid" size="sm"

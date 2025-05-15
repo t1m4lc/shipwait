@@ -2,14 +2,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-11-01",
-  devtools: {
-    enabled: process.env.NODE_ENV === "development",
-
-    timeline: {
-      enabled: true,
-    },
-  },
   modules: [
     "@nuxt/content",
     "@nuxt/eslint",
@@ -28,18 +20,27 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_KEY: process.env.SUPABASE_KEY,
+      baseUrl: process.env.NUXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY,
     },
   },
   supabase: {
+    redirect: true,
     redirectOptions: {
       login: "/login",
       callback: "/confirm",
       include: ["/dashboard(/*)?"],
       exclude: [],
       saveRedirectToCookie: true,
+    },
+  },
+  compatibilityDate: "2024-11-01",
+  devtools: {
+    enabled: process.env.NODE_ENV === "development",
+
+    timeline: {
+      enabled: true,
     },
   },
 });

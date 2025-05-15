@@ -6,8 +6,8 @@ import { toast } from 'vue-sonner'
 
 const generalFormSchema = toTypedSchema(z.object({
   name: z.string({
-      required_error: 'Required.',
-    })
+    required_error: 'Required.',
+  })
     .min(2, {
       message: 'Name must be at least 2 characters.',
     })
@@ -15,8 +15,8 @@ const generalFormSchema = toTypedSchema(z.object({
       message: 'Name must not be longer than 30 characters.',
     }),
   email: z.string({
-      required_error: 'Required.',
-    }).email('Enter a valid email.'),
+    required_error: 'Required.',
+  }).email('Enter a valid email.'),
 }))
 
 const { handleSubmit } = useForm({
@@ -29,12 +29,12 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit(() => {
   toast('Updated with success!', {
-          description: 'Project General updated.',
-          action: {
-            label: 'Undo',
-            onClick: () => console.log('Undo'),
-          },
-        });
+    description: 'Project General updated.',
+    action: {
+      label: 'Undo',
+      onClick: () => console.log('Undo'),
+    },
+  });
 })
 </script>
 

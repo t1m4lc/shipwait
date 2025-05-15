@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links'
+import { INSIGHTO } from '@/stores/links';
 </script>
 
 <template>
   <SettingsLayout>
-    <p>🚧 Subscriptions is under construction</p>
+    <p>🚧 "Subscriptions" is under construction</p>
 
     <p>
       Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank"

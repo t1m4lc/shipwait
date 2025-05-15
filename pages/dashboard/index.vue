@@ -1,9 +1,9 @@
 <template>
-<p>Redirecting...</p>
+  <p>Redirecting...</p>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
   middleware: ['projects']
-});  
+});
 </script>

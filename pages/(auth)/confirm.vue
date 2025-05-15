@@ -4,14 +4,15 @@ const redirectInfo = useSupabaseCookieRedirect()
 
 watch(user, () => {
   if (user.value) {
-    // Get redirect path, and clear it from the cookie
+    // Get the saved path and clear it from the cookie
     const path = redirectInfo.pluck()
     // Redirect to the saved path, or fallback to home
-    return navigateTo(path || '/dashboard') 
+    return navigateTo(path || '/dashboard')
   }
 }, { immediate: true })
 </script>
 
+
 <template>
-  <div>Waiting for login...</div>
+  <p>Authenticating...</p>
 </template>

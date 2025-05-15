@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "nuxt start --hostname localhost",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
