@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/vue-table";
 import LeadsTableColumnHeader from "./TableColumnHeader.vue";
-import { countries, devices } from "./data/data";
+import { countries, devices } from "./data";
 import type { Tables } from "~/types/supabase";
 
 type LeadRow = Tables<"leads">;

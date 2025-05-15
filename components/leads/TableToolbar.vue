@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
-import { countries, devices } from './data/data';
+import { countries, devices } from './data';
 import { RefreshCw, X } from 'lucide-vue-next';
 import TableFacetedFilter from './TableFacetedFilter.vue';
 import type { Tables } from '~/types/supabase';
 
 interface DataTableToolbarProps {
   table: Table<Tables<'leads'>>
-    loading: boolean
+  loading: boolean
 }
 
 const props = defineProps<DataTableToolbarProps>()
@@ -50,8 +50,8 @@ const emit = defineEmits(['refetch-leads']);
             <TableFacetedFilter v-if="table.getColumn('country')" :column="table.getColumn('country')" title="Country"
               :options="countryOptions" />
 
-            <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')" title="Device"
-              :options="devices" />
+            <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')"
+              title="Device" :options="devices" />
 
             <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()">
               Reset
