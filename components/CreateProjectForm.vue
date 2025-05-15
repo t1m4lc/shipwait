@@ -82,6 +82,7 @@ const { values, meta, validate } = useForm<FormValues>({
     keepValuesOnUnmount: true,
 });
 
+
 const snippet = computed(() => {
     if (!createdProject.value) return '';
     if (!createdProject.value.id) {
@@ -89,7 +90,8 @@ const snippet = computed(() => {
         return '';
     }
 
-    return generateSnippet(createdProject.value.id);
+    const b = store.selectedProject?.submission_behaviors[0]
+    return generateSnippet(createdProject.value.id, b?.behavior_type, b?.redirect_url || b?.message || '');
 });
 
 const steps = [
@@ -352,7 +354,7 @@ function handlePrevStep() {
                         </div>
 
                         <div class="w-full max-w-2xl">
-                            <CodeDisplay language="html" :lineNumbers="true" :with-copy="true">
+                            <CodeDisplay language="html" :with-copy="true">
                                 {{ snippet.toString() }}
                             </CodeDisplay>
                         </div>

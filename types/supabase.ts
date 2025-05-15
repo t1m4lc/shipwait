@@ -19,8 +19,7 @@ export type Database = {
           id: string
           os: string | null
           project_id: string
-          source: string | null
-          submission_behavior_id: string
+          referer: string | null
         }
         Insert: {
           browser?: string | null
@@ -31,8 +30,7 @@ export type Database = {
           id?: string
           os?: string | null
           project_id: string
-          source?: string | null
-          submission_behavior_id: string
+          referer?: string | null
         }
         Update: {
           browser?: string | null
@@ -43,8 +41,7 @@ export type Database = {
           id?: string
           os?: string | null
           project_id?: string
-          source?: string | null
-          submission_behavior_id?: string
+          referer?: string | null
         }
         Relationships: [
           {
@@ -52,13 +49,6 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "leads_submission_behavior_id_fkey"
-            columns: ["submission_behavior_id"]
-            isOneToOne: false
-            referencedRelation: "submission_behaviors"
             referencedColumns: ["id"]
           },
         ]

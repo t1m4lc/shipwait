@@ -25,7 +25,7 @@ const { handleSubmit, validate } = useForm<RegisterFormValues>({
 })
 
 const client = useSupabaseClient()
-const runtime = useRuntimeConfig()
+const config = useRuntimeConfig()
 
 const onSubmit = handleSubmit(async (values: RegisterFormValues, ctx) => {
   const { valid } = await validate()
@@ -35,7 +35,7 @@ const onSubmit = handleSubmit(async (values: RegisterFormValues, ctx) => {
     return
   }
 
-  const emailRedirectTo = `${runtime.public.baseUrl}/welcome`
+  const emailRedirectTo = `${config.public.baseUrl}/welcome`
 
   console.log('emailRedirectTo', emailRedirectTo);
 

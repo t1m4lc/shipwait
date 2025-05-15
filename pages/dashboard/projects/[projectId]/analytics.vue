@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links'
-
 import { ChartNoAxesCombined } from 'lucide-vue-next'
 
 const title = ref('Analytics')

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links';
 </script>
 
 <template>

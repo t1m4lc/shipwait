@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links'
-
 definePageMeta({
   middleware: ['project-id']
 })

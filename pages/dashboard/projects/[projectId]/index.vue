@@ -10,7 +10,6 @@ definePageMeta({
 
 <!-- OTHERVIEW WIP -->
 <!-- <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links'
 
 import { LayoutDashboard } from 'lucide-vue-next'
 

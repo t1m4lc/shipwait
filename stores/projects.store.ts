@@ -1,25 +1,35 @@
 import { defineStore } from "pinia";
-import type { Database, Tables } from "~/types/supabase";
-
-interface ProjectsState {
-  projects: Tables<"projects">[];
-  loading: boolean;
-  error: any;
-  selectedProjectId: string;
-}
+import type { Database } from "~/types/supabase";
+import type { QueryData } from "@supabase/supabase-js";
 
 export const useProjectsStore = defineStore(
   "projects",
   () => {
     const supabase = useSupabaseClient<Database>();
-    const projects = ref<Tables<"projects">[]>([]);
+
+    const projectFullQuery = supabase
+      .from("projects")
+      .select(
+        `
+      *,
+      submission_behaviors(*)
+    `
+      )
+      .order("name");
+
+    type ProjectFull = QueryData<typeof projectFullQuery>;
+
+    const projects = ref<ProjectFull>([]);
     const loading = ref(false);
     const error = ref<any>(null);
-    const selectedProjectId = ref<string>("");
+    const selectedProjectId = ref<string | null>(null);
 
-    const selectedProject = computed(() =>
-      projects.value.find((project) => project.id === selectedProjectId.value)
-    );
+    const selectedProject = computed(() => {
+      if (!selectedProjectId.value) return null;
+      return projects.value.find(
+        (project) => project.id === selectedProjectId.value
+      );
+    });
 
     const setSelectedProjectId = (id: string) => {
       selectedProjectId.value = id;
@@ -36,14 +46,12 @@ export const useProjectsStore = defineStore(
           throw new Error("No authenticated user");
         }
 
-        const { data, error } = await supabase
-          .from("projects")
-          .select("*")
-          .order("name");
+        const { data, error } = await projectFullQuery;
 
         if (error) throw error;
 
-        projects.value = data || [];
+        const projectFull: ProjectFull = data;
+        projects.value = projectFull || [];
       } catch (err) {
         console.error("Error fetching projects:", err);
         error.value = err;

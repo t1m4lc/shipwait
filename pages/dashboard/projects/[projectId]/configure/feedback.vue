@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { INSIGHTO } from '@/stores/links'
-
 const title = ref('Collection Rules')
 
 useHead({
