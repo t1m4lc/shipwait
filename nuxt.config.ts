@@ -16,6 +16,18 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  nitro: {
+    prerender: {
+      crawlLinks: true,
+    },
+  },
+  routeRules: {
+    "/": { prerender: true },
+    "/login": { prerender: true },
+    "/register": { prerender: true },
+    "/privacy": { prerender: true },
+    "/terms": { prerender: true },
+  },
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
