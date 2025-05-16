@@ -11,8 +11,8 @@ definePageMeta({
       <div class="flex justify-center gap-2 md:justify-start">
         <NuxtLink to="/" class="flex items-center gap-2 font-medium">
           <div class="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            X </div>
-          Waitly.dev
+            S</div>
+          ShipWait
         </NuxtLink>
       </div>
       <div class="flex flex-1 items-center justify-center">
@@ -44,8 +44,8 @@ definePageMeta({
         .
       </div>
     </div>
-    <div class="relative hidden bg-muted lg:block">
-      <img src="/" alt="Image" class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale">
+    <div class="relative hidden bg-muted lg:block dark:brightness-[0.2] dark:grayscale">
+      <NuxtImg src="img/register.jpg" class="absolute inset-0 h-full w-full object-cover object-bottom " />
     </div>
   </div>
 </template>

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase",
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-gtag",
+    "@nuxt/image",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {
