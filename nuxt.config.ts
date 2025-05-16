@@ -42,6 +42,27 @@ export default defineNuxtConfig({
       supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
     },
   },
+  nitro: {
+    preset: "vercel",
+    vercel: {
+      functions: {
+        maxDuration: 300,
+      },
+      config: {
+        crons: [
+          {
+            path: "/scheduler/discount-mail",
+            schedule: "0 * * * *",
+          },
+        ],
+      },
+    },
+    compressPublicAssets: true,
+    experimental: {
+      tasks: true,
+    },
+    scheduledTasks: {},
+  },
   supabase: {
     redirect: true,
     redirectOptions: {
