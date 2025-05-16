@@ -213,10 +213,11 @@ function handlePrevStep() {
                     <StepperSeparator v-if="step.step !== steps[steps.length - 1].step"
                         class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
 
-                    <StepperTrigger as-child>
+                    <StepperTrigger as-child :disabled="step.step > stepIndex && !meta.valid">
                         <Button :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'"
                             size="icon" class="z-10 rounded-full shrink-0"
-                            :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']">
+                            :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']"
+                            :disabled="step.step > stepIndex && !meta.valid">
                             <Check v-if="state === 'completed'" class="size-5" />
                             <Loader2 v-else-if="isSubmitting && step.step === 2" class="size-5 animate-spin" />
                             <Circle v-else-if="state === 'active'" />

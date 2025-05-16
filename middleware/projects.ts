@@ -13,9 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!id || !projectExists) {
     const defaultProjectId = store.projects[0].id;
-    return navigateTo(`/dashboard/projects/${defaultProjectId}`, {
-      replace: true,
-    });
+    return navigateTo(`/dashboard/projects/${defaultProjectId}`);
   }
 
   store.setSelectedProjectId(id);
