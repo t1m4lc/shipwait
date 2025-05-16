@@ -90,8 +90,7 @@ const snippet = computed(() => {
         return '';
     }
 
-    const b = store.selectedProject?.submission_behaviors[0]
-    return generateSnippet(createdProject.value.id, b?.behavior_type, b?.redirect_url || b?.message || '');
+    return generateSnippet(createdProject.value.id);
 });
 
 const steps = [

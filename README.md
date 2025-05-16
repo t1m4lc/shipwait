@@ -27,7 +27,7 @@ npm run dev
 
 ## How to Test the Snippet
 
-To test the Shipwait snippet on a simple HTML page, create a file named `test-shipwait.html` with the following code:
+To test the Shipwait snippet on a simple HTML page, create a file named `index.html` with the following code:
 
 ```html
 <!DOCTYPE html>
@@ -38,6 +38,7 @@ To test the Shipwait snippet on a simple HTML page, create a file named `test-sh
     <title>Shipwait Test Page</title>
 
     <!-- Add your Shipwait snippet here -->
+     
   </head>
   <body>
     <div
@@ -71,8 +72,12 @@ To test the Shipwait snippet on a simple HTML page, create a file named `test-sh
 </html>
 ```
 
-### How to use:
+### How to Test the Shipwait Snippet
 
-1. Replace `YOUR_PROJECT_ID` in the snippet with your actual Shipwait project ID
-2. Open the HTML file in a browser
-3. Submit the form to test if your integration is working correctly
+1. Create a project and copy the provided snippet from your [Shipwait dashboard](https://shipwait.vercel.app/dashboard/)
+2. Ensure you have Node.js installed on your machine.
+3. Place your index.html file (with the copied Shipwait snippet) in a dedicated folder.
+4. Open a terminal in that folder and run:
+5. Open the displayed URL (e.g., http://localhost:8080) in your browser.
+6. Fill out the form and submit.
+7. Check your [Shipwait dashboard](https://shipwait.vercel.app/dashboard/) to confirm that a new lead has appeared.
