@@ -77,7 +77,7 @@ To test the Shipwait snippet on a simple HTML page, create a file named `index.h
 1. Create a project and copy the provided snippet from your [Shipwait dashboard](https://shipwait.vercel.app/dashboard/)
 2. Ensure you have Node.js installed on your machine.
 3. Place your index.html file (with the copied Shipwait snippet) in a dedicated folder.
-4. Open a terminal in that folder and run:
+4. Open a terminal in that folder and run: npx http-server ./
 5. Open the displayed URL (e.g., http://localhost:8080) in your browser.
 6. Fill out the form and submit.
 7. Check your [Shipwait dashboard](https://shipwait.vercel.app/dashboard/) to confirm that a new lead has appeared.
