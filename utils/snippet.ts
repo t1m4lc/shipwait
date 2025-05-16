@@ -3,9 +3,9 @@ export default function generateSnippet(
   behaviour_type?: string,
   message?: string
 ) {
-  const cdn = `${WAITLY_SNIPPET_CDN}@${WAITLY_SNIPPET_VERSION}/dist/main.js?projectId=${projectId}&ty=${behaviour_type}&payload=${encodeURIComponent(
+  const cdn = `${SHIPWAIT_SNIPPET_CDN}@${SHIPWAIT_SNIPPET_VERSION}/dist/main.js?projectId=${projectId}&ty=${behaviour_type}&payload=${encodeURIComponent(
     message || ""
   )}`;
 
-  return `<script src="${cdn}"></script>`;
+  return `<script defer src="${cdn}"></script>`;
 }

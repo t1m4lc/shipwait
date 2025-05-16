@@ -6,6 +6,11 @@ export const useProjectsStore = defineStore(
   "projects",
   () => {
     const supabase = useSupabaseClient<Database>();
+    const user = useSupabaseUser();
+
+    if (!user.value) {
+      throw new Error("No authenticated user");
+    }
 
     const projectFullQuery = supabase
       .from("projects")
@@ -15,6 +20,7 @@ export const useProjectsStore = defineStore(
       submission_behaviors(*)
     `
       )
+      .eq("user_id", user.value.id)
       .order("name");
 
     type ProjectFull = QueryData<typeof projectFullQuery>;
@@ -40,8 +46,6 @@ export const useProjectsStore = defineStore(
       error.value = null;
 
       try {
-        const user = useSupabaseUser();
-
         if (!user.value) {
           throw new Error("No authenticated user");
         }

@@ -42,7 +42,7 @@ defineProps<{
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton asChild size="sm">
-            <NuxtLink to="https://insigh.to/b/waitlydev" external target="_blank" activeClass="bg-accent font-medium">
+            <NuxtLink to="https://insigh.to/b/shipwaitdev" external target="_blank" activeClass="bg-accent font-medium">
               <Send />
               <span>Feedback</span>
             </NuxtLink>

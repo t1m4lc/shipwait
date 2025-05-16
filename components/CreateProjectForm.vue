@@ -349,7 +349,7 @@ function handlePrevStep() {
                                 1- Add the code snippet to your website's <code>&lt;head&gt;</code> section.
                             </p>
                             <p class="text-muted-foreground">
-                                2- Add the <code>data-waitly</code> attribute to your email input to bind to Waitly
+                                2- Add the <code>data-shipwait</code> attribute to your email input to bind to Shipwait
                                 script.
                             </p>
                         </div>
