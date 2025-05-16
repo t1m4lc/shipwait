@@ -18,20 +18,57 @@ const isFiltered = computed(() => props.table.getState().columnFilters.length > 
 const { countryCodeToFlag } = useCountryFlag();
 
 const countryOptions = computed((): { value: string; label: string }[] => {
-  const uniqueCountries = new Set(
-    props.table.getCoreRowModel().rows.map(row => row.original.country)
-  )
-  return Array.from(uniqueCountries)
-    .filter((country): country is string => typeof country === 'string' && !!country)
-    .map(country => {
-      const flag = countryCodeToFlag(country);
+  const uniqueCountriesMap = new Map<string, { value: string; label: string }>();
 
-      return ({
-        value: country,
-        label: `${flag} ${countries[country]}`
-      })
-    })
+  for (const row of props.table.getCoreRowModel().rows) {
+    const country = row.original.country;
+    // Skip if already processed or invalid
+    if (!country || typeof country !== 'string' || uniqueCountriesMap.has(country)) continue;
+
+    const flag = countryCodeToFlag(country);
+    uniqueCountriesMap.set(country, {
+      value: country,
+      label: `${flag} ${countries[country]}`
+    });
+  }
+
+  return Array.from(uniqueCountriesMap.values());
 })
+
+const osOptions = computed((): { value: string; label: string }[] => {
+  const uniqueOsMap = new Map<string, { value: string; label: string }>();
+
+  for (const row of props.table.getCoreRowModel().rows) {
+    const os = row.original.os;
+    // Skip if already processed or invalid
+    if (!os || typeof os !== 'string' || uniqueOsMap.has(os)) continue;
+
+    uniqueOsMap.set(os, {
+      value: os,
+      label: os
+    });
+  }
+
+  return Array.from(uniqueOsMap.values());
+})
+
+const browserOptions = computed((): { value: string; label: string }[] => {
+  const uniqueBrowserMap = new Map<string, { value: string; label: string }>();
+
+  for (const row of props.table.getCoreRowModel().rows) {
+    const browser = row.original.browser;
+    // Skip if already processed or invalid
+    if (!browser || typeof browser !== 'string' || uniqueBrowserMap.has(browser)) continue;
+
+    uniqueBrowserMap.set(browser, {
+      value: browser,
+      label: browser
+    });
+  }
+
+  return Array.from(uniqueBrowserMap.values());
+})
+
 
 const emit = defineEmits(['refetch-leads']);
 
@@ -53,6 +90,12 @@ const emit = defineEmits(['refetch-leads']);
 
             <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')"
               title="Device" :options="devices" :disabled="disabled" />
+
+            <TableFacetedFilter v-if="table.getColumn('browser')" :column="table.getColumn('browser')" title="Browser"
+              :options="browserOptions" :disabled="disabled" />
+
+            <TableFacetedFilter v-if="table.getColumn('os')" :column="table.getColumn('os')" title="OS"
+              :options="osOptions" :disabled="disabled" />
 
             <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()"
               :disabled="disabled">

@@ -11,35 +11,35 @@ export type Database = {
     Tables: {
       leads: {
         Row: {
-          browser: string | null
+          browser: string
           country: string | null
           created_at: string
-          device_type: string | null
+          device_type: string
           email: string
           id: string
-          os: string | null
+          os: string
           project_id: string
           referer: string | null
         }
         Insert: {
-          browser?: string | null
+          browser: string
           country?: string | null
           created_at?: string
-          device_type?: string | null
+          device_type: string
           email: string
           id?: string
-          os?: string | null
+          os: string
           project_id: string
           referer?: string | null
         }
         Update: {
-          browser?: string | null
+          browser?: string
           country?: string | null
           created_at?: string
-          device_type?: string | null
+          device_type?: string
           email?: string
           id?: string
-          os?: string | null
+          os?: string
           project_id?: string
           referer?: string | null
         }

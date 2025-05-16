@@ -65,7 +65,7 @@ const snippet = computed(() => {
 
       <li>
         <h3 class="text-md font-semibold text-primary mb-2">
-          3. Add message container
+          3. Add message container (optional)
         </h3>
         <p class="text-foreground">Add the <code>data-waitly-message</code> attribute to a paragraph or div element
           where success and error

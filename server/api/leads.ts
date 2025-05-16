@@ -61,9 +61,13 @@ export default defineEventHandler(async (event) => {
   const parser = new UAParser(uaString);
   const result = parser.getResult();
 
-  const device_type = result.device.type || "desktop";
-  const browser = result.browser.name || null;
-  const os = result.os.name || null;
+  const device_type =
+    result.device.type === "mobile" || result.device.type === "tablet"
+      ? result.device.type
+      : "desktop";
+
+  const browser = result.browser.name || "unknown";
+  const os = result.os.name || "unknown";
 
   const referer = Array.isArray(event.node.req.headers.referer)
     ? event.node.req.headers.referer[0] || null

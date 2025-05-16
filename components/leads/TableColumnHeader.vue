@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { Column } from '@tanstack/vue-table'
-import type { Lead } from './data/schema';
-import { cn } from '@/lib/utils'
-import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-vue-next'
+import type { Column } from '@tanstack/vue-table';
+import { cn } from '@/lib/utils';
+import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-vue-next';
 import type { Tables } from '~/types/supabase';
 
 interface DataTableColumnHeaderProps {
@@ -14,7 +13,7 @@ defineProps<DataTableColumnHeaderProps>()
 
 function cycleSorting(column: Column<Tables<'leads'>, any>) {
   const currentSort = column.getIsSorted()
-  
+
   if (currentSort === false) {
     // Not sorted -> sort ascending
     column.toggleSorting(false)
@@ -36,12 +35,7 @@ export default {
 
 <template>
   <div v-if="column.getCanSort()" :class="cn('flex items-center space-x-2 py-2', $attrs.class ?? '')">
-    <Button
-      variant="ghost"
-      size="sm"
-      class="-ml-3 h-8 data-[state=open]:bg-accent"
-      @click="cycleSorting(column)"
-    >
+    <Button variant="ghost" size="sm" class="-ml-3 h-8 data-[state=open]:bg-accent" @click="cycleSorting(column)">
       <span>{{ title }}</span>
       <ArrowDown v-if="column.getIsSorted() === 'desc'" class="ml-1 size-4" />
       <ArrowUp v-else-if="column.getIsSorted() === 'asc'" class="ml-1 size-4" />

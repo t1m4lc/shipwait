@@ -1,5 +1,4 @@
-import { h } from "vue";
-import { Laptop, MonitorSmartphone, Smartphone } from "lucide-vue-next";
+import { Laptop, Smartphone, Tablet } from "lucide-vue-next";
 
 // Define country options for filtering
 export const countries: Record<string, string> = {
@@ -200,31 +199,20 @@ export const countries: Record<string, string> = {
   ZW: "Zimbabwe",
 };
 
-// Define device options for filtering
 export const devices = [
   {
-    value: "Windows",
-    label: "Windows",
-    icon: h(Laptop),
+    value: "desktop",
+    label: "Desktop",
+    icon: Laptop,
   },
   {
-    value: "Mac",
-    label: "Mac",
-    icon: h(Laptop),
+    value: "mobile",
+    label: "Mobile",
+    icon: Smartphone,
   },
   {
-    value: "Linux",
-    label: "Linux",
-    icon: h(MonitorSmartphone),
-  },
-  {
-    value: "Android",
-    label: "Android",
-    icon: h(Smartphone),
-  },
-  {
-    value: "iPhone",
-    label: "iPhone",
-    icon: h(Smartphone),
+    value: "tablet",
+    label: "Tablet",
+    icon: Tablet,
   },
 ];

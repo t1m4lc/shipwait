@@ -27,7 +27,7 @@ export const columns: ColumnDef<LeadRow>[] = [
       h(LeadsTableColumnHeader, { column, title: "Email" }),
     cell: ({ row }) =>
       h("div", { class: " truncate font-medium" }, row.getValue("email")),
-    enableSorting: true,
+    enableSorting: false,
     size: 250,
     minSize: 250,
     maxSize: 250,
@@ -81,5 +81,36 @@ export const columns: ColumnDef<LeadRow>[] = [
     size: 100,
     minSize: 100,
     maxSize: 100,
+    enableSorting: false,
+  },
+  {
+    accessorKey: "browser",
+    header: ({ column }) =>
+      h(LeadsTableColumnHeader, { column, title: "Browser" }),
+    cell: ({ row }) => h("div", { class: "truncate" }, row.getValue("browser")),
+    size: 150,
+    minSize: 150,
+    maxSize: 150,
+    enableSorting: false,
+  },
+  {
+    accessorKey: "os",
+    header: ({ column }) => h(LeadsTableColumnHeader, { column, title: "OS" }),
+    cell: ({ row }) => h("div", { class: "truncate" }, row.getValue("os")),
+    size: 150,
+    minSize: 150,
+    maxSize: 150,
+    enableSorting: false,
+  },
+  {
+    accessorKey: "referer",
+    header: ({ column }) =>
+      h(LeadsTableColumnHeader, { column, title: "Referer" }),
+    cell: ({ row }) =>
+      h("div", { class: "truncate text-xs" }, row.getValue("referer")),
+    size: 150,
+    minSize: 150,
+    maxSize: 150,
+    enableSorting: false,
   },
 ];

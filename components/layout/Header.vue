@@ -21,6 +21,5 @@ const { selectedProject } = storeToRefs(store)
         <span class="pr-1.5 font-semibold">Connect</span>
       </Button>
     </NuxtLink>
-
   </header>
 </template>
