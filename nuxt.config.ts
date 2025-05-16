@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/supabase",
     "pinia-plugin-persistedstate/nuxt",
+    "nuxt-gtag",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {
@@ -37,6 +38,10 @@ export default defineNuxtConfig({
       exclude: [],
       saveRedirectToCookie: true,
     },
+  },
+  gtag: {
+    id: "G-79YH0XF4RZ",
+    enabled: process.env.NODE_ENV === "production",
   },
   compatibilityDate: "2024-11-01",
   devtools: {
