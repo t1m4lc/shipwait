@@ -16,17 +16,11 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  nitro: {
-    prerender: {
-      crawlLinks: true,
-    },
-  },
   routeRules: {
     "/": { prerender: true },
     "/login": { prerender: true },
     "/register": { prerender: true },
     "/privacy": { prerender: true },
-    "/terms": { prerender: true },
   },
   shadcn: {
     prefix: "",
@@ -41,27 +35,6 @@ export default defineNuxtConfig({
     private: {
       supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
     },
-  },
-  nitro: {
-    preset: "vercel",
-    vercel: {
-      functions: {
-        maxDuration: 300,
-      },
-      config: {
-        crons: [
-          {
-            path: "/scheduler/discount-mail",
-            schedule: "0 * * * *",
-          },
-        ],
-      },
-    },
-    compressPublicAssets: true,
-    experimental: {
-      tasks: true,
-    },
-    scheduledTasks: {},
   },
   supabase: {
     redirect: true,
