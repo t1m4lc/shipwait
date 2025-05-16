@@ -33,30 +33,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Initialize Supabase client with service role
   const client = serverSupabaseServiceRole<Database>(event);
 
   try {
-    // Just check if the project exists in the database
-    const { data: project, error: projectError } = await client
-      .from("projects")
-      .select("id")
-      .eq("id", projectId)
-      .single();
-
-    if (projectError) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Project not found",
-      });
-    }
-
-    // Query submission behaviors for the specified project
     const { data: behaviors, error: behaviorsError } = await client
       .from("submission_behaviors")
       .select("*")
       .eq("project_id", projectId)
-      .order("created_at", { ascending: false });
+      .single();
 
     if (behaviorsError) {
       throw createError({
@@ -65,19 +49,15 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    // Return the submission behaviors
     return {
       success: true,
       data: behaviors || [],
     };
   } catch (error: unknown) {
-    // If the error is already a structured error (created by createError),
-    // it will be automatically handled by Nuxt
     if (typeof error === "object" && error !== null && "statusCode" in error) {
       throw error;
     }
 
-    // Otherwise, create a generic error
     console.error("Error in submission-behaviors endpoint:", error);
     throw createError({
       statusCode: 500,
