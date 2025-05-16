@@ -1,4 +1,4 @@
-    <script setup>
+<script setup>
     import { Toaster } from 'vue-sonner'
 </script>
 
