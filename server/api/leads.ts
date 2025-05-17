@@ -37,11 +37,15 @@ export default defineEventHandler(async (event) => {
   const client = serverSupabaseServiceRole<Database>(event);
 
   // Check if the email already exists for the given projectId
-  const { data: existingLead, error: fetchError } = await client
+  // Using count for better performance - stops once at least one match is found
+  const { count: leadCount, error: fetchError } = await client
     .from("leads")
     .select("*", { count: "exact", head: true })
     .eq("project_id", projectId)
-    .eq("email", email);
+    .eq("email", email)
+    .limit(1);
+
+  const existingLead = leadCount && leadCount > 0;
 
   if (fetchError) {
     throw createError({

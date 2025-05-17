@@ -36,22 +36,18 @@ export default defineEventHandler(async (event) => {
   const client = serverSupabaseServiceRole<Database>(event);
 
   try {
-    const { data: behaviors, error: behaviorsError } = await client
+    const { data: behaviors } = await client
       .from("submission_behaviors")
-      .select("*")
+      .select("behavior_type, redirect_url, message")
       .eq("project_id", projectId)
+      .limit(1)
       .single();
 
-    if (behaviorsError) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: "Error fetching submission behaviors",
-      });
-    }
+    // ignore 404 errors
 
     return {
       success: true,
-      data: behaviors || [],
+      data: behaviors,
     };
   } catch (error: unknown) {
     if (typeof error === "object" && error !== null && "statusCode" in error) {
