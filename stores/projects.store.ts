@@ -1,6 +1,113 @@
 import { defineStore } from "pinia";
 import type { Database } from "~/types/supabase";
-import type { QueryData } from "@supabase/supabase-js";
+import type { QueryData, SupabaseClient } from "@supabase/supabase-js";
+import type { Tables } from "~/types/supabase";
+
+function getProjectsQuery(supabase: SupabaseClient<Database>, userId: string) {
+  return supabase
+    .from("projects")
+    .select(
+      `
+      *,
+      submission_behaviors(*)
+    `
+    )
+    .eq("user_id", userId)
+    .order("name");
+}
+
+type ProjectQuery = ReturnType<typeof getProjectsQuery>;
+type ProjectFull = QueryData<ProjectQuery>;
+
+async function createProjectApi(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  projectData: {
+    name: string;
+    domain: string;
+  },
+  behaviorData: Pick<
+    Tables<"submission_behaviors">,
+    "behavior_type" | "message" | "redirect_url"
+  >
+) {
+  try {
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .insert({
+        name: projectData.name,
+        domain: projectData.domain,
+        user_id: userId,
+      })
+      .select("id")
+      .single();
+
+    if (projectError) throw projectError;
+    if (!project) throw new Error("Failed to create project");
+
+    const { error: behaviorError } = await supabase
+      .from("submission_behaviors")
+      .insert({
+        project_id: project.id,
+        behavior_type: behaviorData.behavior_type,
+        message: behaviorData.message || null,
+        redirect_url: behaviorData.redirect_url || null,
+      });
+
+    if (behaviorError) throw behaviorError;
+
+    const { data: completeProject, error: fetchError } = await supabase
+      .from("projects")
+      .select(
+        `
+        *,
+        submission_behaviors(*)
+      `
+      )
+      .eq("id", project.id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    return { data: completeProject, error: null };
+  } catch (err) {
+    console.error("Error creating project:", err);
+    return { data: null, error: err };
+  }
+}
+
+async function updateProjectApi(
+  supabase: SupabaseClient<Database>,
+  projectId: string,
+  payload: Partial<Tables<"projects">>
+) {
+  try {
+    const { error: updateError } = await supabase
+      .from("projects")
+      .update(payload)
+      .eq("id", projectId);
+
+    if (updateError) throw updateError;
+
+    const { data: updatedProject, error: fetchError } = await supabase
+      .from("projects")
+      .select(
+        `
+        *,
+        submission_behaviors(*)
+      `
+      )
+      .eq("id", projectId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    return { data: updatedProject, error: null };
+  } catch (err) {
+    console.error("Error updating project:", err);
+    return { data: null, error: err };
+  }
+}
 
 export const useProjectsStore = defineStore(
   "projects",
@@ -11,19 +118,6 @@ export const useProjectsStore = defineStore(
     if (!user.value) {
       throw new Error("No authenticated user");
     }
-
-    const projectFullQuery = supabase
-      .from("projects")
-      .select(
-        `
-      *,
-      submission_behaviors(*)
-    `
-      )
-      .eq("user_id", user.value.id)
-      .order("name");
-
-    type ProjectFull = QueryData<typeof projectFullQuery>;
 
     const projects = ref<ProjectFull>([]);
     const loading = ref(false);
@@ -50,7 +144,7 @@ export const useProjectsStore = defineStore(
           throw new Error("No authenticated user");
         }
 
-        const { data, error } = await projectFullQuery;
+        const { data, error } = await getProjectsQuery(supabase, user.value.id);
 
         if (error) throw error;
 
@@ -66,6 +160,95 @@ export const useProjectsStore = defineStore(
       return projects.value;
     };
 
+    const createProject = async (
+      projectData: {
+        name: string;
+        domain: string;
+      },
+      behaviorData: {
+        behavior_type: "show_message" | "redirect" | "do_nothing";
+        message?: string | null;
+        redirect_url?: string | null;
+      }
+    ) => {
+      loading.value = true;
+      error.value = null;
+
+      try {
+        if (!user.value) {
+          throw new Error("No authenticated user");
+        }
+
+        const { data: completeProject, error: apiError } =
+          await createProjectApi(supabase, user.value.id, projectData, {
+            behavior_type: behaviorData.behavior_type,
+            message: behaviorData.message || null,
+            redirect_url: behaviorData.redirect_url || null,
+          });
+
+        if (apiError) throw apiError;
+
+        if (completeProject) {
+          addProject(completeProject);
+        }
+
+        return { data: completeProject, error: null };
+      } catch (err) {
+        console.error("Error creating project:", err);
+        error.value = err;
+        return { data: null, error: err };
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const updateProjectData = async (
+      projectId: string,
+      payload: Partial<Tables<"projects">>
+    ) => {
+      loading.value = true;
+      error.value = null;
+
+      try {
+        const { data: updatedProject, error: apiError } =
+          await updateProjectApi(supabase, projectId, payload);
+
+        if (apiError) throw apiError;
+
+        if (updatedProject) {
+          updateProject(updatedProject);
+        }
+
+        return { data: updatedProject, error: null };
+      } catch (err) {
+        console.error("Error updating project:", err);
+        error.value = err;
+        return { data: null, error: err };
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const addProject = (project: ProjectFull[0]) => {
+      if (!projects.value.some((p) => p.id === project.id)) {
+        projects.value.push(project);
+      }
+    };
+
+    const updateProject = (updatedProject: ProjectFull[0]) => {
+      const index = projects.value.findIndex((p) => p.id === updatedProject.id);
+      if (index !== -1) {
+        projects.value[index] = updatedProject;
+      }
+    };
+
+    const deleteProject = (projectId: string) => {
+      const index = projects.value.findIndex((p) => p.id === projectId);
+      if (index !== -1) {
+        projects.value.splice(index, 1);
+      }
+    };
+
     return {
       projects,
       loading,
@@ -74,6 +257,11 @@ export const useProjectsStore = defineStore(
       selectedProject,
       setSelectedProjectId,
       fetchProjects,
+      createProject,
+      updateProjectData,
+      addProject,
+      updateProject,
+      deleteProject,
     };
   },
   {

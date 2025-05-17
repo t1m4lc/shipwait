@@ -2,7 +2,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const id = to.params.projectId as string;
   const store = useProjectsStore();
 
-  await store.fetchProjects();
+  const shouldFetchProjects = store.projects.length === 0
+
+  if (shouldFetchProjects) {
+    await store.fetchProjects();
+  }
 
   // If no projects exist, redirect to create page
   if (store.projects.length === 0) {

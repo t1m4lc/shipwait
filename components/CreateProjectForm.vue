@@ -111,78 +111,39 @@ const steps = [
     },
 ]
 
-const client = useSupabaseClient<Database>()
-const user = useSupabaseUser()
-
 const store = useProjectsStore()
 const { projects } = storeToRefs(store)
-
-const createProject = async (payload: Partial<Tables<'projects'>>) => {
-    console.log("payload", payload);
-
-    if (!payload.domain || !payload.name || !user.value?.id) {
-        return { data: null, error: { message: 'Missing required fields' } }
-    }
-
-    const insertPayload = {
-        ...payload,
-        domain: payload.domain as string,
-        name: payload.name as string,
-        user_id: user.value.id as string
-    }
-
-    return await client
-        .from('projects')
-        .insert(insertPayload)
-        .select(`id`)
-        .single()
-}
-
-const createSubmissionBehaviour = async (project_id: string, payload: Omit<Tables<'submission_behaviors'>, 'id' | 'created_at' | 'project_id'>) => {
-    return await client
-        .from('submission_behaviors')
-        .insert({ ...payload, project_id })
-}
 
 async function onSubmit(): Promise<void> {
     isSubmitting.value = true
 
     const { name, domain, behaviour_type, message, redirect_url } = values;
 
-    const { error, data: project } = await createProject({ name, domain })
-
+    // Use the store method instead of direct API calls
+    const { data: project, error } = await store.createProject(
+        { name, domain },
+        { 
+            behavior_type: behaviour_type,
+            message: message ?? null,
+            redirect_url: redirect_url ?? null
+        }
+    );
 
     if (project) {
-        createdProject.value = { ...project };
+        createdProject.value = { id: project.id };
 
-        console.log('createdProject value:', createdProject.value);
-        const { error: behaviourError } = await createSubmissionBehaviour(
-            project.id,
-            {
-                behavior_type: behaviour_type,
-                message: message ?? null,
-                redirect_url: redirect_url ?? null
-            }
-        )
+        toast('Project created successfully!', {
+            description: 'Your new project has been created and settings saved.',
+        });
 
-        if (!behaviourError) {
-            toast('Project created successfully!', {
-                description: 'Your new project has been created and settings saved.',
-            });
-
-            stepIndex.value = 3
-        } else {
-            toast('Project created but behaviour not set', {
-                description: behaviourError.message || 'An error occurred while creating submit behaviour.',
-            });
-        }
+        stepIndex.value = 3;
     } else {
         toast('Project creation failed', {
             description: error?.message || 'An error occurred while creating the project.',
         });
     }
 
-    isSubmitting.value = false
+    isSubmitting.value = false;
 }
 
 async function handleNextStep() {

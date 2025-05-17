@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
-import { h } from 'vue'
 import * as z from 'zod'
 import { toast } from 'vue-sonner'
-import type { Database, Tables } from '~/types/supabase'
 
 const generalFormSchema = toTypedSchema(z.object({
   name: z.string({
@@ -36,19 +34,9 @@ const { handleSubmit } = useForm({
   },
 })
 
-const client = useSupabaseClient<Database>()
-
-const updateProject = async (id: string, payload: Partial<Tables<'projects'>>) => {
-  const { error } = await client
-    .from('projects')
-    .update(payload)
-    .eq('id', id)
-
-  return { error }
-}
-
 const onSubmit = handleSubmit(async (payload) => {
-  const { error } = await updateProject(selectedProject.value!.id, payload)
+  // Use the store method instead of direct API call
+  const { error } = await store.updateProjectData(selectedProject.value!.id, payload);
 
   if (!error) {
     toast('Updated successfully!', {

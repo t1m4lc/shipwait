@@ -1,11 +1,13 @@
-// pages/dashboard/projects/[projectId]/middleware.ts
 export default defineNuxtRouteMiddleware(async (to) => {
   // grab the param
   const id = to.params.projectId as string;
   const store = useProjectsStore();
 
-  // load projects once
-  await store.fetchProjects();
+  const shouldFetchProjects = store.projects.length === 0;
+
+  if (shouldFetchProjects) {
+    await store.fetchProjects();
+  }
 
   // 1) no projects at all → create a new one
   if (store.projects.length === 0) {
