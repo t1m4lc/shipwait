@@ -16,6 +16,10 @@
     "supabase:push": "npx supabase db push"
   },
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.36.8",
     "@nuxt/content": "^3.5.1",
     "@nuxt/eslint": "^1.3.0",
     "@nuxt/image": "^1.10.0",
@@ -36,6 +40,7 @@
     "pinia-plugin-persistedstate": "^4.3.0",
     "reka-ui": "^2.2.1",
     "shadcn-nuxt": "^2.1.0",
+    "splitpanes": "^4.0.3",
     "tailwind-merge": "^3.2.0",
     "tailwindcss": "^4.1.6",
     "tw-animate-css": "^1.2.9",
@@ -43,6 +48,7 @@
     "vaul-vue": "^0.4.1",
     "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
+    "vue-codemirror": "^6.1.1",
     "vue-router": "^4.5.1",
     "vue-sonner": "^1.3.2",
     "zod": "^3.24.4"
