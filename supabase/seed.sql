@@ -4,12 +4,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- ─── 1) Epsilon Growth (7 leads) ────────────────────────────────────────────
 WITH proj AS (
-  INSERT INTO projects (id, user_id, name, domain, created_at)
+  INSERT INTO projects (id, user_id, name, created_at)
   VALUES (
     gen_random_uuid(),
     'b567ba6b-a4c5-4846-9158-154f455a3f32',
     'Epsilon Growth',
-    'epsilon.example.com',
     NOW()
   )
   RETURNING id
@@ -38,12 +37,11 @@ FROM generate_series(1,7) AS gs, proj;
 
 -- ─── 2) Zeta Feedback Loop (10 leads) ───────────────────────────────────────
 WITH proj AS (
-  INSERT INTO projects (id, user_id, name, domain, created_at)
+  INSERT INTO projects (id, user_id, name, created_at)
   VALUES (
     gen_random_uuid(),
     'b567ba6b-a4c5-4846-9158-154f455a3f32',
     'Zeta Feedback Loop',
-    'zeta.example.com',
     NOW()
   )
   RETURNING id
@@ -72,12 +70,11 @@ FROM generate_series(1,10) AS gs, proj;
 
 -- ─── 3) Theta Beta Test (8 leads) ───────────────────────────────────────────
 WITH proj AS (
-  INSERT INTO projects (id, user_id, name, domain, created_at)
+  INSERT INTO projects (id, user_id, name, created_at)
   VALUES (
     gen_random_uuid(),
     'b567ba6b-a4c5-4846-9158-154f455a3f32',
     'Theta Beta Test',
-    'theta.example.com',
     NOW()
   )
   RETURNING id
@@ -105,11 +102,10 @@ FROM generate_series(1,8) AS gs, proj;
 
 
 -- ─── 4) Lambda UI Test (0 leads) ────────────────────────────────────────────
-INSERT INTO projects (id, user_id, name, domain, created_at)
+INSERT INTO projects (id, user_id, name, created_at)
 VALUES (
   gen_random_uuid(),
   'b567ba6b-a4c5-4846-9158-154f455a3f32',
   'Lambda UI Test',
-  'lambda.example.com',
   NOW()
 );

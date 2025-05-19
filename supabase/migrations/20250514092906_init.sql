@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS projects (
   id         UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id    UUID      NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name       TEXT      NOT NULL,
-  domain     TEXT      NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

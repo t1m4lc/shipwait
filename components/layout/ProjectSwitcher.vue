@@ -7,21 +7,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu';
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar'
-import { ChevronsUpDown, Plus } from 'lucide-vue-next'
+} from '@/components/ui/sidebar';
+import { ChevronsUpDown, Plus } from 'lucide-vue-next';
 
 const props = defineProps<{
   projects: {
     id: string
     name: string
-    domain: string
   }[]
 }>()
 
@@ -33,9 +32,16 @@ const { selectedProject } = storeToRefs(store);
 
 function onClick(projectId: string) {
   const route = useRoute()
-  navigateTo({ name: route.name as string, params: { ...route.params, projectId } })
   store.setSelectedProjectId(projectId)
+  navigateTo({ name: route.name as string, params: { ...route.params, projectId } })
 }
+
+const { generateGradient } = useStringGradient();
+
+const customGradient = computed(() =>
+  selectedProject?.value?.name
+    ? generateGradient(selectedProject?.value?.name)
+    : 'var(--sidebar-background)')
 </script>
 
 <template>
@@ -43,31 +49,22 @@ function onClick(projectId: string) {
     <SidebarMenuItem>
       <DropdownMenu>
         <DropdownMenuTrigger as-child class="cursor-pointer">
-          <SidebarMenuButton size="lg"
-            class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-            <div
-              class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground font-semibold">
-              {{ selectedProject?.name.slice(0, 1) }}
-            </div>
-            <div class="grid flex-1 text-left text-sm leading-tight">
+          <SidebarMenuButton size="lg" class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <span class="flex aspect-square size-8 rounded-lg" :style="{ background: customGradient }"></span>
+            <div class="grid pl-0.5 flex-1 text-left text-lg leading-tight">
               <span class="truncate font-medium">
                 {{ selectedProject?.name }}
               </span>
-              <span class="truncate text-xs">{{ selectedProject?.domain }}</span>
             </div>
             <ChevronsUpDown class="ml-auto" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg" align="start"
-          :side="isMobile ? 'bottom' : 'right'" :side-offset="4">
+        <DropdownMenuContent class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg" align="start" :side="isMobile ? 'bottom' : 'right'" :side-offset="4">
           <DropdownMenuLabel class="text-xs text-muted-foreground">
             Projects
           </DropdownMenuLabel>
-          <DropdownMenuItem v-for="(project) in props.projects" :key="project.id" class="gap-2 p-2"
-            @click="onClick(project.id)">
-            <div class="flex size-6 items-center justify-center rounded-sm border text-xs">
-              {{ project.name.slice(0, 1) }}
-            </div>
+          <DropdownMenuItem v-for="(project) in props.projects" :key="project.id" class="gap-2 p-2" @click="onClick(project.id)">
+            <span class="flex aspect-square size-6 rounded-sm" :style="{ background: customGradient }"></span>
             {{ project.name }}
             <!-- <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut> -->
           </DropdownMenuItem>

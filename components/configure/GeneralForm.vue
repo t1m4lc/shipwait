@@ -14,13 +14,6 @@ const generalFormSchema = toTypedSchema(z.object({
     .max(30, {
       message: 'Name must not be longer than 30 characters.',
     }),
-  domain: z.string({
-    required_error: 'Required.',
-  })
-    .regex(
-      domainRegex,
-      { message: 'Must be a valid domain (e.g., example.com).' }
-    ),
 }))
 
 const store = useProjectsStore();
@@ -30,7 +23,6 @@ const { handleSubmit } = useForm({
   validationSchema: generalFormSchema,
   initialValues: {
     name: selectedProject.value?.name || '',
-    domain: selectedProject.value?.domain || '',
   },
 })
 
@@ -65,20 +57,6 @@ const onSubmit = handleSubmit(async (payload) => {
         <FormMessage />
       </FormItem>
     </FormField>
-
-    <FormField v-slot="{ componentField }" name="domain">
-      <FormItem>
-        <FormLabel>Site domain</FormLabel>
-        <FormControl>
-          <Input type="text" placeholder="Type a domain" v-bind="componentField" />
-        </FormControl>
-        <FormDescription>
-          Enter the domain name where your code snippet will be used (e.g., example.com).
-        </FormDescription>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
 
     <div class="flex justify-start">
       <Button type="submit">

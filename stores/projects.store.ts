@@ -1,7 +1,6 @@
-import { defineStore } from "pinia";
-import type { Database } from "~/types/supabase";
 import type { QueryData, SupabaseClient } from "@supabase/supabase-js";
-import type { Tables } from "~/types/supabase";
+import { defineStore } from "pinia";
+import type { Database, Tables } from "~/types/supabase";
 
 function getProjectsQuery(supabase: SupabaseClient<Database>, userId: string) {
   return supabase
@@ -24,7 +23,6 @@ async function createProjectApi(
   userId: string,
   projectData: {
     name: string;
-    domain: string;
   },
   behaviorData: Pick<
     Tables<"submission_behaviors">,
@@ -36,7 +34,6 @@ async function createProjectApi(
       .from("projects")
       .insert({
         name: projectData.name,
-        domain: projectData.domain,
         user_id: userId,
       })
       .select("id")
@@ -163,7 +160,6 @@ export const useProjectsStore = defineStore(
     const createProject = async (
       projectData: {
         name: string;
-        domain: string;
       },
       behaviorData: {
         behavior_type: "show_message" | "redirect" | "do_nothing";
