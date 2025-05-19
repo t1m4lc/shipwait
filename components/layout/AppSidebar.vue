@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings2, UserPlus, FileCode2, Share2 } from 'lucide-vue-next';
+import { FileCode2, Settings2, Share2, UserPlus } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -47,7 +47,7 @@ const navMain = [
   },
   {
     title: 'Integration',
-    pageName: 'dashboard-projects-projectId-configure-integration',
+    pageName: 'dashboard-projects-projectId-integration',
     icon: Share2,
   },
   {
@@ -64,7 +64,7 @@ const navMain = [
       <LayoutProjectSwitcher :projects="store.projects" />
     </SidebarHeader>
     <SidebarContent>
-      <LayoutNavMain :items="navMain" :project-id="selectedProjectId" />
+      <LayoutNavMain v-if="selectedProjectId" :items="navMain" :project-id="selectedProjectId" />
     </SidebarContent>
     <SidebarFooter>
       <LayoutNavUser v-if="userData" :user="userData" @logout="logout()" />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LucideIcon } from 'lucide-vue-next';
-import { Send, CircleHelp } from 'lucide-vue-next';
+import { CircleHelp, Send } from 'lucide-vue-next';
 
 defineProps<{
   items: {
@@ -14,7 +14,7 @@ defineProps<{
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Waitlist</SidebarGroupLabel>
+    <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
     <SidebarGroupContent>
       <SidebarMenu>
         <SidebarMenuItem v-for="item in items" :key="item.title">
