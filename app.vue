@@ -1,12 +1,9 @@
-<script setup>
-    import { Toaster } from 'vue-sonner'
-</script>
+<script setup></script>
 
 <template>
-  <NuxtLoadingIndicator />
-  <Toaster position="top-right" class="pointer-events-auto" />
+  <!-- <NuxtLoadingIndicator /> -->
+  <!-- <Toaster position="top-right" class="pointer-events-auto" /> -->
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
-

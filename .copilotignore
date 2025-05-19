@@ -1,0 +1,54 @@
+# GitHub Copilot exclusion file
+# This file specifies patterns for files that should not be processed by GitHub Copilot
+# https://docs.github.com/en/copilot/managing-copilot/configuring-and-auditing-content-exclusion/excluding-content-from-github-copilot
+
+# Sensitive information
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/*.crt
+**/*.p12
+**/*.jks
+**/*secret*
+**/*credential*
+**/*password*
+**/*token*
+
+# Large files and dependencies
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.next/**
+**/.nuxt/**
+
+# Large/binary files
+**/*.zip
+**/*.tar
+**/*.gz
+**/*.rar
+**/*.7z
+**/*.pdf
+**/*.jpg
+**/*.jpeg
+**/*.png
+**/*.gif
+**/*.mp4
+**/*.mov
+**/*.avi
+**/*.mp3
+**/*.wav
+
+# Minified files
+**/*.min.js
+**/*.min.css
+
+# Data files
+**/*.csv
+**/*.json.big
+
+# Documentation files
+**/README.md
+
+# Documentation (optional - you might want to keep this commented)
+# **/docs/**/*.md

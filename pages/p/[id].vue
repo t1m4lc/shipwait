@@ -17,28 +17,35 @@
       class="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
     ></div>
   </div>
-  <div v-else-if="html" v-html="html" class="min-h-screen"></div>
+  <div v-else-if="html">
+    <div
+      v-html="html"
+      class="min-h-screen w-full overflow-x-hidden relative"
+    ></div>
+    <!-- Built with ShipWait link -->
+    <div class="fixed bottom-4 right-4 bg-red-500">
+      <button variant="outline" class="text-black p-10">
+        <!-- <NuxtLink :to="`/?ref=${id}`"> Built with ShipWait </NuxtLink> -->
+        Test buuton
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { NuxtLink } from "#components";
 import { onMounted, ref } from "vue";
 import type { Database } from "~/types/supabase";
+
+definePageMeta({
+  layout: "blank",
+});
 
 const route = useRoute();
 const id = route.params.id as string;
 const html = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
-
-// Create a separate type for Page if it doesn't exist in the DB schema yet
-interface Page {
-  id: string;
-  html: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  title: string | null;
-}
 
 // Set the page title
 useHead({
@@ -50,52 +57,32 @@ onMounted(async () => {
   try {
     isLoading.value = true;
 
-    // Get Supabase client
     const supabase = useSupabaseClient<Database>();
 
-    // Fetch the page by id
-    const { data, error: fetchError } = await supabase
+    const { data: page, error: fetchError } = await supabase
       .from("pages")
-      .select("html, title")
+      .select("html, title, active")
       .eq("id", id)
+      .limit(1)
       .single();
 
     if (fetchError) {
       throw fetchError;
     }
 
-    if (!data) {
+    // TODO page not active fallback
+
+    if (!page) {
       error.value = "Page not found";
       return;
     }
 
-    // Set the HTML content
-    html.value = data.html;
+    html.value = page.html;
 
-    // Update page title if available
-    if (data.title) {
+    if (page.title) {
       useHead({
-        title: data.title,
+        title: page.title,
       });
-    }
-
-    // Update visit count
-    try {
-      // First try to update existing record
-      const { error: updateError } = await supabase
-        .from("page_stats")
-        .update({ visits: supabase.rpc("increment", { row_visits: 1 }) })
-        .eq("page_id", id);
-
-      // If the record doesn't exist, create it
-      if (updateError) {
-        await supabase
-          .from("page_stats")
-          .insert({ page_id: id, visits: 1, metadata: {} });
-      }
-    } catch (statsError) {
-      console.error("Failed to update page stats:", statsError);
-      // Don't throw as this shouldn't prevent page display
     }
   } catch (err: any) {
     console.error("Error fetching page:", err);
@@ -105,3 +92,10 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style>
+html,
+body {
+  overflow-x: hidden;
+}
+</style>

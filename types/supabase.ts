@@ -53,6 +53,44 @@ export type Database = {
           },
         ]
       }
+      pages: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          html: string
+          id: string
+          project_id: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          html: string
+          id?: string
+          project_id: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          html?: string
+          id?: string
+          project_id?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string

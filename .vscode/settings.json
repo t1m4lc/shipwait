@@ -1,26 +1,27 @@
 {
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "search.exclude": {
+    "**/.github/docs/**": true,
+    "node_modules": true,
+    ".output": true,
+    ".nuxt": true,
+    ".data": true
   },
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.tabSize": 2
+  "files.exclude": {
+    "node_modules": true,
+    ".nuxt": true,
+    ".data": true
   },
+
+  // Auto save settings
+  "files.autoSave": "onFocusChange",
+
+  // Editor settings
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
     "source.removeUnusedImports": "explicit"
   },
-  "files.autoSave": "afterDelay",
-  "files.exclude": {
-    ".output": true,
-    ".nuxt": true,
-    ".data": true,
-    "node_modules": true
-  },
-  "search.exclude": {
-    ".output": true,
-    ".nuxt": true,
-    ".data": true,
-    "node_modules": true
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2
 }
