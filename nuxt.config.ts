@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-gtag",
     "@nuxt/image",
+    "nuxt-charts",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {

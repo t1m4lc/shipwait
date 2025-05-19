@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings2, UserPlus } from 'lucide-vue-next';
+import { BarChart, Settings2, UserPlus } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -40,11 +40,11 @@ const navMain = [
     pageName: 'dashboard-projects-projectId-leads',
     icon: UserPlus,
   },
-  // {
-  //   title: 'Analytics',
-  //   pageName: 'dashboard-projects-projectId-analytics',
-  //   icon: ChartNoAxesCombined,
-  // },
+  {
+    title: 'Analytics',
+    pageName: 'dashboard-projects-projectId-analytics',
+    icon: BarChart,
+  },
   {
     title: 'Configure',
     pageName: 'dashboard-projects-projectId-configure',
