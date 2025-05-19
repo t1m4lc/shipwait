@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FileCode2, Settings2, Share2, UserPlus } from 'lucide-vue-next';
+import { Cable, FileCode2, Settings2, UserPlus } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -46,9 +46,9 @@ const navMain = [
     icon: UserPlus,
   },
   {
-    title: 'Integration',
-    pageName: 'dashboard-projects-projectId-integration',
-    icon: Share2,
+    title: 'Connect',
+    pageName: 'dashboard-projects-projectId-connect',
+    icon: Cable,
   },
   {
     title: 'Configure',
