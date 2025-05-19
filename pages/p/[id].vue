@@ -13,11 +13,11 @@
     </Loader2>
   </div>
   <div v-else-if="html">
-    <div class="min-h-screen w-full overflow-x-hidden relative">
+    <div class="min-h-screen w-full overflow-hidden relative">
       <div v-html="html"></div>
-      <Button as-child class="fixed bottom-4 right-4 shadow-lg transition delay-50 duration-250 ease-in-out hover:-translate-y-1 hover:scale-105 ">
-        <NuxtLink :to="`/?ref=page_${id}`">Built with 🚢 Shipwait</NuxtLink>
-      </Button>
+      <div class="fixed bottom-3 sm:bottom-6 right-3 sm:right-6">
+        <BuildWithSipwait :project-id="id" />
+      </div>
     </div>
   </div>
 </template>
@@ -84,7 +84,7 @@ onMounted(async () => {
 });
 </script>
 
-<style>
+<style scoped>
 html,
 body {
   overflow-x: hidden;
