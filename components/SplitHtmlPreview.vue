@@ -53,7 +53,7 @@
                 </AlertDialog>
               </div>
             </header>
-            <div class="relative flex-1 font-medium overflow-hidden">
+            <div class="relative size-full flex-1 font-medium overflow-hidden">
               <Codemirror v-model="localModelValue" :extensions="extensions" class="html-editor h-full" placeholder="Paste your HTML landing page here..." />
 
               <div class="absolute top-3 right-3 flex items-center gap-3">
@@ -201,7 +201,8 @@ const extensions = shallowRef([
 
 .html-editor .cm-editor {
   height: 100%;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 56.55px);
+  /* height of toolbar */
   flex: 1;
   overflow: hidden;
   display: flex;
