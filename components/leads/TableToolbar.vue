@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
-import { countries, devices } from './data';
-import { RefreshCw, X } from 'lucide-vue-next';
-import TableFacetedFilter from './TableFacetedFilter.vue';
+import { Loader2, RefreshCw, X } from 'lucide-vue-next';
 import type { Tables } from '~/types/supabase';
+import { countries, devices } from './data';
+import TableFacetedFilter from './TableFacetedFilter.vue';
 
 interface DataTableToolbarProps {
   table: Table<Tables<'leads'>>
@@ -78,34 +78,27 @@ const emit = defineEmits(['refetch-leads']);
   <div class="flex items-center justify-between">
     <div class="flex items-center justify-between w-full">
       <div class="flex flex-col w-full md:flex-row items-center gap-y-4 gap-x-2">
-        <Input placeholder="Filter emails..."
-          :model-value="(table.getColumn('email')?.getFilterValue() as string) ?? ''"
-          class="h-10 md:h-8 w-full min-w-[220px] md:w-[250px]"
-          @input="table.getColumn('email')?.setFilterValue($event.target.value)" :disabled="disabled" />
+        <Input placeholder="Filter emails..." :model-value="(table.getColumn('email')?.getFilterValue() as string) ?? ''" class="h-10 md:h-8 w-full min-w-[220px] md:w-[250px]" @input="table.getColumn('email')?.setFilterValue($event.target.value)" :disabled="disabled" />
 
         <div class="flex gap-4 justify-between w-full">
           <div class="flex gap-2 overflow-y-auto">
-            <TableFacetedFilter v-if="table.getColumn('country')" :column="table.getColumn('country')" title="Country"
-              :options="countryOptions" :disabled="disabled" />
+            <TableFacetedFilter v-if="table.getColumn('country')" :column="table.getColumn('country')" title="Country" :options="countryOptions" :disabled="disabled" />
 
-            <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')"
-              title="Device" :options="devices" :disabled="disabled" />
+            <TableFacetedFilter v-if="table.getColumn('device_type')" :column="table.getColumn('device_type')" title="Device" :options="devices" :disabled="disabled" />
 
-            <TableFacetedFilter v-if="table.getColumn('browser')" :column="table.getColumn('browser')" title="Browser"
-              :options="browserOptions" :disabled="disabled" />
+            <TableFacetedFilter v-if="table.getColumn('browser')" :column="table.getColumn('browser')" title="Browser" :options="browserOptions" :disabled="disabled" />
 
-            <TableFacetedFilter v-if="table.getColumn('os')" :column="table.getColumn('os')" title="OS"
-              :options="osOptions" :disabled="disabled" />
+            <TableFacetedFilter v-if="table.getColumn('os')" :column="table.getColumn('os')" title="OS" :options="osOptions" :disabled="disabled" />
 
-            <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()"
-              :disabled="disabled">
+            <Button v-if="isFiltered" variant="outline" class="h-8 px-2 lg:px-3" @click="table.resetColumnFilters()" :disabled="disabled">
               Reset
               <X class="size-4" />
             </Button>
           </div>
 
           <Button variant="outline" class="h-8 px-2 lg:px-3" @click="emit('refetch-leads')" :disabled="loading">
-            <RefreshCw class="size-4" :class="{ 'animate-spin': loading }" />
+            <Loader2 v-if="loading" class="size-4 animate-spin" />
+            <RefreshCw v-else class="size-4" />
             Refetch
           </Button>
         </div>

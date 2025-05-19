@@ -51,8 +51,6 @@
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-
-
               </div>
             </header>
             <div class="relative flex-1 font-medium overflow-hidden">
@@ -94,7 +92,9 @@
       </Splitpanes>
       <template #fallback>
         <div class="flex items-center justify-center size-full">
-          <div class="animate-pulse">Loading editor...</div>
+          <Loader2 class="animate-spin size-6">
+            <span class="sr-only">Loading editor...</span>
+          </Loader2>
         </div>
       </template>
     </ClientOnly>
@@ -105,13 +105,13 @@
 import { html } from "@codemirror/lang-html";
 import { EditorView } from "@codemirror/view";
 import { useWindowSize } from "@vueuse/core";
-import { Rocket, Save, WrapText, ExternalLink, Loader2 } from "lucide-vue-next";
+import { html_beautify } from 'js-beautify';
+import { ExternalLink, Loader2, Rocket, Save, WrapText } from "lucide-vue-next";
 import { Pane, Splitpanes } from "splitpanes";
-import { computed, ref, shallowRef, onMounted } from "vue";
+import { computed, onMounted, ref, shallowRef } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { toast } from "vue-sonner";
-import { usePageStore, type PageTemplate } from "~/stores/page.store";
-import { html_beautify } from 'js-beautify';
+import { usePageStore } from "~/stores/page.store";
 
 // Get route and project ID
 const route = useRoute();
@@ -120,11 +120,15 @@ const projectId = computed(() => projectsStore.selectedProjectId || route.params
 
 // Initialize page store
 const pageStore = usePageStore();
-const { templates, currentTemplate, loading, publicPageUrl } = storeToRefs(pageStore);
+const { templates, currentTemplate, publicPageUrl } = storeToRefs(pageStore);
 
 const isSaving = ref(false);
 const isDeploying = ref(false);
 const templateName = ref("My Landing Page");
+
+
+const htmlCode = ref('');
+const validationErrors = ref<string[]>([]);
 
 // Format HTML code using js-beautify
 function formatCode() {
@@ -134,14 +138,16 @@ function formatCode() {
       indent_char: ' ',
       max_preserve_newlines: 1,
       preserve_newlines: true,
-      keep_array_indentation: false,
-      break_chained_methods: false,
-      indent_scripts: 'normal',
-      brace_style: 'collapse',
-      space_before_conditional: true,
-      unescape_strings: false,
+      indent_inner_html: true,
       wrap_line_length: 120,
-      end_with_newline: true
+      end_with_newline: true,
+      // Cast to any to handle properties that might not be in the type definitions
+      ...(({
+        indent_scripts: 'normal',
+        brace_style: 'collapse',
+        space_before_conditional: true,
+        unescape_strings: false,
+      } as any))
     });
 
     htmlCode.value = formatted;
@@ -161,11 +167,14 @@ async function saveTemplate() {
 
   isSaving.value = true;
   try {
-    const template: Omit<PageTemplate, "user_id"> = {
+    const template = {
       id: currentTemplate.value?.id,
       name: templateName.value,
       html: htmlCode.value,
       project_id: projectId.value,
+      // Add required properties with current timestamp if new template
+      created_at: currentTemplate.value?.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
     const result = await pageStore.saveTemplate(template);
@@ -257,63 +266,6 @@ const extensions = shallowRef([
   }),
 ]);
 
-// Default HTML template
-const LANDING_PAGE_EXAMPLE = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Landing Page</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      line-height: 1.5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 {
-      color: #333;
-    }
-    form {
-      margin: 20px 0;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-    input {
-      padding: 10px;
-      width: 100%;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #4f46e5;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Join Our Waitlist</h1>
-  <p>Be the first to know when we launch!</p>
-  
-  <form>
-    <label for="email">Email Address</label>
-    <input data-shipwait type="email" id="email" placeholder="youremail@example.com" required>
-    <p data-shipwait-message></p>
-    <button type="submit">Join Waitlist</button>
-  </form>
-</body>
-</html>`;
-
-const htmlCode = ref(LANDING_PAGE_EXAMPLE);
-
-const validationErrors = ref<string[]>([]);
 const isHtmlValid = computed(() => validationErrors.value.length === 0);
 const validationStatus = computed(() => isHtmlValid.value ? "valid" : "invalid");
 
@@ -334,7 +286,7 @@ onMounted(async () => {
     await pageStore.fetchTemplates(projectId.value);
     if (templates.value.length > 0) {
       currentTemplate.value = templates.value[0];
-      htmlCode.value = currentTemplate.value.html;
+      htmlCode.value = currentTemplate.value.html || htmlCode.value || LANDING_PAGE_EXAMPLE;
       templateName.value = currentTemplate.value.name;
     }
   }

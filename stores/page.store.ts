@@ -43,7 +43,11 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
-  async function saveTemplate(template: Omit<PageTemplate, "user_id">) {
+  async function saveTemplate(
+    template:
+      | Omit<PageTemplate, "user_id">
+      | Omit<PageTemplate, "user_id" | "id">
+  ) {
     loading.value = true;
     error.value = null;
 

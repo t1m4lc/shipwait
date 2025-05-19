@@ -55,6 +55,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@types/js-beautify": "^1.14.3",
     "typescript": "^5.8.3"
   }
 }
