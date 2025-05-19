@@ -2,8 +2,8 @@
 definePageMeta({
   layout: "blank",
 });
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const user = useSupabaseUser();
 </script>
@@ -50,8 +50,7 @@ const user = useSupabaseUser();
           <div class="container mx-auto px-4 md:px-6">
             <div class="mx-auto max-w-6xl">
               <div class="relative aspect-video w-full overflow-hidden rounded-lg shadow-xl">
-                <iframe class="h-full w-full object-cover" src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                <iframe class="h-full w-full object-cover" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
                 <!-- <video src="https://youtu.be/dQw4w9WgXcQ?si=_m6Wkcqgk2sn5vQ8" class="h-full w-full object-cover"
                   controls poster="https://placehold.co/600x400">
@@ -87,7 +86,7 @@ const user = useSupabaseUser();
                   <AvatarImage :src="`https://i.pravatar.cc/150?img=${(i % 70) + 1}`" alt="User avatar" />
                   <AvatarFallback>{{
                     String.fromCharCode(65 + (i % 18))
-                    }}</AvatarFallback>
+                  }}</AvatarFallback>
                 </Avatar>
                 <span class="text-xs mt-2 font-medium">{{
                   [
