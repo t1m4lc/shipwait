@@ -1,18 +1,26 @@
-`````instructions
-````instructions
 # Project Guidelines for GitHub Copilot
 
 You are assisting with a fullstack Nuxt 3 application following modern TypeScript functional programming paradigms. Use these guidelines when generating code.
 
 ## Response Modes
 
-When the user includes the term "fast mode" or "#fast" anywhere in their prompt:
+By default, provide responses in "fast mode":
+
 - Provide only a concise bullet-point summary of your solution
 - Skip detailed explanations of your thought process
 - Deliver code solutions directly with minimal comments
 - Focus on delivering working code quickly rather than educational content
 
+When the user includes the term "detail mode" or "#detail" anywhere in their prompt:
+
+- Provide comprehensive explanations of your solution approach
+- Include detailed reasoning behind implementation decisions
+- Add thorough comments in code
+- Explain technical concepts that may be unfamiliar
+- Offer educational content about best practices
+
 When the user includes the term "step by step" or "#step" anywhere in their prompt:
+
 - Break down the solution into an interactive process
 - Ask clarifying questions before providing full solutions
 - Wait for user input at each step before proceeding
@@ -48,23 +56,23 @@ For regular requests without mode indicators, provide your usual detailed explan
 // Example Nuxt config
 export default defineNuxtConfig({
   modules: [
-    '@nuxtjs/supabase',
-    '@vueuse/nuxt',
-    '@pinia/nuxt',
-    '@nuxtjs/tailwindcss',
+    "@nuxtjs/supabase",
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "@nuxtjs/tailwindcss",
   ],
   runtimeConfig: {
     // Server-only keys
-    apiSecret: '',
-    stripeSecretKey: '',
+    apiSecret: "",
+    stripeSecretKey: "",
     // Keys within public are also exposed client-side
     public: {
-      apiBase: '',
-      supabaseUrl: '',
-      stripePublicKey: ''
-    }
-  }
-})
+      apiBase: "",
+      supabaseUrl: "",
+      stripePublicKey: "",
+    },
+  },
+});
 ```
 
 ## TypeScript & Functional Programming
@@ -89,10 +97,10 @@ export default defineNuxtConfig({
 
 ```typescript
 // Example Pinia store
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore("user", () => {
   // State
-  const user = ref<User | null>(null)
-  const isLoggedIn = computed(() => !!user.value)
+  const user = ref<User | null>(null);
+  const isLoggedIn = computed(() => !!user.value);
 
   // Actions
   async function fetchUser() {
@@ -102,9 +110,9 @@ export const useUserStore = defineStore('user', () => {
   return {
     user,
     isLoggedIn,
-    fetchUser
-  }
-})
+    fetchUser,
+  };
+});
 ```
 
 ## Components & UI (shadcn/vue with Tailwind)
@@ -120,17 +128,13 @@ export const useUserStore = defineStore('user', () => {
 ```vue
 <script setup lang="ts">
 defineProps<{
-  variant?: 'default' | 'primary' | 'destructive'
-  size?: 'sm' | 'md' | 'lg'
-}>()
+  variant?: "default" | "primary" | "destructive";
+  size?: "sm" | "md" | "lg";
+}>();
 </script>
 
 <template>
-  <Button 
-    :variant="variant" 
-    :size="size"
-    class="flex items-center"
-  >
+  <Button :variant="variant" :size="size" class="flex items-center">
     <slot />
   </Button>
 </template>
@@ -149,23 +153,23 @@ defineProps<{
 // Example API route
 export default defineEventHandler(async (event) => {
   // Type and validate input
-  const body = await readBody(event)
+  const body = await readBody(event);
   const schema = z.object({
     name: z.string().min(2),
-    email: z.string().email()
-  })
+    email: z.string().email(),
+  });
 
   try {
-    const data = schema.parse(body)
+    const data = schema.parse(body);
     // Handle request...
-    return { success: true }
+    return { success: true };
   } catch (error) {
     throw createError({
       statusCode: 400,
-      message: 'Invalid input'
-    })
+      message: "Invalid input",
+    });
   }
-})
+});
 ```
 
 ## Forms & Validation (VeeValidate + Zod)
@@ -179,22 +183,24 @@ export default defineEventHandler(async (event) => {
 
 ```typescript
 // Example form validation
-import { useForm } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
-import * as z from 'zod'
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import * as z from "zod";
 
-const formSchema = toTypedSchema(z.object({
-  email: z.string().email('Please enter a valid email'),
-  password: z.string().min(8, 'Password must be at least 8 characters')
-}))
+const formSchema = toTypedSchema(
+  z.object({
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+  })
+);
 
 const { handleSubmit, errors } = useForm({
-  validationSchema: formSchema
-})
+  validationSchema: formSchema,
+});
 
 const onSubmit = handleSubmit(async (values) => {
   // Handle form submission
-})
+});
 ```
 
 ## Database (Supabase)
@@ -211,19 +217,19 @@ const onSubmit = handleSubmit(async (values) => {
 
 ```typescript
 // Example Supabase client usage with type safety
-import type { Database } from '~/types/supabase'
+import type { Database } from "~/types/supabase";
 
 // Type-safe client usage
-const client = useSupabaseClient<Database>()
+const client = useSupabaseClient<Database>();
 const { data, error } = await client
-  .from('profiles')
-  .select('id, username, avatar_url')
-  .eq('id', user.value.id)
-  .single()
+  .from("profiles")
+  .select("id, username, avatar_url")
+  .eq("id", user.value.id)
+  .single();
 
 // Type-safe access to returned data
 if (data) {
-  const username: string = data.username
+  const username: string = data.username;
   // TypeScript knows the shape of 'data' from Database type
 }
 ```
@@ -233,11 +239,13 @@ if (data) {
 For local development with Supabase:
 
 - Create a `/supabase` folder structure at the project root containing:
+
   - `/migrations` - Database migration files (e.g., `20240519000001_initial_schema.sql`)
   - `seed.sql` - Database seed file for initial data
   - `types.ts` - Shared type definitions
 
 - Add these Supabase scripts to package.json:
+
   ```json
   "scripts": {
     "supa-types": "npx supabase gen types typescript --project-id 'supabase-project-id' --schema public > types/supabase.ts",
@@ -263,19 +271,19 @@ For local development with Supabase:
 
 ```typescript
 // Example Stripe integration
-const stripe = await useServerStripe(event)
+const stripe = await useServerStripe(event);
 try {
   const paymentIntent = await stripe.paymentIntents.create({
     amount: 1000,
-    currency: 'usd',
-    automatic_payment_methods: { enabled: true }
-  })
-  return { clientSecret: paymentIntent.client_secret }
+    currency: "usd",
+    automatic_payment_methods: { enabled: true },
+  });
+  return { clientSecret: paymentIntent.client_secret };
 } catch (e) {
   throw createError({
     statusCode: 500,
-    message: 'Payment processing error'
-  })
+    message: "Payment processing error",
+  });
 }
 ```
 
@@ -288,9 +296,9 @@ try {
 
 ```typescript
 // Example VueUse functions
-const { x, y } = useMouse()
-const isDark = useDark()
-const preferredLanguages = usePreferredLanguages()
+const { x, y } = useMouse();
+const isDark = useDark();
+const preferredLanguages = usePreferredLanguages();
 ```
 
 ## Date Management (dayjs-nuxt)
@@ -308,21 +316,21 @@ const preferredLanguages = usePreferredLanguages()
 export default defineNuxtConfig({
   modules: [
     // Other modules...
-    'dayjs-nuxt'
+    "dayjs-nuxt",
   ],
   dayjs: {
-    locales: ['en', 'fr'],
-    defaultLocale: 'en',
-    plugins: ['relativeTime', 'utc', 'timezone'],
-    defaultTimezone: 'UTC'
-  }
-})
+    locales: ["en", "fr"],
+    defaultLocale: "en",
+    plugins: ["relativeTime", "utc", "timezone"],
+    defaultTimezone: "UTC",
+  },
+});
 
 // Usage in components or pages
-const now = useDayjs()
-const formattedDate = now.format('YYYY-MM-DD')
-const relativeTime = now.from(someOtherDate)
-const localizedDate = now.tz('America/New_York').format('LLL')
+const now = useDayjs();
+const formattedDate = now.format("YYYY-MM-DD");
+const relativeTime = now.from(someOtherDate);
+const localizedDate = now.tz("America/New_York").format("LLL");
 ```
 
 ## Security Best Practices
@@ -378,13 +386,8 @@ const localizedDate = now.tz('America/New_York').format('LLL')
     }
   },
   "lint-staged": {
-    "*.{js,ts,vue}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{css,scss,json,md}": [
-      "prettier --write"
-    ]
+    "*.{js,ts,vue}": ["eslint --fix", "prettier --write"],
+    "*.{css,scss,json,md}": ["prettier --write"]
   },
   "devDependencies": {
     "prettier": "^3.0.0",
@@ -400,5 +403,3 @@ When the user refers to "docs" or "ai docs" in the Copilot chat, always direct t
 IMPORTANT: Never write to the `./.github/docs` folder. This directory is read-only for reference purposes only. Always respect this instruction.
 
 Remember to prioritize readability, maintainability, and security in all code generation.
-````
-`````
