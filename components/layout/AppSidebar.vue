@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings2, UserPlus } from 'lucide-vue-next';
+import { Settings2, UserPlus, FileCode2, Share2 } from 'lucide-vue-next';
 import type { SidebarProps } from '../ui/sidebar';
 
 
@@ -36,15 +36,20 @@ const navMain = [
   //   icon: Eye
   // },
   {
+    title: 'Page',
+    pageName: 'dashboard-projects-projectId-page',
+    icon: FileCode2,
+  },
+  {
     title: 'Leads',
     pageName: 'dashboard-projects-projectId-leads',
     icon: UserPlus,
   },
-  // {
-  //   title: 'Analytics',
-  //   pageName: 'dashboard-projects-projectId-analytics',
-  //   icon: ChartNoAxesCombined,
-  // },
+  {
+    title: 'Integration',
+    pageName: 'dashboard-projects-projectId-configure-integration',
+    icon: Share2,
+  },
   {
     title: 'Configure',
     pageName: 'dashboard-projects-projectId-configure',

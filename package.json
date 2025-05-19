@@ -33,6 +33,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "eslint": "^9.26.0",
+    "js-beautify": "^1.15.4",
     "lucide-vue-next": "^0.509.0",
     "nuxt": "^3.17.2",
     "nuxt-gtag": "^3.0.2",

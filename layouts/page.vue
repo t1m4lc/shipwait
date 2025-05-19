@@ -2,7 +2,6 @@
     <SidebarProvider>
         <LayoutAppSidebar />
         <SidebarInset>
-            <LayoutHeader />
             <div class="size-full">
                 <slot />
             </div>

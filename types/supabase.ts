@@ -9,6 +9,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      custom_page_template: {
+        Row: {
+          created_at: string
+          html: string
+          id: string
+          name: string
+          project_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          html: string
+          id?: string
+          name: string
+          project_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          html?: string
+          id?: string
+          name?: string
+          project_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_page_template_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           browser: string
@@ -52,6 +90,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      page_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          html: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          html: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          html?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       pages: {
         Row: {
