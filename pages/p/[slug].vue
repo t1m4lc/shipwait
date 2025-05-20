@@ -25,6 +25,7 @@
 import { NuxtLink } from "#components";
 import { Loader2 } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
+import type { Database } from "~/types/supabase";
 
 definePageMeta({
   layout: "blank",
@@ -47,45 +48,39 @@ onMounted(async () => {
   try {
     isLoading.value = true;
 
-    const supabase = useSupabaseClient();
+    const supabase = useSupabaseClient<Database>();
 
-    // First, get the project by slug
-    const { data: project, error: projectError } = await supabase
+    // Get the project and its active page in a single request
+    const { data, error } = await supabase
       .from("projects")
-      .select("id, name")
+      .select(`
+        id,
+        name,
+        pages!inner(*)
+      `)
       .eq("slug", slug)
+      .limit(1, { referencedTable: 'pages' })
       .single();
 
-    if (projectError) throw projectError;
-    if (!project) throw new Error("Project not found");
+    if (error) throw error;
+    if (!data) throw new Error("Project not found");
+    if (!data.pages || data.pages.length === 0) throw new Error("No active page found for this project");
 
-    const projectId = project.id as string;
+    const project = data;
+    const pageData = data.pages[0];
 
     // Update page title with project name if available
     if (project.name) {
-      pageTitle.value = project.name as string;
+      pageTitle.value = project.name;
       useHead({ title: pageTitle.value });
     }
 
-    // Then get the page content using the project ID
-    const { data: pageData, error: pageError } = await supabase
-      .from("pages")
-      .select("*")
-      .eq("project_id", projectId)
-      .eq("active", true)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
-
-    if (pageError) throw pageError;
-    if (!pageData) throw new Error("No active page found for this project");
-
-    // Using type assertion to bypass TypeScript errors
-    html.value = (pageData as any).html as string;
+    // Set HTML content from the page data
+    html.value = pageData.html;
 
     // Set page title from the page data if available
-    if ((pageData as any).title) {
-      pageTitle.value = (pageData as any).title as string;
+    if (pageData.title) {
+      pageTitle.value = pageData.title;
       useHead({ title: pageTitle.value });
     }
   } catch (err: any) {
