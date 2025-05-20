@@ -7,7 +7,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-slug']
+  middleware: ['project-handler']
 })
 
 // Simple form example

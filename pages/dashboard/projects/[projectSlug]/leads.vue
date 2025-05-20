@@ -10,7 +10,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-slug']
+  middleware: ['project-handler']
 })
 
 const client = useSupabaseClient<Database>()

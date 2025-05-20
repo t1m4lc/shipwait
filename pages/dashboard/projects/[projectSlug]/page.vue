@@ -15,7 +15,7 @@ import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
 
 definePageMeta({
-    middleware: ['project-slug'],
+    middleware: ['project-handler'],
     layout: "page"
 });
 

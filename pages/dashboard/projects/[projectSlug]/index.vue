@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['project-slug'],
+  middleware: ['project-handler'],
   redirect: to => {
     return `/dashboard/projects/${to.params.projectSlug}/leads`;
   }

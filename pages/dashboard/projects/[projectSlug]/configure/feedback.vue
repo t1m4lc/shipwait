@@ -6,7 +6,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-slug']
+  middleware: ['project-handler']
 })
 </script>
 

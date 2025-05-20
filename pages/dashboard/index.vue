@@ -4,6 +4,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['projects']
+  middleware: ['project-handler']
 });
 </script>
