@@ -6,15 +6,15 @@ definePageMeta({
 
 <template>
   <div class="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
-    <div class="w-full max-w-sm md:max-w-3xl">
+    <div class="w-full max-w-3xl">
 
       <div class="flex flex-col gap-6">
         <Card>
         <CardHeader class="text-center">
-          <CardTitle class="text-xl">
+          <CardTitle class="text-2xl">
             Create a new project
           </CardTitle>
-          <CardDescription>
+          <CardDescription class="text-base">
             Enter your project details below
           </CardDescription>
         </CardHeader>

@@ -1,6 +1,6 @@
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { Database } from "~/types/supabase";
 import { UAParser } from "ua-parser-js";
+import { Database } from "~/types/supabase";
 
 export default defineEventHandler(async (event) => {
   const res = event.node.res;
@@ -25,23 +25,44 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { email, projectId } = body;
+  const { email, projectId, projectSlug } = body;
 
-  if (!email || !projectId) {
+  if (!email || (!projectId && !projectSlug)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Missing email or projectId",
+      statusMessage: "Missing email or project identifier",
     });
   }
 
   const client = serverSupabaseServiceRole<Database>(event);
+
+  // Determine the actual project ID (either direct or via slug lookup)
+  let actualProjectId = projectId;
+
+  // If slug is provided but no ID, look up the project ID by slug
+  if (projectSlug && !projectId) {
+    const { data: project, error: projectError } = await client
+      .from("projects")
+      .select("id")
+      .eq("slug", projectSlug)
+      .single();
+
+    if (projectError || !project) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Project not found",
+      });
+    }
+
+    actualProjectId = project.id;
+  }
 
   // Check if the email already exists for the given projectId
   // Using count for better performance - stops once at least one match is found
   const { count: leadCount, error: fetchError } = await client
     .from("leads")
     .select("*", { count: "exact", head: true })
-    .eq("project_id", projectId)
+    .eq("project_id", actualProjectId)
     .eq("email", email)
     .limit(1);
 
@@ -84,7 +105,7 @@ export default defineEventHandler(async (event) => {
   // Add the new lead to the database
   const { error: insertError } = await client.from("leads").insert({
     email,
-    project_id: projectId,
+    project_id: actualProjectId,
     device_type,
     browser,
     os,

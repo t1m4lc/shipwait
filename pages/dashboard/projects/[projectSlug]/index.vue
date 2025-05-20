@@ -1,8 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['project-id'],
+  middleware: ['project-slug'],
   redirect: to => {
-    return `/dashboard/projects/${to.params.projectId}/leads`;
+    return `/dashboard/projects/${to.params.projectSlug}/leads`;
   }
 });
 </script>
@@ -21,7 +21,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-id']
+  middleware: ['project-slug']
 })
 </script>
 

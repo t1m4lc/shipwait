@@ -126,7 +126,18 @@ export const usePageStore = defineStore("page", () => {
 
       if (data) {
         deployedPages.value.push(data);
-        publicPageUrl.value = `/p/${data.id}`;
+
+        // Get the project to get its slug
+        const { data: project } = await supabase
+          .from("projects")
+          .select("slug")
+          .eq("id", projectId)
+          .single();
+
+        // Use the project slug for the URL (fallback to ID if slug isn't found)
+        publicPageUrl.value = project?.slug
+          ? `/p/${project.slug}`
+          : `/p/${data.id}`;
       }
 
       return { success: true, data, url: publicPageUrl.value };
@@ -157,7 +168,17 @@ export const usePageStore = defineStore("page", () => {
 
       // Set the public page URL if there's at least one deployed page
       if (deployedPages.value.length > 0) {
-        publicPageUrl.value = `/p/${deployedPages.value[0].id}`;
+        // Get the project to get its slug
+        const { data: project } = await supabase
+          .from("projects")
+          .select("slug")
+          .eq("id", projectId)
+          .single();
+
+        // Use the project slug for the URL (fallback to ID if slug isn't found)
+        publicPageUrl.value = project?.slug
+          ? `/p/${project.slug}`
+          : `/p/${deployedPages.value[0].id}`;
       }
 
       return { success: true, data: deployedPages.value };

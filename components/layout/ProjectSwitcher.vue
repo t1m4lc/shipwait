@@ -21,6 +21,7 @@ const props = defineProps<{
   projects: {
     id: string
     name: string
+    slug: string
   }[]
 }>()
 
@@ -33,14 +34,19 @@ const { selectedProject } = storeToRefs(store);
 function onClick(projectId: string) {
   const route = useRoute()
   store.setSelectedProjectId(projectId)
-  navigateTo({ name: route.name as string, params: { ...route.params, projectId } })
+
+  // Find the project slug from the ID
+  const project = props.projects.find(p => p.id === projectId)
+  if (project) {
+    navigateTo({ name: route.name as string, params: { ...route.params, projectSlug: project.slug } })
+  }
 }
 
 const { generateGradient } = useStringGradient();
 
 const customGradient = computed(() =>
-  selectedProject?.value?.name
-    ? generateGradient(selectedProject?.value?.name)
+  selectedProject?.value?.slug
+    ? generateGradient(selectedProject?.value?.slug)
     : 'var(--sidebar-background)')
 </script>
 
@@ -53,7 +59,7 @@ const customGradient = computed(() =>
             <span class="flex aspect-square size-8 rounded-lg" :style="{ background: customGradient }"></span>
             <div class="grid pl-0.5 flex-1 text-left text-lg leading-tight">
               <span class="truncate font-medium">
-                {{ selectedProject?.name }}
+                {{ selectedProject?.slug }}
               </span>
             </div>
             <ChevronsUpDown class="ml-auto" />
@@ -64,7 +70,7 @@ const customGradient = computed(() =>
             Projects
           </DropdownMenuLabel>
           <DropdownMenuItem v-for="(project) in props.projects" :key="project.id" class="gap-2 p-2" @click="onClick(project.id)">
-            <span class="flex aspect-square size-6 rounded-sm" :style="{ background: customGradient }"></span>
+            <span class="flex aspect-square size-6 rounded-sm" :style="{ background: generateGradient(project.name) }"></span>
             {{ project.name }}
             <!-- <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut> -->
           </DropdownMenuItem>

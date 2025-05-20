@@ -1,13 +1,13 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['project-id']
+  middleware: ['project-slug']
 })
 </script>
 
 <template>
 
-<!-- <ConfigureRulesForm /> -->
-<!-- Collection Rules
+  <!-- <ConfigureRulesForm /> -->
+  <!-- Collection Rules
 - Max email limit
 -Collection end date
 
@@ -20,8 +20,7 @@ Messages
     <p>🚧 "Collection rules" is under construction</p>
 
     <p>
-      Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank"
-        class="text-primary underline hover:underline">Let me know!
+      Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank" class="text-primary underline hover:underline">Let me know!
       </NuxtLink>
     </p>
   </ConfigureLayout>

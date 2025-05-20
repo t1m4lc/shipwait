@@ -1,12 +1,13 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   projectId?: string;
 }>();
+
 </script>
 
 <template>
   <button as-child class="custom-button">
-    <NuxtLink :to="`/?ref=page_${projectId || 'unknown'}`">
+    <NuxtLink :to="`/?ref=page_${projectId}`">
       Built with 🚢 Shipwait
     </NuxtLink>
   </button>

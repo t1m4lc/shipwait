@@ -8,7 +8,6 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 })
 
 const store = useProjectsStore();
-const { selectedProjectId } = storeToRefs(store)
 
 const user = useSupabaseUser()
 
@@ -30,29 +29,24 @@ const logout = async () => {
 }
 
 const navMain = [
-  // {
-  //   title: 'Overview',
-  //   pageName: 'dashboard-projects-projectId',
-  //   icon: Eye
-  // },
   {
     title: 'Page',
-    pageName: 'dashboard-projects-projectId-page',
+    pageName: 'dashboard-projects-projectSlug-page',
     icon: FileCode2,
   },
   {
     title: 'Leads',
-    pageName: 'dashboard-projects-projectId-leads',
+    pageName: 'dashboard-projects-projectSlug-leads',
     icon: UserPlus,
   },
   {
     title: 'Connect',
-    pageName: 'dashboard-projects-projectId-connect',
+    pageName: 'dashboard-projects-projectSlug-connect',
     icon: Cable,
   },
   {
     title: 'Configure',
-    pageName: 'dashboard-projects-projectId-configure',
+    pageName: 'dashboard-projects-projectSlug-configure',
     icon: Settings2,
   },
 ]
@@ -64,7 +58,7 @@ const navMain = [
       <LayoutProjectSwitcher :projects="store.projects" />
     </SidebarHeader>
     <SidebarContent>
-      <LayoutNavMain v-if="selectedProjectId" :items="navMain" :project-id="selectedProjectId" />
+      <LayoutNavMain :items="navMain" />
     </SidebarContent>
     <SidebarFooter>
       <LayoutNavUser v-if="userData" :user="userData" @logout="logout()" />

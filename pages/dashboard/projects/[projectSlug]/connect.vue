@@ -7,7 +7,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-id']
+  middleware: ['project-slug']
 })
 
 // Simple form example
@@ -94,7 +94,7 @@ const snippet = computed(() => {
             Use a dedicated Shipwait landing page that we host for you.
             <strong class="text-foreground">No code required.</strong>
           </p>
-          <NuxtLink :to="{ name: 'dashboard-projects-projectId-page' }" class="inline-flex items-center text-sm font-medium text-primary hover:underline">
+          <NuxtLink :to="{ name: 'dashboard-projects-projectSlug-page' }" class="inline-flex items-center text-sm font-medium text-primary hover:underline">
             Create landing pages →
           </NuxtLink>
         </div>
@@ -180,7 +180,7 @@ const snippet = computed(() => {
               That's it! Your form is now connected to Shipwait. Test it out by submitting a lead.
             </p>
             <div class="mt-4 flex items-center gap-2">
-              <NuxtLink :to="{ name: 'dashboard-projects-projectId-leads' }" class="inline-flex items-center text-sm font-medium text-primary hover:underline">
+              <NuxtLink :to="{ name: 'dashboard-projects-projectSlug-leads' }" class="inline-flex items-center text-sm font-medium text-primary hover:underline">
                 View your leads →
               </NuxtLink>
             </div>

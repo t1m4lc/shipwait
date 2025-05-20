@@ -10,16 +10,18 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-id']
+  middleware: ['project-slug']
 })
 
 const client = useSupabaseClient<Database>()
-const route = useRoute()
-const projectId = computed(() => `${route.params.projectId}`)
+const store = useProjectsStore()
+const projectId = computed(() => store.selectedProjectId || '')
 
 const { data: leads, pending: loading, refresh } = useAsyncData(
-  projectId,
+  'project-leads',
   async () => {
+    if (!projectId.value) return [];
+
     const { data, error } = await client
       .from("leads")
       .select("*")
@@ -28,6 +30,9 @@ const { data: leads, pending: loading, refresh } = useAsyncData(
     if (error) throw error;
     return data;
   },
+  {
+    watch: [projectId]
+  }
 )
 </script>
 

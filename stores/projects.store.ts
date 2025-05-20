@@ -12,7 +12,7 @@ function getProjectsQuery(supabase: SupabaseClient<Database>, userId: string) {
     `
     )
     .eq("user_id", userId)
-    .order("name");
+    .order("created_at", { ascending: false });
 }
 
 type ProjectQuery = ReturnType<typeof getProjectsQuery>;
@@ -23,6 +23,7 @@ async function createProjectApi(
   userId: string,
   projectData: {
     name: string;
+    slug: string;
   },
   behaviorData: Pick<
     Tables<"submission_behaviors">,
@@ -34,9 +35,10 @@ async function createProjectApi(
       .from("projects")
       .insert({
         name: projectData.name,
+        slug: projectData.slug,
         user_id: userId,
       })
-      .select("id")
+      .select("id, slug")
       .single();
 
     if (projectError) throw projectError;
@@ -128,6 +130,14 @@ export const useProjectsStore = defineStore(
       );
     });
 
+    const selectedProjectSlug = computed(() => {
+      if (!selectedProjectId.value) return null;
+      const project = projects.value.find(
+        (project) => project.id === selectedProjectId.value
+      );
+      return project?.slug || null;
+    });
+
     const setSelectedProjectId = (id: string) => {
       selectedProjectId.value = id;
     };
@@ -160,6 +170,7 @@ export const useProjectsStore = defineStore(
     const createProject = async (
       projectData: {
         name: string;
+        slug: string;
       },
       behaviorData: {
         behavior_type: "show_message" | "redirect" | "do_nothing";
@@ -251,6 +262,7 @@ export const useProjectsStore = defineStore(
       error,
       selectedProjectId,
       selectedProject,
+      selectedProjectSlug,
       setSelectedProjectId,
       fetchProjects,
       createProject,

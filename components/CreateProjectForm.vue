@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
+import { useDebounce, useDebounceFn } from '@vueuse/core'
+import { Check, Circle, Dot, ExternalLink, Loader2, MessageCircle, XCircle } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
-import { Check, Circle, Dot, Loader2, MessageCircle, ExternalLink, XCircle } from 'lucide-vue-next'
-import { ref, computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import * as z from 'zod'
-import type { Database, Tables } from '~/types/supabase'
+import { SLUG_PATTERN } from '~/utils/regex'
+import { checkSlugAvailability, generateSlug } from '~/utils/slug'
 import generateSnippet from '~/utils/snippet'
+
+type SlugCheckState = 'not-set' | 'loading' | 'available' | 'unavailable';
 
 interface CreatedProject {
     id: string;
+    slug: string;
 }
 
 const generalSchema = z.object({
     name: z.string().min(1, 'Project name is required'),
+    slug: z.string().min(1, 'Project slug is required')
+        .regex(SLUG_PATTERN, 'Slug must contain only lowercase letters, numbers, and hyphens')
+        .max(100, 'Slug must be 100 characters or less'),
 });
 
 const behaviorSchema = z.object({
@@ -65,11 +73,37 @@ const formSchemas = [
 const stepIndex = ref(1)
 const createdProject = ref<CreatedProject | null>(null)
 const isSubmitting = ref(false)
+const slugCheckState = ref<SlugCheckState>('not-set')
+const suggestedSlug = ref('')
 
-const { values, meta, validate } = useForm<FormValues>({
+// Create debounced function for slug checking
+const debouncedCheckSlug = useDebounceFn(async (slug: string) => {
+    if (!slug) {
+        slugCheckState.value = 'not-set';
+        return;
+    }
+
+    slugCheckState.value = 'loading';
+    const result = await checkSlugAvailability(slug);
+
+    if (result.available) {
+        slugCheckState.value = 'available';
+    } else {
+        slugCheckState.value = 'unavailable';
+        suggestedSlug.value = result.suggestedSlug;
+
+        // If slug isn't available, suggest the alternative
+        setFieldValue('slug', result.suggestedSlug);
+        // Set to available since we've updated to the suggested slug
+        slugCheckState.value = 'available';
+    }
+}, 1000)
+
+const { values, meta, validate, setFieldValue } = useForm<FormValues>({
     validationSchema: computed(() => formSchemas[stepIndex.value - 1]),
     initialValues: {
         name: '',
+        slug: '',
         behaviour_type: 'show_message',
         message: 'Thank you for joining the waitlist!',
         redirect_url: '',
@@ -112,11 +146,11 @@ const { projects } = storeToRefs(store)
 async function onSubmit(): Promise<void> {
     isSubmitting.value = true
 
-    const { name, behaviour_type, message, redirect_url } = values;
+    const { name, slug, behaviour_type, message, redirect_url } = values;
 
     // Use the store method instead of direct API calls
     const { data: project, error } = await store.createProject(
-        { name },
+        { name, slug },
         {
             behavior_type: behaviour_type,
             message: message ?? null,
@@ -125,7 +159,7 @@ async function onSubmit(): Promise<void> {
     );
 
     if (project) {
-        createdProject.value = { id: project.id };
+        createdProject.value = { id: project.id, slug: project.slug };
 
         toast('Project created successfully!', {
             description: 'Your new project has been created and settings saved.',
@@ -134,7 +168,9 @@ async function onSubmit(): Promise<void> {
         stepIndex.value = 3;
     } else {
         toast('Project creation failed', {
-            description: error?.message || 'An error occurred while creating the project.',
+            description: typeof error === 'object' && error !== null && 'message' in error 
+                ? String(error.message) 
+                : 'An error occurred while creating the project.',
         });
     }
 
@@ -156,6 +192,23 @@ function handlePrevStep() {
     if (stepIndex.value > 1) {
         stepIndex.value--;
     }
+}
+
+
+const checkSlug = useDebounceFn(async (slug: string) => {
+    if (!slug) return;
+
+    slugCheckState.value = 'loading';
+    debouncedCheckSlug(slug);
+}, 1000)
+
+
+// Update slug when name changes
+async function updateSlugFromName() {
+    const generatedSlug = generateSlug(values.name);
+    setFieldValue('slug', generatedSlug);
+    slugCheckState.value = 'loading';
+    debouncedCheckSlug(generatedSlug);
 }
 </script>
 
@@ -192,8 +245,36 @@ function handlePrevStep() {
                         <FormItem>
                             <FormLabel>Project Name</FormLabel>
                             <FormControl>
-                                <Input type="text" v-bind="componentField" @keydown.enter.prevent="handleNextStep" />
+                                <Input type="text" v-bind="componentField" @input="updateSlugFromName" />
                             </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    </FormField>
+
+                    <FormField v-slot="{ componentField }" name="slug">
+                        <FormItem>
+                            <FormLabel>Project Slug</FormLabel>
+
+                            <div class="flex items-center gap-2">
+                                <FormControl>
+                                    <Input type="text" v-bind="componentField" @input="checkSlug(values.slug)" :disabled="slugCheckState === 'loading' || !values.slug.trim().length" />
+                                </FormControl>
+                                <div v-if="slugCheckState === 'loading'" class="flex items-center text-muted-foreground">
+                                    <Loader2 class="animate-spin size-4 mr-1" />
+                                    Checking...
+                                </div>
+                                <div v-else-if="slugCheckState === 'unavailable'" class="flex items-center text-destructive">
+                                    <XCircle class="size-4 mr-1" />
+                                    Not available
+                                </div>
+                                <div v-else-if="slugCheckState === 'available' && values.slug" class="flex items-center text-success">
+                                    <Check class="size-4 mr-1" />
+                                    Available
+                                </div>
+                            </div>
+                            <FormDescription>
+                                Used in URLs for your project. Only lowercase letters, numbers, and hyphens.
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     </FormField>
@@ -312,7 +393,7 @@ function handlePrevStep() {
                         <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
                         Create Project
                     </Button>
-                    <NuxtLink v-if="stepIndex === 3" :to="`/dashboard/projects/${createdProject?.id}`">
+                    <NuxtLink v-if="stepIndex === 3" :to="`/dashboard/projects/${createdProject?.slug}`">
                         <Button size="sm" variant="default">Go to Dashboard</Button>
                     </NuxtLink>
                 </div>

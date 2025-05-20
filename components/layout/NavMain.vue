@@ -2,14 +2,16 @@
 import type { LucideIcon } from 'lucide-vue-next';
 import { CircleHelp, Send } from 'lucide-vue-next';
 
-defineProps<{
+const props = defineProps<{
   items: {
     title: string
     pageName: string
     icon: LucideIcon
   }[],
-  projectId: string
 }>()
+
+const store = useProjectsStore();
+const projectSlug = computed(() => store.selectedProjectSlug || '');
 </script>
 
 <template>
@@ -19,7 +21,7 @@ defineProps<{
       <SidebarMenu>
         <SidebarMenuItem v-for="item in items" :key="item.title">
           <SidebarMenuButton asChild>
-            <NuxtLink :to="{ name: item.pageName, params: { projectId } }" activeClass="bg-accent font-medium">
+            <NuxtLink :to="{ name: item.pageName, params: { projectSlug } }" activeClass="bg-accent font-medium">
               <component :is="item.icon" />
               <span>{{ item.title }}</span>
             </NuxtLink>

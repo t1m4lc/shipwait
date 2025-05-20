@@ -6,7 +6,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['project-id']
+  middleware: ['project-slug']
 })
 </script>
 
@@ -18,12 +18,11 @@ Redirect URL (if applicable)
 Enable sonar effect?
 Social CTA URL (e.g. Twitter) -->
 
-<p>🚧 "Submission feedback" is under construction</p>
+    <p>🚧 "Submission feedback" is under construction</p>
 
-<p>
-  Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank"
-    class="text-primary underline hover:underline">Let me know!
-  </NuxtLink>
-</p>
+    <p>
+      Got feedback or ideas? <NuxtLink :to="INSIGHTO" external target="_blank" class="text-primary underline hover:underline">Let me know!
+      </NuxtLink>
+    </p>
   </ConfigureLayout>
 </template>

@@ -14,13 +14,13 @@ import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
 
 definePageMeta({
-    middleware: ['project-id'],
+    middleware: ['project-slug'],
     layout: "page"
 });
 
 const route = useRoute();
 const projectsStore = useProjectsStore();
-const projectId = computed(() => projectsStore.selectedProjectId || route.params.projectId as string);
+const projectId = computed(() => projectsStore.selectedProjectId || '');
 
 const pageStore = usePageStore();
 const { templates, currentTemplate, publicPageUrl } = storeToRefs(pageStore);
