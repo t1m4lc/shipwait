@@ -55,7 +55,7 @@ const snippet = computed(() => {
 <template>
   <div class="space-y-8">
     <!-- Header section -->
-    <div class="space-y-2">
+    <div class="space-y-1">
       <h1 class="text-3xl font-bold tracking-tight">
         {{ title }}
       </h1>
