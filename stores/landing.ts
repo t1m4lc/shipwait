@@ -476,9 +476,10 @@ export const LANDING_PAGE_EXAMPLE = `<!DOCTYPE html>
           revolutionary platform that's changing the way people work.</p>
 
         <form class="waitlist-form">
-          <input data-shipwait type="email" placeholder="Enter your email address" required>
-          <button type="submit">Join Waitlist</button>
+        <input data-shipwait type="email" placeholder="Enter your email address" required>
+        <button type="submit">Join Waitlist</button>
         </form>
+        <p data-shipwait-message style="margin-top:16px;color:#8A4FFF;font-weight:600;text-align:center;display:block;"></p>
       </section>
 
       <section id="features" class="section">

@@ -21,6 +21,8 @@ export default defineNuxtConfig({
     "/login": { prerender: true },
     "/register": { prerender: true },
     "/privacy": { prerender: true },
+    "/p/**": { ssr: false },
+    "/p/*": { ssr: false },
   },
   shadcn: {
     prefix: "",

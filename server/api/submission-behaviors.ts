@@ -25,21 +25,43 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event);
   const projectId = query.projectId as string;
+  const projectSlug = query.projectSlug as string;
 
-  if (!projectId) {
+  if (!projectId && !projectSlug) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Missing projectId parameter",
+      statusMessage: "Missing projectId or projectSlug parameter",
     });
   }
 
   const client = serverSupabaseServiceRole<Database>(event);
 
+  // Determine the actual project ID for the query
+  let actualProjectId = projectId;
+
+  // If project slug is provided but no ID, look up the project ID by slug
+  if (projectSlug && !projectId) {
+    const { data: project, error: projectError } = await client
+      .from("projects")
+      .select("id")
+      .eq("slug", projectSlug)
+      .single();
+
+    if (projectError || !project) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Project not found",
+      });
+    }
+
+    actualProjectId = project.id;
+  }
+
   try {
     const { data: behaviors } = await client
       .from("submission_behaviors")
-      .select("behavior_type, redirect_url, message")
-      .eq("project_id", projectId)
+      .select("*")
+      .eq("project_id", actualProjectId)
       .limit(1)
       .single();
 
