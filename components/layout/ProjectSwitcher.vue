@@ -46,7 +46,7 @@ const { generateGradient } = useStringGradient();
 
 const customGradient = computed(() =>
   selectedProject?.value?.slug
-    ? generateGradient(selectedProject?.value?.slug)
+    ? generateGradient(selectedProject?.value?.name)
     : 'var(--sidebar-background)')
 </script>
 

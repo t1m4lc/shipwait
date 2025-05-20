@@ -122,18 +122,18 @@ const snippet = computed(() => {
 const steps = [
     {
         step: 1,
-        title: 'General',
+        title: 'On your marks',
         description: 'Basic informations',
     },
     {
         step: 2,
-        title: 'Behavior',
+        title: 'Get set',
         description: 'After someone subscribes',
     },
     {
         step: 3,
-        title: 'Configure',
-        description: 'Connect to your site',
+        title: 'Go!',
+        description: 'Start collecting leads',
     },
 ]
 

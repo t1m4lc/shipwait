@@ -6,11 +6,11 @@ const subtitle = ref("Customize the behavior of your email collection flow.")
 
 <template>
   <div class="pb-16 space-y-6">
-    <div class="space-y-2">
-      <h1 class="text-3xl font-bold tracking-tight">
+    <div class="space-y-1">
+      <h1 class="text-2xl font-bold tracking-tight">
         {{ title }}
       </h1>
-      <p class="text-lg text-muted-foreground">
+      <p class="text-base text-muted-foreground">
         {{ subtitle }}
       </p>
     </div>

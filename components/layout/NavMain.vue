@@ -2,7 +2,7 @@
 import type { LucideIcon } from 'lucide-vue-next';
 import { CircleHelp, Send } from 'lucide-vue-next';
 
-const props = defineProps<{
+defineProps<{
   items: {
     title: string
     pageName: string
@@ -44,7 +44,7 @@ const projectSlug = computed(() => store.selectedProjectSlug || '');
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton asChild size="sm">
-            <NuxtLink to="https://insigh.to/b/shipwaitdev" external target="_blank" activeClass="bg-accent font-medium">
+            <NuxtLink :to="INSIGHTO" external target="_blank" activeClass="bg-accent font-medium">
               <Send />
               <span>Feedback</span>
             </NuxtLink>
