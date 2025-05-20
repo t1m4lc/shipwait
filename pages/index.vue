@@ -11,8 +11,10 @@ const user = useSupabaseUser();
 <template>
   <div class="flex min-h-screen flex-col">
     <header class="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-      <div class="flex text-xl items-center gap-2 font-semibold">
-        <span class="font-bold"> ShipWait </span>
+      <div class="flex items-center gap-2 font-medium">
+        <span class="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          S</span>
+        ShipWait
       </div>
       <Button variant="outline" as-child>
         <NuxtLink v-if="user" to="/dashboard" class="inline-flex h-9 items-center justify-center">
