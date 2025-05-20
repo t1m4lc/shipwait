@@ -57,7 +57,7 @@
               <Codemirror v-model="localModelValue" :extensions="extensions" class="html-editor h-full" placeholder="Paste your HTML landing page here..." />
 
               <div class="absolute top-3 right-3 flex items-center gap-3">
-                <Badge v-if="validationStatus === 'valid'" class="tracking-wider rounded-full bg-accent text-primary-background space-x-1 border border-primary-background">
+                <Badge v-if="!validationErrors.length" class="tracking-wider rounded-full bg-accent text-primary-background space-x-1 border border-primary-background">
                   <span class="relative flex size-2">
                     <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75">
                     </span>
@@ -65,7 +65,7 @@
                   </span>
                   <span class="first-letter:uppercase"> Valid code </span>
                 </Badge>
-                <HoverCard v-if="validationStatus === 'invalid'">
+                <HoverCard v-else>
                   <HoverCardTrigger class="hover:cursor-help">
                     <Badge class="tracking-wider rounded-full bg-accent text-primary-background space-x-1 border border-primary-background">
                       <span class="relative flex size-2">
@@ -138,9 +138,6 @@ const localModelValue = computed({
     emit('validate', value);
   }
 });
-
-// Computed
-const validationStatus = computed(() => props.isHtmlValid ? "valid" : "invalid");
 
 // Window size for responsive layout
 const { width } = useWindowSize();

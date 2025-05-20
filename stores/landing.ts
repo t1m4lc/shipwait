@@ -1,6 +1,5 @@
 export const LANDING_PAGE_EXAMPLE = `<!DOCTYPE html>
 <html lang="en">
-
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -566,64 +565,7 @@ export const LANDING_PAGE_EXAMPLE = `<!DOCTYPE html>
         </div>
       </section>
 
-      <section id="pricing" class="section">
-        <h2 class="section-title">Simple, Transparent Pricing</h2>
-        <div class="pricing-plans">
-          <div class="pricing-card">
-            <div class="pricing-name">Starter</div>
-            <div class="pricing-price">$29</div>
-            <div class="pricing-duration">per month</div>
-            <ul class="pricing-features">
-              <li>Up to 5 team members</li>
-              <li>10GB storage</li>
-              <li>Basic analytics</li>
-              <li>24/7 support</li>
-              <li>API access</li>
-            </ul>
-            <a href="#" class="pricing-btn secondary">Join Waitlist</a>
-          </div>
-          <div class="pricing-card popular">
-            <div class="popular-badge">Most Popular</div>
-            <div class="pricing-name">Professional</div>
-            <div class="pricing-price">$79</div>
-            <div class="pricing-duration">per month</div>
-            <ul class="pricing-features">
-              <li>Up to 20 team members</li>
-              <li>100GB storage</li>
-              <li>Advanced analytics</li>
-              <li>Priority support</li>
-              <li>API access</li>
-              <li>Custom integrations</li>
-              <li>Team collaboration tools</li>
-            </ul>
-            <a href="#" class="pricing-btn primary">Join Waitlist</a>
-          </div>
-          <div class="pricing-card">
-            <div class="pricing-name">Enterprise</div>
-            <div class="pricing-price">$199</div>
-            <div class="pricing-duration">per month</div>
-            <ul class="pricing-features">
-              <li>Unlimited team members</li>
-              <li>1TB storage</li>
-              <li>Custom reporting</li>
-              <li>Dedicated support</li>
-              <li>Advanced security</li>
-              <li>Custom development</li>
-              <li>SLA guarantee</li>
-            </ul>
-            <a href="#" class="pricing-btn secondary">Contact Sales</a>
-          </div>
-        </div>
-      </section>
-
       <footer>
-        <div class="footer-links">
-          <a href="#">About Us</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Contact</a>
-          <a href="#">Blog</a>
-        </div>
         <div class="copyright">© 2025 NextWave. All rights reserved.</div>
       </footer>
     </div>

@@ -8,21 +8,21 @@ interface Item {
 
 const route = useRoute()
 const store = useProjectsStore()
-const { selectedProjectId } = storeToRefs(store)
+const { selectedProjectSlug } = storeToRefs(store)
 
 // Éléments de navigation par défaut pour les pages de configuration
 const sidebarNavItems: Item[] = [
   {
     title: 'Project',
-    href: `/dashboard/projects/${selectedProjectId.value}/configure`,
+    href: `/dashboard/projects/${selectedProjectSlug.value}/configure`,
   },
   {
     title: 'Collection rules',
-    href: `/dashboard/projects/${selectedProjectId.value}/configure/rules`,
+    href: `/dashboard/projects/${selectedProjectSlug.value}/configure/rules`,
   },
   {
     title: 'Submission feedback',
-    href: `/dashboard/projects/${selectedProjectId.value}/configure/feedback`,
+    href: `/dashboard/projects/${selectedProjectSlug.value}/configure/feedback`,
   },
 ]
 

@@ -58,8 +58,8 @@ const customGradient = computed(() =>
           <SidebarMenuButton size="lg" class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
             <span class="flex aspect-square size-8 rounded-lg" :style="{ background: customGradient }"></span>
             <div class="grid pl-0.5 flex-1 text-left text-lg leading-tight">
-              <span class="truncate font-medium">
-                {{ selectedProject?.slug }}
+              <span class="first-letter:uppercase lowercase truncate font-medium">
+                {{ selectedProject?.name }}
               </span>
             </div>
             <ChevronsUpDown class="ml-auto" />
@@ -71,7 +71,9 @@ const customGradient = computed(() =>
           </DropdownMenuLabel>
           <DropdownMenuItem v-for="(project) in props.projects" :key="project.id" class="gap-2 p-2" @click="onClick(project.id)">
             <span class="flex aspect-square size-6 rounded-sm" :style="{ background: generateGradient(project.name) }"></span>
-            {{ project.name }}
+            <span class="first-letter:uppercase lowercase">
+              {{ project.name }}
+            </span>
             <!-- <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut> -->
           </DropdownMenuItem>
           <DropdownMenuSeparator />

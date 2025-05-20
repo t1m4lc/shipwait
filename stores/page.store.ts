@@ -109,23 +109,47 @@ export const usePageStore = defineStore("page", () => {
         throw new Error("Template must be saved before deployment");
       }
 
-      const page = {
+      // First, check if a page already exists for this project
+      const { data: existingPages, error: fetchError } = await supabase
+        .from("pages")
+        .select("id")
+        .eq("project_id", projectId);
+
+      if (fetchError) throw fetchError;
+
+      // Create a properly typed page object for upsert
+      let pageData = {
         project_id: projectId,
         title: template.name,
-        html: template.html,
+        html: template.html, // HTML is required
         active: true,
+        updated_at: new Date().toISOString(),
       };
 
+      // If a page exists, include its ID for upsert (update existing)
+      if (existingPages && existingPages.length > 0) {
+        pageData = { ...pageData, id: existingPages[0].id };
+      }
+
+      // Upsert the page (update if exists, insert if not)
       const { data, error: deployError } = await supabase
         .from("pages")
-        .insert(page)
+        .upsert(pageData)
         .select()
         .single();
 
       if (deployError) throw deployError;
 
       if (data) {
-        deployedPages.value.push(data);
+        // Update the local state
+        const existingIndex = deployedPages.value.findIndex(
+          (p) => p.id === data.id
+        );
+        if (existingIndex >= 0) {
+          deployedPages.value[existingIndex] = data;
+        } else {
+          deployedPages.value.push(data);
+        }
 
         // Get the project to get its slug
         const { data: project } = await supabase
@@ -215,6 +239,46 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
+  // Check if a project has deployed pages and set the public URL
+  async function checkDeployedPageExists(projectId: string) {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // Just get the count of pages
+      const { count, error: countError } = await supabase
+        .from("pages")
+        .select("*", { count: "exact", head: true })
+        .eq("project_id", projectId);
+
+      if (countError) throw countError;
+
+      const hasPage = count && count > 0;
+
+      // Set the public URL if there's a deployed page
+      if (hasPage) {
+        // Get the project slug
+        const { data: project } = await supabase
+          .from("projects")
+          .select("slug")
+          .eq("id", projectId)
+          .single();
+
+        publicPageUrl.value = project?.slug ? `/p/${project.slug}` : null;
+      } else {
+        publicPageUrl.value = null;
+      }
+
+      return { success: true, hasPage };
+    } catch (err: any) {
+      console.error("Error checking for deployed pages:", err);
+      error.value = err.message;
+      return { success: false, error: err.message };
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     templates,
     currentTemplate,
@@ -227,5 +291,6 @@ export const usePageStore = defineStore("page", () => {
     deployPage,
     fetchDeployedPages,
     getDeployedPage,
+    checkDeployedPageExists,
   };
 });

@@ -11,8 +11,6 @@ defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
-
-const emit = defineEmits(['logout'])
 </script>
 
 <template>
@@ -68,7 +66,7 @@ const emit = defineEmits(['logout'])
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem @click="emit('logout')">
+          <DropdownMenuItem @click="navigateTo('/logout')">
             <LogOut />
             Log out
           </DropdownMenuItem>

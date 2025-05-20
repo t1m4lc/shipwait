@@ -7,9 +7,10 @@
 <script setup lang="ts">
 import { html_beautify } from 'js-beautify';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import SplitHtmlPreview from '~/components/SplitHtmlPreview.vue';
+import { LANDING_PAGE_EXAMPLE } from "~/stores/landing";
 import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
 
@@ -18,7 +19,6 @@ definePageMeta({
     layout: "page"
 });
 
-const route = useRoute();
 const projectsStore = useProjectsStore();
 const projectId = computed(() => projectsStore.selectedProjectId || '');
 
@@ -106,6 +106,12 @@ async function deployPage() {
 
         if (result.success) {
             toast.success("Page deployed successfully");
+
+            // Check to ensure the public URL is updated
+            if (result.url) {
+                // URL is already set by the deployPage function
+                toast.success(`Your page is live at ${result.url}`);
+            }
         } else {
             toast.error(`Failed to deploy page: ${result.error}`);
         }
@@ -119,6 +125,11 @@ async function deployPage() {
 
 function validateHtml(htmlContent: string): string[] {
     const errors: string[] = [];
+
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined' || !window.DOMParser) {
+        return [];
+    }
 
     // Check if HTML is well-formed
     try {
@@ -137,7 +148,7 @@ function validateHtml(htmlContent: string): string[] {
         }
 
         // Check for input with data-shipwait attribute inside a form
-        const shipwaitInputs = doc.querySelectorAll("form input[data-shipwait]");
+        const shipwaitInputs = doc.querySelectorAll("input[data-shipwait]");
         if (shipwaitInputs.length === 0) {
             errors.push("Missing form input with data-shipwait attribute");
         }
@@ -151,35 +162,61 @@ function validateHtml(htmlContent: string): string[] {
 const isHtmlValid = computed(() => validationErrors.value.length === 0);
 
 const validateHtmlCode = (content = htmlCode.value) => {
-    validationErrors.value = validateHtml(content);
+    // Only run validation on the client-side
+    if (typeof window !== 'undefined') {
+        validationErrors.value = validateHtml(content);
+    }
 };
+
+// Watch for changes in htmlCode and validate automatically
+watch(htmlCode, (newValue) => {
+    validateHtmlCode(newValue);
+});
+
+import { useEventListener } from '@vueuse/core';
+
+useEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault()
+        saveTemplate();
+    }
+})
+
 
 // Format code on initialization and fetch data
 onMounted(async () => {
-    validateHtmlCode();
-
     // Load deployed pages to check if we already have a public URL
     if (projectId.value) {
         isLoading.value = true;
         try {
-            await pageStore.fetchDeployedPages(projectId.value);
+            // Just check if deployed page exists instead of fetching all pages
+            await pageStore.checkDeployedPageExists(projectId.value);
 
             // Initialize with existing template if available
             await pageStore.fetchTemplates(projectId.value);
             if (templates.value.length > 0) {
                 currentTemplate.value = templates.value[0];
-                htmlCode.value = currentTemplate.value.html || htmlCode.value;
+                htmlCode.value = currentTemplate.value.html || htmlCode.value || LANDING_PAGE_EXAMPLE;
                 templateName.value = currentTemplate.value.name;
+            } else if (!htmlCode.value) {
+                // Set default example if no template exists and no code
+                htmlCode.value = LANDING_PAGE_EXAMPLE;
             }
 
             // Format after loading
             formatCode();
+
+            // Validate HTML after setting it
+            validateHtmlCode();
         } catch (error) {
             console.error("Error loading page data:", error);
             toast.error("Failed to load page data");
         } finally {
             isLoading.value = false;
         }
+    } else {
+        // If no projectId, at least validate any existing HTML
+        validateHtmlCode();
     }
 });
 </script>

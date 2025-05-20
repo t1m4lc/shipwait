@@ -53,7 +53,7 @@ const snippet = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-8">
+  <div class="space-y-8 max-w-4xl">
     <!-- Header section -->
     <div class="space-y-1">
       <h1 class="text-3xl font-bold tracking-tight">
@@ -92,7 +92,7 @@ const snippet = computed(() => {
           </div>
           <p class="text-muted-foreground">
             Use a dedicated Shipwait landing page that we host for you.
-            <strong class="text-foreground">No code required.</strong>
+            <!-- <strong class="text-foreground">No code required.</strong> -->
           </p>
           <NuxtLink :to="{ name: 'dashboard-projects-projectSlug-page' }" class="inline-flex items-center text-sm font-medium text-primary hover:underline">
             Create landing pages →

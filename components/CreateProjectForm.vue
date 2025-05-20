@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
-import { useDebounce, useDebounceFn } from '@vueuse/core'
-import { Check, Circle, Dot, ExternalLink, Loader2, MessageCircle, XCircle } from 'lucide-vue-next'
+import { useDebounceFn } from '@vueuse/core'
+import { Check, Circle, Dot, Loader2 } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { toast } from 'vue-sonner'
 import * as z from 'zod'
+import BehaviorStep from '~/components/project-steps/BehaviorStep.vue'
+import ConfigureStep from '~/components/project-steps/ConfigureStep.vue'
+import GeneralStep from '~/components/project-steps/GeneralStep.vue'
+import { type CreatedProject, type SlugCheckState } from '~/types/project'
 import { SLUG_PATTERN } from '~/utils/regex'
 import { checkSlugAvailability, generateSlug } from '~/utils/slug'
 import generateSnippet from '~/utils/snippet'
-
-type SlugCheckState = 'not-set' | 'loading' | 'available' | 'unavailable';
-
-interface CreatedProject {
-    id: string;
-    slug: string;
-}
 
 const generalSchema = z.object({
     name: z.string().min(1, 'Project name is required'),
@@ -104,7 +101,7 @@ const { values, meta, validate, setFieldValue } = useForm<FormValues>({
     initialValues: {
         name: '',
         slug: '',
-        behaviour_type: 'show_message',
+        behaviour_type: 'do_nothing',
         message: 'Thank you for joining the waitlist!',
         redirect_url: '',
     },
@@ -168,8 +165,8 @@ async function onSubmit(): Promise<void> {
         stepIndex.value = 3;
     } else {
         toast('Project creation failed', {
-            description: typeof error === 'object' && error !== null && 'message' in error 
-                ? String(error.message) 
+            description: typeof error === 'object' && error !== null && 'message' in error
+                ? String(error.message)
                 : 'An error occurred while creating the project.',
         });
     }
@@ -219,8 +216,8 @@ async function updateSlugFromName() {
                 <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }" class="relative flex w-full flex-col items-center justify-center" :step="step.step">
                     <StepperSeparator v-if="step.step !== steps[steps.length - 1].step" class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
 
-                    <StepperTrigger as-child :disabled="step.step > stepIndex && !meta.valid">
-                        <Button :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'" size="icon" class="z-10 rounded-full shrink-0" :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']" :disabled="step.step > stepIndex && !meta.valid">
+                    <StepperTrigger as-child :disabled="step.step > stepIndex && !meta.valid || step.title === 'Configure'">
+                        <Button :variant="state === 'completed' || state === 'active' ? 'default' : 'outline'" size="icon" class="z-10 rounded-full shrink-0" :class="[state === 'active' && 'ring-2 ring-ring ring-offset-2 ring-offset-background']" :disabled="step.step > stepIndex && !meta.valid || step.title === 'Configure'">
                             <Check v-if="state === 'completed'" class="size-5" />
                             <Loader2 v-else-if="isSubmitting && step.step === 2" class="size-5 animate-spin" />
                             <Circle v-else-if="state === 'active'" />
@@ -239,163 +236,27 @@ async function updateSlugFromName() {
                 </StepperItem>
             </div>
 
-            <div class="flex flex-col gap-4 mt-4">
-                <template v-if="stepIndex === 1">
-                    <FormField v-slot="{ componentField }" name="name">
-                        <FormItem>
-                            <FormLabel>Project Name</FormLabel>
-                            <FormControl>
-                                <Input type="text" v-bind="componentField" @input="updateSlugFromName" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    </FormField>
+            <div class="flex flex-col gap-4 mt-4 p-8">
+                <GeneralStep v-if="stepIndex === 1" :name="values.name" :slug="values.slug" :slug-check-state="slugCheckState" :suggested-slug="suggestedSlug" @update:name="setFieldValue('name', $event)" @update:slug="setFieldValue('slug', $event)" @check-slug="checkSlug" @generate-slug-from-name="updateSlugFromName" />
 
-                    <FormField v-slot="{ componentField }" name="slug">
-                        <FormItem>
-                            <FormLabel>Project Slug</FormLabel>
+                <BehaviorStep v-if="stepIndex === 2" :behaviour-type="values.behaviour_type" :message="values.message || ''" :redirect-url="values.redirect_url || ''" @update:behaviour-type="setFieldValue('behaviour_type', $event)" @update:message="setFieldValue('message', $event)" @update:redirect-url="setFieldValue('redirect_url', $event)" />
 
-                            <div class="flex items-center gap-2">
-                                <FormControl>
-                                    <Input type="text" v-bind="componentField" @input="checkSlug(values.slug)" :disabled="slugCheckState === 'loading' || !values.slug.trim().length" />
-                                </FormControl>
-                                <div v-if="slugCheckState === 'loading'" class="flex items-center text-muted-foreground">
-                                    <Loader2 class="animate-spin size-4 mr-1" />
-                                    Checking...
-                                </div>
-                                <div v-else-if="slugCheckState === 'unavailable'" class="flex items-center text-destructive">
-                                    <XCircle class="size-4 mr-1" />
-                                    Not available
-                                </div>
-                                <div v-else-if="slugCheckState === 'available' && values.slug" class="flex items-center text-success">
-                                    <Check class="size-4 mr-1" />
-                                    Available
-                                </div>
-                            </div>
-                            <FormDescription>
-                                Used in URLs for your project. Only lowercase letters, numbers, and hyphens.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    </FormField>
-                </template>
-
-                <template v-if="stepIndex === 2">
-                    <FormField v-slot="{ componentField }" name="behaviour_type">
-                        <FormItem>
-                            <FormLabel>Submit behaviour</FormLabel>
-
-                            <FormControl>
-                                <RadioGroup class="flex justify-start gap-8 pt-2" v-bind="componentField">
-                                    <FormItem>
-                                        <FormLabel class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
-                                            <FormControl>
-                                                <RadioGroupItem value="show_message" class="sr-only" />
-                                            </FormControl>
-
-                                            <div class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
-                                                <MessageCircle class="h-6 w-6" />
-                                            </div>
-
-                                            <span class="text-sm font-medium">Message</span>
-                                        </FormLabel>
-                                    </FormItem>
-
-                                    <FormItem>
-                                        <FormLabel class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
-                                            <FormControl>
-                                                <RadioGroupItem value="redirect" class="sr-only" />
-                                            </FormControl>
-
-                                            <div class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
-                                                <ExternalLink class="h-6 w-6" />
-                                            </div>
-
-                                            <span class="text-sm font-medium">Redirect</span>
-                                        </FormLabel>
-                                    </FormItem>
-
-                                    <FormItem>
-                                        <FormLabel class="[&:has([data-state=checked])>div]:border-primary flex flex-col items-center cursor-pointer">
-                                            <FormControl>
-                                                <RadioGroupItem value="do_nothing" class="sr-only" />
-                                            </FormControl>
-
-                                            <div class="flex h-16 w-16 items-center justify-center rounded-md border-2 bg-accent transition-colors ">
-                                                <XCircle class="h-6 w-6" />
-                                            </div>
-
-                                            <span class="text-sm font-medium">None</span>
-                                        </FormLabel>
-                                    </FormItem>
-                                </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    </FormField>
-                    <FormField v-if="values.behaviour_type === 'show_message'" v-slot="{ componentField }" name="message">
-                        <FormItem>
-                            <FormLabel>Message to display</FormLabel>
-                            <FormControl>
-                                <Input type="text" v-bind="componentField" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    </FormField>
-                    <FormField v-if="values.behaviour_type === 'redirect'" v-slot="{ componentField }" name="redirect_url">
-                        <FormItem>
-                            <FormLabel>Redirection URL</FormLabel>
-                            <FormControl>
-                                <Input type="url" v-bind="componentField" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    </FormField>
-                </template>
-
-                <template v-if="stepIndex === 3">
-                    <div class="flex flex-col items-center gap-6 py-4">
-                        <div class="text-center">
-                            <h3 class="text-lg font-semibold mb-2">Project created 🎉</h3>
-                            <p class="text-muted-foreground">
-                                1- Add the code snippet to your website's <code>&lt;head&gt;</code> section.
-                            </p>
-                            <p class="text-muted-foreground">
-                                2- Add the <code>data-shipwait</code> attribute to your email input to bind to Shipwait
-                                script.
-                            </p>
-                        </div>
-
-                        <div class="w-full max-w-2xl">
-                            <CodeDisplay language="html" :with-copy="true">
-                                {{ snippet.toString() }}
-                            </CodeDisplay>
-                        </div>
-                    </div>
-                </template>
+                <ConfigureStep v-if="stepIndex === 3" :snippet="snippet" :project-id="createdProject?.id || ''" :project-slug="createdProject?.slug || ''" />
             </div>
 
             <div class="flex items-center mt-8 gap-4" :class="projects.length ? 'justify-between' : 'justify-end'">
-                <NuxtLink v-if="stepIndex === 1 && projects.length" to="/dashboard">
-                    <Button variant="outline" size="sm">
-                        Cancel
-                    </Button>
+                <NuxtLink v-if="stepIndex === 1 && projects.length" to="/dashboard" class="flex items-center">
+                    <Button variant="outline" size="sm">Back to Dashboard</Button>
                 </NuxtLink>
                 <Button v-else-if="stepIndex === 2" :disabled="isSubmitting" variant="outline" size="sm" @click="handlePrevStep">
-                    Back
+                    Previous Step
                 </Button>
 
                 <div class="flex items-center gap-3" :class="stepIndex === 3 ? 'justify-center w-full' : ''">
-                    <Button v-if="stepIndex === 1" type="button" :disabled="!meta.valid" size="sm" @click="handleNextStep">
-                        Next
+                    <Button v-if="stepIndex < 3" type="submit" :disabled="isSubmitting || !meta.valid">
+                        {{ stepIndex === 2 ? "Create Project" : "Next Step" }}
+                        <Loader2 v-if="isSubmitting" class="ml-2 h-4 w-4 animate-spin" />
                     </Button>
-                    <Button v-if="stepIndex === 2" size="sm" type="submit" :disabled="!meta.valid || isSubmitting">
-                        <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
-                        Create Project
-                    </Button>
-                    <NuxtLink v-if="stepIndex === 3" :to="`/dashboard/projects/${createdProject?.slug}`">
-                        <Button size="sm" variant="default">Go to Dashboard</Button>
-                    </NuxtLink>
                 </div>
             </div>
         </Stepper>

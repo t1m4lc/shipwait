@@ -21,12 +21,6 @@ const userData = computed(() => {
   }
 })
 
-const client = useSupabaseClient()
-
-const logout = async () => {
-  await client.auth.signOut()
-  navigateTo('/login')
-}
 
 const navMain = [
   {
@@ -61,7 +55,7 @@ const navMain = [
       <LayoutNavMain :items="navMain" />
     </SidebarContent>
     <SidebarFooter>
-      <LayoutNavUser v-if="userData" :user="userData" @logout="logout()" />
+      <LayoutNavUser v-if="userData" :user="userData" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>
