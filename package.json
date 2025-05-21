@@ -9,6 +9,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "prebuild": "npm run generate:sitemap",
     "supa-types": "npx supabase gen types typescript --project-id 'ayyfgjsgyknlztnwzfqd' --schema public > types/supabase.ts",
     "supabase:restart": "npx supabase stop && npx supabase start",
     "supabase:reset": "npx supabase db reset",

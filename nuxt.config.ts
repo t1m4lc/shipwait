@@ -16,13 +16,34 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  app: {
+    head: {
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      meta: [
+        {
+          name: "description",
+          content:
+            "ShipWait - Create landing pages and collect emails in minutes. Test your ideas and build only what people want.",
+        },
+        { name: "format-detection", content: "telephone=no" },
+      ],
+    },
+  },
   routeRules: {
     "/": { prerender: true },
     "/login": { prerender: true },
     "/register": { prerender: true },
     "/privacy": { prerender: true },
-    "/p/**": { ssr: false },
-    "/p/*": { ssr: false },
+    "/terms": { prerender: true },
+    "/confirm": { prerender: true },
+    "/welcome": { prerender: true },
+
+    "/dashboard/**": {
+      headers: {
+        "X-Robots-Tag": "noindex, nofollow",
+      },
+    },
   },
   shadcn: {
     prefix: "",

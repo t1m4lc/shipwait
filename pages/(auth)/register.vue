@@ -2,6 +2,16 @@
 definePageMeta({
   layout: 'blank',
 })
+
+import { useSeo } from "~/composables/useSeo";
+
+// Apply SEO optimization for registration page
+useSeo({
+  title: 'Sign Up - ShipWait',
+  description: 'Create your ShipWait account to start validating your ideas with landing pages and email collections.',
+  robots: 'index, follow',
+  type: 'website'
+});
 </script>
 
 

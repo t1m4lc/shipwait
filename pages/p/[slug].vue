@@ -27,6 +27,9 @@ import { Loader2 } from "lucide-vue-next";
 import { nextTick, onMounted, ref, watch } from "vue";
 import type { Database } from "~/types/supabase";
 
+// Import the useSeo composable
+import { useSeo } from "~/composables/useSeo";
+
 definePageMeta({
   layout: "blank",
 });
@@ -38,6 +41,17 @@ const isLoading = ref(true);
 const error = ref<string | null>(null);
 const pageTitle = ref<string>("Landing Page");
 const projectId = ref<string | null>(null);
+const projectDescription = ref<string>("Join our waitlist to get early access.");
+
+// Watch for changes in page title and description to update SEO
+watch([pageTitle, projectDescription], ([newTitle, newDesc]) => {
+  // Apply dynamic SEO for the landing page
+  useSeo({
+    title: newTitle,
+    description: newDesc,
+    robots: 'index, follow'
+  });
+}, { immediate: true });
 
 
 // Submit form data to the server and handle responses

@@ -6,6 +6,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
+// Import our custom composables
+import { useSeo } from "~/composables/useSeo";
+import { useFaqSchema, useOrganizationSchema } from "~/composables/useStructuredData";
+
 const user = useSupabaseUser();
 const prices = {
   monthly: {
@@ -46,6 +50,16 @@ const faqs = [
     answer: "You'll have access to a dashboard where you can view all collected emails, send updates to your waitlist, and track conversion metrics. When you're ready to launch, you can notify everyone with just one click."
   }
 ];
+
+// Apply SEO optimization
+useSeo({
+  title: 'ShipWait - Validate Your Ideas Before Building Them',
+  description: 'Create landing pages and collect emails in minutes. Test your ideas and build only what people want.'
+});
+
+// Add structured data for FAQs and Organization
+useOrganizationSchema();
+useFaqSchema(faqs);
 
 // Testimonial data
 const testimonials = [
