@@ -122,4 +122,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .gradient {
+    @apply bg-gradient-to-l from-amber-500 to-orange-600 bg-clip-text text-transparent;
+  }
 }
