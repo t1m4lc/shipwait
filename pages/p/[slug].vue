@@ -112,7 +112,7 @@ const showMessage = (form: HTMLFormElement, message: string): void => {
 
   if (messageEl && messageEl instanceof HTMLElement) {
     messageEl.textContent = message;
-    
+
     // Apply consistent styling to message element
     messageEl.style.marginTop = '16px';
     messageEl.style.fontWeight = '600';
@@ -120,10 +120,10 @@ const showMessage = (form: HTMLFormElement, message: string): void => {
     messageEl.style.textAlign = 'center';
 
     // Determine message type for appropriate styling
-    const isError = message.toLowerCase().includes('error') || 
-                    message.toLowerCase().includes('failed') || 
-                    message.toLowerCase().includes('already exists');
-                    
+    const isError = message.toLowerCase().includes('error') ||
+      message.toLowerCase().includes('failed') ||
+      message.toLowerCase().includes('already exists');
+
     if (isError) {
       messageEl.style.color = '#e11d48'; // Error color (red)
     } else {

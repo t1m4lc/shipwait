@@ -44,7 +44,7 @@ definePageMeta({
       </div>
     </div>
     <div class="relative hidden bg-muted lg:block dark:brightness-[0.2] dark:grayscale">
-      <NuxtImg src="img/register.jpg" class="absolute inset-0 h-full w-full object-cover object-bottom " />
+      <NuxtImg src="img/register.jpg" class="absolute inset-0 h-full w-full object-cover object-top" />
     </div>
   </div>
 </template>
