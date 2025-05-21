@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
       <div class="flex flex-col gap-4 sm:flex-row pt-10">
         <Button size="lg" as-child class="bg-primary hover:bg-primary/90 text-lg">
           <NuxtLink to="/register" class="inline-flex items-center justify-center">
-            Start Building For Free
+            Start for Free
           </NuxtLink>
         </Button>
         <Button size="lg" variant="outline" class="text-lg hidden lg:block">

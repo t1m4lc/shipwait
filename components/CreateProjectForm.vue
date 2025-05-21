@@ -236,7 +236,7 @@ async function updateSlugFromName() {
                 </StepperItem>
             </div>
 
-            <div class="flex flex-col gap-4 mt-4 p-8">
+            <div class="flex flex-col gap-4 mt-4 p-2 lg:p-8">
                 <GeneralStep v-if="stepIndex === 1" :name="values.name" :slug="values.slug" :slug-check-state="slugCheckState" :suggested-slug="suggestedSlug" @update:name="setFieldValue('name', $event)" @update:slug="setFieldValue('slug', $event)" @check-slug="checkSlug" @generate-slug-from-name="updateSlugFromName" />
 
                 <BehaviorStep v-if="stepIndex === 2" :behaviour-type="values.behaviour_type" :message="values.message || ''" :redirect-url="values.redirect_url || ''" @update:behaviour-type="setFieldValue('behaviour_type', $event)" @update:message="setFieldValue('message', $event)" @update:redirect-url="setFieldValue('redirect_url', $event)" />
@@ -244,7 +244,7 @@ async function updateSlugFromName() {
                 <ConfigureStep v-if="stepIndex === 3" :snippet="snippet" :project-id="createdProject?.id || ''" :project-slug="createdProject?.slug || ''" />
             </div>
 
-            <div class="flex items-center mt-8 gap-4" :class="projects.length ? 'justify-between' : 'justify-end'">
+            <div class="flex items-center mt-4 lg:mt-8 gap-4" :class="projects.length ? 'justify-between' : 'justify-end'">
                 <NuxtLink v-if="stepIndex === 1 && projects.length" to="/dashboard" class="flex items-center">
                     <Button variant="outline" size="sm">Back to Dashboard</Button>
                 </NuxtLink>

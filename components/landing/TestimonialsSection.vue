@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ref } from "vue";
 
 type TestimonialType = {
   name: string;
@@ -14,17 +13,6 @@ defineProps<{
   testimonials: TestimonialType[];
 }>();
 
-// Define the roles that will be animated
-import { useInterval } from "@vueuse/core";
-
-const roles = ["Founders", "Indie Hackers", "Product Managers", "Developers", "Marketers"];
-const currentRole = ref(0);
-
-useInterval(2500, {
-  callback: () => {
-    currentRole.value = (currentRole.value + 1) % roles.length;
-  }
-});
 </script>
 
 <template>
@@ -33,14 +21,7 @@ useInterval(2500, {
       <div class="mx-auto max-w-6xl">
         <div class="text-center mb-12">
           <h2 class="text-3xl gap-2 font-bold flex justify-center sm:text-4xl mb-3">
-            Loved by
-            <div class="w-40 sm:w-52 text-nowrap h-10 text-center sm:text-left relative">
-              <TransitionGroup tag="div" name="slide-y" class="absolute inset-0 flex items-center justify-center sm:justify-start">
-                <span v-for="(role, idx) in roles" v-show="idx === currentRole" :key="role" class="gradient-text font-bold absolute left-1/2 sm:left-0 -translate-x-1/2 sm:translate-x-0">
-                  {{ role }}
-                </span>
-              </TransitionGroup>
-            </div>
+            Loved by <span class="gradient-text">Makers</span>
           </h2>
           <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
             Here's what our users say about ShipWait
