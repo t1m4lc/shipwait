@@ -38,7 +38,6 @@ export default defineNuxtConfig({
     "/privacy": { prerender: true },
     "/terms": { prerender: true },
     "/confirm": { prerender: true },
-    "/welcome": { prerender: true },
 
     "/dashboard/**": {
       headers: {
