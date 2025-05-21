@@ -2,6 +2,15 @@
 definePageMeta({
   layout: 'blank'
 })
+
+import { useSeo } from "~/composables/useSeo";
+
+// Apply SEO optimization for privacy policy page
+useSeo({
+  title: 'Privacy Policy - ShipWait',
+  description: 'Learn about ShipWait\'s privacy practices and how we protect your data.',
+  type: 'website'
+});
 </script>
 
 <template>

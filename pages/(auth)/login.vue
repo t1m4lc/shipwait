@@ -2,6 +2,15 @@
 definePageMeta({
   layout: 'blank',
 })
+
+import { useSeo } from "~/composables/useSeo";
+
+// Apply SEO optimization for login page
+useSeo({
+  title: 'Login - ShipWait',
+  description: 'Login to your ShipWait account to manage your landing pages and email collections.',
+  robots: 'index, follow'
+});
 </script>
 
 <template>
@@ -29,8 +38,7 @@ definePageMeta({
         </Card>
       </div>
 
-      <div
-        class="text-balance text-center text-sm text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
+      <div class="text-balance text-center text-sm text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary">
         Don't have an account?
         <NuxtLink to="register">
           Sign up

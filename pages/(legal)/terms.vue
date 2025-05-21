@@ -2,6 +2,15 @@
 definePageMeta({
     layout: 'blank'
 })
+
+import { useSeo } from "~/composables/useSeo";
+
+// Apply SEO optimization for terms of service page
+useSeo({
+  title: 'Terms of Service - ShipWait',
+  description: 'Review ShipWait\'s terms of service and user agreement.',
+  type: 'website'
+});
 </script>
 
 <template>
