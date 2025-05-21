@@ -25,7 +25,7 @@
 import { NuxtLink } from "#components";
 import { Loader2 } from "lucide-vue-next";
 import { nextTick, onMounted, ref, watch } from "vue";
-import type { Database } from "~/types/supabase";
+import { usePageStore } from '~/stores/page.store';
 
 definePageMeta({
   layout: "blank",
@@ -169,19 +169,20 @@ onMounted(async () => {
   try {
     isLoading.value = true;
 
-    const supabase = useSupabaseClient<Database>();
+    const pageStore = usePageStore();
+    const result = await pageStore.getPageBySlug(slug);
 
-    const { data: page, error } = await supabase
-      .from("pages")
-      .select('*')
-      .eq("slug", slug)
-      .limit(1)
-      .single();
+    if (!result.success || !result.data) {
+      throw new Error("Page not found");
+    }
 
-    if (error) throw error;
-    if (!page?.active) throw new Error("Page not found");
+    const page = result.data;
+    if (!page?.active) {
+      throw new Error("Page not found or inactive");
+    }
 
     html.value = page.html;
+    projectId.value = page.project_id;
   } catch (err: any) {
     console.error("Error loading page:", err);
     error.value = "This page could not be found.";

@@ -1,10 +1,11 @@
 <template>
     <div class="size-full">
-        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :is-loading="isLoading" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-template="!!currentTemplate?.id" @validate="validateHtmlCode" @format="formatCode" @save="saveTemplate" @deploy="deployPage" />
+        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :is-loading="isLoading" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-template="!!template?.id" @validate="validateHtmlCode" @format="formatCode" @save="saveTemplate" @deploy="deployPage" />
     </div>
 </template>
 
 <script setup lang="ts">
+import { useEventListener } from '@vueuse/core';
 import { html_beautify } from 'js-beautify';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, watch } from "vue";
@@ -13,28 +14,37 @@ import SplitHtmlPreview from '~/components/SplitHtmlPreview.vue';
 import { LANDING_PAGE_EXAMPLE } from "~/stores/landing";
 import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
+import { validateHtml } from '~/utils/validateHtml';
 
 definePageMeta({
     middleware: ['project-handler'],
     layout: "page"
 });
 
+// Project information
 const projectsStore = useProjectsStore();
 const projectId = computed(() => projectsStore.selectedProjectId || '');
 const projectSlug = computed(() => projectsStore.selectedProjectSlug || '');
 
+// Page store with template and page data
 const pageStore = usePageStore();
-const { templates, currentTemplate, publicPageUrl } = storeToRefs(pageStore);
+const { template, page, isLoading: storeLoading, publicPageUrl, hasDeployedPage } = storeToRefs(pageStore);
 
+// Local state
 const isSaving = ref(false);
 const isDeploying = ref(false);
-const isLoading = ref(false);
-const templateName = ref("My Landing Page");
+const isLoading = computed(() => storeLoading.value || isSaving.value || isDeploying.value);
+const templateName = computed(() => template.value?.name || "My Landing Page");
 const pageTitle = ref('Page Editor');
 
+// HTML editor state
 const htmlCode = ref('');
 const validationErrors = ref<string[]>([]);
+const isHtmlValid = computed(() => validationErrors.value.length === 0);
 
+/**
+ * Format the HTML code using js-beautify
+ */
 function formatCode(silent = false) {
     try {
         const formatted = html_beautify(htmlCode.value, {
@@ -45,7 +55,6 @@ function formatCode(silent = false) {
             indent_inner_html: true,
             wrap_line_length: 120,
             end_with_newline: true,
-            // Cast to any to handle properties that might not be in the type definitions
             ...(({
                 indent_scripts: 'normal',
                 brace_style: 'collapse',
@@ -55,15 +64,22 @@ function formatCode(silent = false) {
         });
 
         htmlCode.value = formatted;
-        if (!silent)
+
+        if (!silent) {
             toast.success("Code formatted successfully");
+        }
     } catch (error) {
         console.error("Failed to format code:", error);
-        if (!silent)
+
+        if (!silent) {
             toast.error("Failed to format code");
+        }
     }
 }
 
+/**
+ * Save the current template
+ */
 async function saveTemplate() {
     if (!isHtmlValid.value) {
         toast.error("Cannot save invalid HTML");
@@ -71,18 +87,16 @@ async function saveTemplate() {
     }
 
     isSaving.value = true;
+
     try {
-        const template = {
-            id: currentTemplate.value?.id,
+        const result = await pageStore.saveTemplate({
+            id: template.value?.id ?? undefined,
             name: templateName.value,
             html: htmlCode.value,
             project_id: projectId.value,
-            // Add required properties with current timestamp if new template
-            created_at: currentTemplate.value?.created_at || new Date().toISOString(),
+            created_at: template.value?.created_at || new Date().toISOString(),
             updated_at: new Date().toISOString()
-        };
-
-        const result = await pageStore.saveTemplate(template);
+        });
 
         if (result.success) {
             toast.success("Template saved successfully");
@@ -97,22 +111,28 @@ async function saveTemplate() {
     }
 }
 
+/**
+ * Deploy the page using the current template
+ */
 async function deployPage() {
-    if (!currentTemplate.value?.id) {
+    if (!template.value?.id) {
         toast.error("Please save the template before deploying");
         return;
     }
 
     isDeploying.value = true;
+
     try {
-        const result = await pageStore.deployPage(projectId.value, projectSlug.value, currentTemplate.value);
+        const result = await pageStore.deployPage(
+            projectId.value,
+            projectSlug.value,
+            template.value
+        );
 
         if (result.success) {
             toast.success("Page deployed successfully");
 
-            // Check to ensure the public URL is updated
             if (result.data?.publicUrl) {
-                // URL is already set by the deployPage function
                 toast.success(`Your page is live at ${result.data.publicUrl}`);
             }
         } else {
@@ -126,99 +146,61 @@ async function deployPage() {
     }
 }
 
-function validateHtml(htmlContent: string): string[] {
-    const errors: string[] = [];
-
-    // Check if we're in a browser environment
-    if (typeof window === 'undefined' || !window.DOMParser) {
-        return [];
-    }
-
-    // Check if HTML is well-formed
-    try {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlContent, "text/html");
-        const parserErrors = doc.querySelectorAll("parsererror");
-
-        if (parserErrors.length > 0) {
-            errors.push("HTML is not well-formed");
-        }
-
-        // Check for script tags
-        const scriptTags = doc.querySelectorAll("script");
-        if (scriptTags.length > 0) {
-            errors.push("Script tags are not allowed");
-        }
-
-        // Check for input with data-shipwait attribute inside a form
-        const shipwaitInputs = doc.querySelectorAll("input[data-shipwait]");
-        if (shipwaitInputs.length === 0) {
-            errors.push("Missing form input with data-shipwait attribute");
-        }
-    } catch (error) {
-        errors.push("Could not parse HTML");
-    }
-
-    return errors;
-}
-
-const isHtmlValid = computed(() => validationErrors.value.length === 0);
-
+/**
+ * Validate the HTML code
+ */
 const validateHtmlCode = (content = htmlCode.value) => {
-    // Only run validation on the client-side
     if (typeof window !== 'undefined') {
         validationErrors.value = validateHtml(content);
     }
 };
 
-// Watch for changes in htmlCode and validate automatically
-watch(htmlCode, (newValue) => {
-    validateHtmlCode(newValue);
-});
+// Watch for changes to validate HTML
+watch(htmlCode, validateHtmlCode);
 
-import { useEventListener } from '@vueuse/core';
-
+// Key events for saving
 useEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') {
-        e.preventDefault()
+        e.preventDefault();
         saveTemplate();
     }
-})
+});
 
-
-// Format code on initialization and fetch data
+// Initialize page data
 onMounted(async () => {
-    // Load deployed pages to check if we already have a public URL
-    if (projectId.value) {
-        isLoading.value = true;
-        try {
-            // Just check if deployed page exists instead of fetching all pages
-            await pageStore.checkDeployedPageExists(projectId.value);
+    if (!projectId.value) {
+        validateHtmlCode();
+        return;
+    }
 
-            // Initialize with existing template if available
-            await pageStore.fetchTemplates(projectId.value);
-            if (templates.value.length > 0) {
-                currentTemplate.value = templates.value[0];
-                htmlCode.value = currentTemplate.value.html || htmlCode.value || LANDING_PAGE_EXAMPLE;
-                templateName.value = currentTemplate.value.name;
-            } else if (!htmlCode.value) {
-                // Set default example if no template exists and no code
+    try {
+        const result = await pageStore.initializePageData(projectId.value);
+
+        if (result.success) {
+            // If we have a template, use its HTML
+            if (template.value) {
+                htmlCode.value = template.value.html;
+            } else {
+                // Otherwise use default example
                 htmlCode.value = LANDING_PAGE_EXAMPLE;
             }
 
-            // Format after loading
+            // Format the code
             formatCode(true);
-
-            // Validate HTML after setting it
             validateHtmlCode();
-        } catch (error) {
-            console.error("Error loading page data:", error);
-            toast.error("Failed to load page data");
-        } finally {
-            isLoading.value = false;
+        } else {
+            toast.error(`Failed to load page data: ${result.error}`);
+            htmlCode.value = LANDING_PAGE_EXAMPLE;
+            formatCode(true);
+            validateHtmlCode();
         }
-    } else {
-        // If no projectId, at least validate any existing HTML
+    } catch (error) {
+        console.error("Error loading page data:", error);
+        toast.error("Failed to load page data");
+
+        // Set default content
+        htmlCode.value = LANDING_PAGE_EXAMPLE;
+        formatCode(true);
         validateHtmlCode();
     }
 });

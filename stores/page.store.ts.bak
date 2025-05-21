@@ -33,12 +33,10 @@ export const usePageStore = defineStore("page", () => {
   const hasDeployedPage = computed(() => !!page.value);
 
   // Template functions
-  async function fetchTemplate(
-    projectId: string
-  ): Promise<ApiResponse<PageTemplate | null>> {
+  async function fetchTemplate(projectId: string): Promise<ApiResponse<PageTemplate | null>> {
     isLoading.value = true;
     lastError.value = null;
-
+    
     try {
       if (!user.value) {
         throw new Error("No authenticated user");
@@ -88,35 +86,26 @@ export const usePageStore = defineStore("page", () => {
       }
 
       let result;
-
+      
       if (templateData.id) {
-        // Update existing template with ID
+        // Update existing template
         result = await supabase
           .from("custom_page_template")
           .update({
-            name: templateData.name,
-            html: templateData.html,
-            project_id: templateData.project_id,
+            ...templateData,
             user_id: user.value.id,
             updated_at: new Date().toISOString(),
           })
-          .eq("id", templateData.id)
+          .eq('id', templateData.id)
           .select()
           .single();
       } else {
-        // Insert new template with a generated UUID
-        // In a real app, we'd use a UUID library, but for simplicity:
-        const randomId = crypto.randomUUID();
-
+        // Insert new template
         result = await supabase
           .from("custom_page_template")
           .insert({
-            id: randomId,
-            name: templateData.name,
-            html: templateData.html,
-            project_id: templateData.project_id,
+            ...templateData,
             user_id: user.value.id,
-            created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
           .select()
@@ -124,10 +113,10 @@ export const usePageStore = defineStore("page", () => {
       }
 
       if (result.error) throw result.error;
-
+      
       // Update the local state
       template.value = result.data;
-
+      
       return { success: true, data: result.data };
     } catch (err: any) {
       console.error("Error saving template:", err);
@@ -139,9 +128,7 @@ export const usePageStore = defineStore("page", () => {
   }
 
   // Page functions
-  async function fetchPage(
-    projectId: string
-  ): Promise<ApiResponse<Page | null>> {
+  async function fetchPage(projectId: string): Promise<ApiResponse<Page | null>> {
     isLoading.value = true;
     lastError.value = null;
 
@@ -169,9 +156,7 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
-  async function getPageBySlug(
-    slug: string
-  ): Promise<ApiResponse<Page | null>> {
+  async function getPageBySlug(slug: string): Promise<ApiResponse<Page | null>> {
     isLoading.value = true;
     lastError.value = null;
 
@@ -211,17 +196,19 @@ export const usePageStore = defineStore("page", () => {
         throw new Error("Template must be saved before deployment");
       }
 
+      const pageData = {
+        slug: projectSlug,
+        project_id: projectId,
+        title: templateToUse.name,
+        html: templateToUse.html,
+        active: true,
+        updated_at: new Date().toISOString(),
+      };
+
       // Upsert the page (update if exists, insert if not)
       const { data, error: deployError } = await supabase
         .from("pages")
-        .upsert({
-          slug: projectSlug,
-          project_id: projectId,
-          title: templateToUse.name,
-          html: templateToUse.html,
-          active: true,
-          updated_at: new Date().toISOString(),
-        })
+        .upsert(pageData)
         .select()
         .maybeSingle();
 
@@ -229,7 +216,7 @@ export const usePageStore = defineStore("page", () => {
 
       // Update the local state
       page.value = data;
-
+      
       const publicUrl = `${config.public.baseUrl}/p/${projectSlug}`;
 
       return { success: true, data: { publicUrl } };
@@ -243,36 +230,34 @@ export const usePageStore = defineStore("page", () => {
   }
 
   // Initialize page data for project
-  async function initializePageData(projectId: string): Promise<
-    ApiResponse<{
-      template: PageTemplate | null;
-      page: Page | null;
-    }>
-  > {
+  async function initializePageData(projectId: string): Promise<ApiResponse<{ 
+    template: PageTemplate | null, 
+    page: Page | null 
+  }>> {
     isLoading.value = true;
     lastError.value = null;
-
+    
     try {
       // Fetch template and page in parallel
       const [templateResult, pageResult] = await Promise.all([
         fetchTemplate(projectId),
-        fetchPage(projectId),
+        fetchPage(projectId)
       ]);
-
+      
       if (!templateResult.success) {
         throw new Error(templateResult.error);
       }
-
+      
       if (!pageResult.success) {
         throw new Error(pageResult.error);
       }
-
-      return {
-        success: true,
-        data: {
-          template: template.value,
-          page: page.value,
-        },
+      
+      return { 
+        success: true, 
+        data: { 
+          template: template.value, 
+          page: page.value 
+        } 
       };
     } catch (err: any) {
       console.error("Error initializing page data:", err);
@@ -289,21 +274,21 @@ export const usePageStore = defineStore("page", () => {
     page,
     isLoading,
     lastError,
-
+    
     // Computed
     publicPageUrl,
     hasDeployedPage,
-
+    
     // Template methods
     fetchTemplate,
     saveTemplate,
-
+    
     // Page methods
     fetchPage,
     getPageBySlug,
     deployPage,
-
+    
     // Utility methods
-    initializePageData,
+    initializePageData
   };
 });
