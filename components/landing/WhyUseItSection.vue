@@ -5,12 +5,12 @@ import { BarChart3, CheckCircle2, LayoutTemplate, Paintbrush, Rocket, Users } fr
 </script>
 
 <template>
-  <section class="py-20 bg-muted/30">
+  <section class="py-20">
     <div class="container mx-auto px-4 md:px-6">
       <div class="mx-auto max-w-6xl">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold sm:text-4xl mb-3 ">
-            Why use <span class="gradient">ShipWait</span>
+            Why use <span class="gradient-text">ShipWait</span>
           </h2>
           <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
             Validate ideas before you spend months building something nobody wants

@@ -28,7 +28,7 @@ const toggleItem = (id: string) => {
       <div class="mx-auto max-w-6xl flex flex-col md:flex-row gap-12">
         <div class="flex flex-col text-left basis-1/2">
           <h2 class="text-3xl font-bold sm:text-4xl mb-5 ">
-            Frequently <span class="gradient">Asked Questions</span>
+            Frequently <span class="gradient-text">Asked Questions</span>
           </h2>
           <p class="text-muted-foreground mb-6">
             Have another question? Contact me on
@@ -45,7 +45,7 @@ const toggleItem = (id: string) => {
         <div class="basis-1/2">
           <ul>
             <li v-for="(faq, i) in faqs" :key="i" class="border-t border-border">
-              <button @click="toggleItem(`item-${i}`)" class="relative flex gap-2 items-center w-full py-5 text-base font-medium text-left md:text-lg" :aria-expanded="openItem === `item-${i}`">
+              <button @click="toggleItem(`item-${i}`)" class="relative cursor-pointer flex gap-2 items-center w-full py-5 text-base font-medium text-left md:text-lg" :aria-expanded="openItem === `item-${i}`" :class="{ 'gradient-text': openItem === `item-${i}` }">
                 <span class="flex-1">{{ faq.question }}</span>
                 <svg class="flex-shrink-0 w-4 h-4 ml-auto fill-current" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                   <rect y="7" width="16" height="2" rx="1" class="transition duration-200 ease-out" :class="{ 'transform origin-center': true }"></rect>

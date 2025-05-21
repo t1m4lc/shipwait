@@ -7,9 +7,8 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 })
 
-const store = useProjectsStore();
-
 const user = useSupabaseUser()
+const store = user.value ? useProjectsStore() : null;
 
 const userData = computed(() => {
   if (!user.value) return null
@@ -49,7 +48,7 @@ const navMain = [
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <LayoutProjectSwitcher :projects="store.projects" />
+      <LayoutProjectSwitcher v-if="store" :projects="store.projects" />
     </SidebarHeader>
     <SidebarContent>
       <LayoutNavMain :items="navMain" />

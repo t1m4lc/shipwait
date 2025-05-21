@@ -12,6 +12,8 @@ useSeo({
   robots: 'index, follow',
   type: 'website'
 });
+
+const img = useImage()
 </script>
 
 
@@ -28,7 +30,7 @@ useSeo({
       <div class="flex flex-1 items-center justify-center">
         <div class="w-full max-w-xs">
           <div class="text-center pb-12">
-            <h1 class="text-2xl font-bold">
+            <h1 class="gradient-text text-2xl font-bold">
               Create an account
             </h1>
           </div>
@@ -54,7 +56,7 @@ useSeo({
       </div>
     </div>
     <div class="relative hidden bg-muted lg:block dark:brightness-[0.2] dark:grayscale">
-      <NuxtImg src="img/register.jpg" class="absolute inset-0 h-full w-full object-cover object-top" />
+      <NuxtImg src="/img/register.jpg" alt="Sign up illustration" class="absolute inset-0 h-full w-full object-cover object-center" width="300" height="400" placeholder />
     </div>
   </div>
 </template>

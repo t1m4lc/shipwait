@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-gtag",
     "@nuxt/image",
+    "@vueuse/motion/nuxt",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {

@@ -34,7 +34,7 @@ const pageTitle = ref('Page Editor');
 const htmlCode = ref('');
 const validationErrors = ref<string[]>([]);
 
-function formatCode() {
+function formatCode(silent = false) {
     try {
         const formatted = html_beautify(htmlCode.value, {
             indent_size: 2,
@@ -54,10 +54,12 @@ function formatCode() {
         });
 
         htmlCode.value = formatted;
-        toast.success("Code formatted successfully");
+        if (!silent)
+            toast.success("Code formatted successfully");
     } catch (error) {
         console.error("Failed to format code:", error);
-        toast.error("Failed to format code");
+        if (!silent)
+            toast.error("Failed to format code");
     }
 }
 
@@ -204,7 +206,7 @@ onMounted(async () => {
             }
 
             // Format after loading
-            formatCode();
+            formatCode(true);
 
             // Validate HTML after setting it
             validateHtmlCode();

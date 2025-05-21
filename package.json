@@ -31,6 +31,7 @@
     "@tanstack/vue-table": "^8.21.3",
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^13.2.0",
+    "@vueuse/motion": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
@@ -57,6 +58,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@types/js-beautify": "^1.14.3",
     "typescript": "^5.8.3"
   }

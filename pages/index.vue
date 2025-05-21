@@ -7,7 +7,6 @@ import { useFaqSchema, useOrganizationSchema } from "~/composables/useStructured
 import CtaSection from "~/components/landing/CtaSection.vue";
 import FaqSection from "~/components/landing/FaqSection.vue";
 import HeroSection from "~/components/landing/HeroSection.vue";
-import HowItWorksSection from "~/components/landing/HowItWorksSection.vue";
 import TestimonialsSection from "~/components/landing/TestimonialsSection.vue";
 import WhyUseItSection from "~/components/landing/WhyUseItSection.vue";
 
@@ -134,18 +133,18 @@ const testimonials = [
     <main class="flex-1">
 
       <HeroSection />
-      <HowItWorksSection />
-      <TestimonialsSection :testimonials="testimonials" />
+      <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
 
-      <!-- <PricingSection 
+      <!-- <HowItWorksSection class="bg-muted/30" />
+      <PricingSection 
       :prices="prices" 
       v-model:billing-cycle="billingCycle" 
       /> -->
       <FaqSection :faqs="faqs" />
-      <WhyUseItSection />
-      <CtaSection />
+      <WhyUseItSection class="bg-muted/30" />
+      <CtaSection class="bg-muted/80" />
     </main>
-    <footer class="border-t bg-background">
+    <footer>
       <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center gap-4 max-w-6xl">
         <p class="text-center text-sm text-muted-foreground mt-4 md:mt-0">
           © 2025 ShipWait. All rights reserved.

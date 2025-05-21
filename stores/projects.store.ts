@@ -114,10 +114,7 @@ export const useProjectsStore = defineStore(
     const supabase = useSupabaseClient<Database>();
     const user = useSupabaseUser();
 
-    if (!user.value) {
-      throw new Error("No authenticated user");
-    }
-
+    // Initialize with empty array and don't throw error immediately
     const projects = ref<ProjectFull>([]);
     const loading = ref(false);
     const error = ref<any>(null);
@@ -148,7 +145,8 @@ export const useProjectsStore = defineStore(
 
       try {
         if (!user.value) {
-          throw new Error("No authenticated user");
+          console.warn("No authenticated user, skipping project fetch");
+          return [];
         }
 
         const { data, error } = await getProjectsQuery(supabase, user.value.id);
@@ -183,7 +181,11 @@ export const useProjectsStore = defineStore(
 
       try {
         if (!user.value) {
-          throw new Error("No authenticated user");
+          const noUserError = new Error(
+            "Authentication required to create a project"
+          );
+          error.value = noUserError;
+          return { data: null, error: noUserError };
         }
 
         const { data: completeProject, error: apiError } =

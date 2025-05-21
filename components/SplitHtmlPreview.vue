@@ -11,11 +11,6 @@
                 <h2 class="lg:text-lg font-semibold line-clamp-1">{{ title }}</h2>
               </div>
               <div class="flex gap-1 sm:gap-2">
-                <Button variant="outline" size="sm" class="gap-1.5" @click="$emit('format')">
-                  <WrapText class="size-4" />
-                  <span class="hidden lg:inline">Format</span>
-                </Button>
-
                 <Button :disabled="!isHtmlValid || isSaving || isDeploying" variant="outline" size="sm" class="gap-1.5" @click="$emit('save')" :class="{ 'opacity-50': isSaving }">
                   <Loader2 v-if="isSaving" class="size-4 animate-spin" />
                   <Save v-else class="size-4" />
@@ -82,6 +77,13 @@
                     </ul>
                   </HoverCardContent>
                 </HoverCard>
+              </div>
+
+
+              <div class="absolute bottom-3 right-3">
+                <Button variant="outline" size="sm" class="text-primary" @click="$emit('format')">
+                  <WrapText class="size-4" />
+                </Button>
               </div>
             </div>
           </div>

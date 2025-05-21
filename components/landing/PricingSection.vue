@@ -23,7 +23,7 @@ defineEmits<{
 </script>
 
 <template>
-  <section class="py-24 bg-muted/30">
+  <section class="py-24">
     <div class="container mx-auto px-4 md:px-6">
       <div class="mx-auto max-w-6xl">
         <div class="text-center mb-12">

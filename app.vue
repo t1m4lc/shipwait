@@ -1,8 +1,8 @@
 <script setup></script>
 
 <template>
-  <!-- <NuxtLoadingIndicator /> -->
-  <!-- <Toaster position="top-right" class="pointer-events-auto" /> -->
+  <NuxtLoadingIndicator color="red" />
+  <Toaster position="top-right" class="pointer-events-auto" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

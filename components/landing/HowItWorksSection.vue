@@ -47,11 +47,11 @@ const steps: Step[] = [
 </script>
 
 <template>
-  <section class="py-20 bg-muted/30">
+  <section class="py-20">
     <div class="container mx-auto px-4">
       <div class="mx-auto max-w-5xl">
         <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold sm:text-4xl mb-2">How <span class="gradient">ShipWait</span> works?</h2>
+          <h2 class="text-3xl font-bold sm:text-4xl mb-2">How <span class="gradient-text">ShipWait</span> works?</h2>
           <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
             Four simple steps to validate your idea and start collecting leads in minutes
           </p>
@@ -63,7 +63,7 @@ const steps: Step[] = [
               'w-full md:w-1/2 shadow-lg rounded-lg border overflow-hidden',
               index % 2 === 0 ? 'md:order-2' : 'md:order-1'
             ]">
-              <img :src="step.image" :alt="step.alt" class="w-full h-auto" />
+              <NuxtImg :src="step.image" :alt="step.alt" width="400" height="300" class="w-full aspect-3/2 object-cover" format="webp" loading="lazy" />
             </div>
             <div :class="[
               'w-full md:w-1/2',
