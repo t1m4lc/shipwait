@@ -8,6 +8,7 @@ export type Page = Tables<"pages">;
 export const usePageStore = defineStore("page", () => {
   const user = useSupabaseUser();
   const supabase = useSupabaseClient<Database>();
+  const config = useRuntimeConfig();
 
   const templates = ref<PageTemplate[]>([]);
   const currentTemplate = ref<PageTemplate | null>(null);
@@ -43,11 +44,7 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
-  async function saveTemplate(
-    template:
-      | Omit<PageTemplate, "user_id">
-      | Omit<PageTemplate, "user_id" | "id">
-  ) {
+  async function saveTemplate(template: Omit<PageTemplate, "user_id">) {
     loading.value = true;
     error.value = null;
 
@@ -62,16 +59,27 @@ export const usePageStore = defineStore("page", () => {
         updated_at: new Date().toISOString(),
       };
 
-      const { data, error: saveError } = await supabase
-        .from("custom_page_template")
-        .upsert(completeTemplate, {
-          onConflict: "id",
-          ignoreDuplicates: false,
-        })
-        .select()
-        .single();
+      let data: PageTemplate | null = null;
 
-      if (saveError) throw saveError;
+      if (completeTemplate?.id) {
+        const result = await supabase
+          .from("custom_page_template")
+          .update(completeTemplate)
+          .select()
+          .single();
+
+        if (result.error) throw result.error;
+        data = result.data;
+      } else {
+        const result = await supabase
+          .from("custom_page_template")
+          .insert(completeTemplate)
+          .select()
+          .single();
+
+        if (result.error) throw result.error;
+        data = result.data;
+      }
 
       if (data) {
         currentTemplate.value = data;
@@ -95,7 +103,11 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
-  async function deployPage(projectId: string, template: PageTemplate) {
+  async function deployPage(
+    projectId: string,
+    projectSlug: string,
+    template: PageTemplate
+  ) {
     loading.value = true;
     error.value = null;
 
@@ -104,21 +116,12 @@ export const usePageStore = defineStore("page", () => {
         throw new Error("No authenticated user");
       }
 
-      // Ensure the template has an ID (must be saved first)
       if (!template.id) {
         throw new Error("Template must be saved before deployment");
       }
 
-      // First, check if a page already exists for this project
-      const { data: existingPages, error: fetchError } = await supabase
-        .from("pages")
-        .select("id")
-        .eq("project_id", projectId);
-
-      if (fetchError) throw fetchError;
-
-      // Create a properly typed page object for upsert
-      let pageData = {
+      let pageData: Omit<Tables<"pages">, "created_at"> = {
+        slug: projectSlug,
         project_id: projectId,
         title: template.name,
         html: template.html, // HTML is required
@@ -126,45 +129,17 @@ export const usePageStore = defineStore("page", () => {
         updated_at: new Date().toISOString(),
       };
 
-      // If a page exists, include its ID for upsert (update existing)
-      if (existingPages && existingPages.length > 0) {
-        pageData = { ...pageData, id: existingPages[0].id };
-      }
-
       // Upsert the page (update if exists, insert if not)
-      const { data, error: deployError } = await supabase
+      const { error: deployError } = await supabase
         .from("pages")
         .upsert(pageData)
-        .select()
-        .single();
+        .limit(1);
 
       if (deployError) throw deployError;
 
-      if (data) {
-        // Update the local state
-        const existingIndex = deployedPages.value.findIndex(
-          (p) => p.id === data.id
-        );
-        if (existingIndex >= 0) {
-          deployedPages.value[existingIndex] = data;
-        } else {
-          deployedPages.value.push(data);
-        }
+      const publicUrl = `${config.public.baseUrl}/p/${projectSlug}`;
 
-        // Get the project to get its slug
-        const { data: project } = await supabase
-          .from("projects")
-          .select("slug")
-          .eq("id", projectId)
-          .single();
-
-        // Use the project slug for the URL (fallback to ID if slug isn't found)
-        publicPageUrl.value = project?.slug
-          ? `/p/${project.slug}`
-          : `/p/${data.id}`;
-      }
-
-      return { success: true, data, url: publicPageUrl.value };
+      return { success: true, data: { publicUrl } };
     } catch (err: any) {
       console.error("Error deploying page:", err);
       error.value = err.message;

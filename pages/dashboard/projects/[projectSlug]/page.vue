@@ -21,6 +21,7 @@ definePageMeta({
 
 const projectsStore = useProjectsStore();
 const projectId = computed(() => projectsStore.selectedProjectId || '');
+const projectSlug = computed(() => projectsStore.selectedProjectSlug || '');
 
 const pageStore = usePageStore();
 const { templates, currentTemplate, publicPageUrl } = storeToRefs(pageStore);
@@ -104,15 +105,15 @@ async function deployPage() {
 
     isDeploying.value = true;
     try {
-        const result = await pageStore.deployPage(projectId.value, currentTemplate.value);
+        const result = await pageStore.deployPage(projectId.value, projectSlug.value, currentTemplate.value);
 
         if (result.success) {
             toast.success("Page deployed successfully");
 
             // Check to ensure the public URL is updated
-            if (result.url) {
+            if (result.data?.publicUrl) {
                 // URL is already set by the deployPage function
-                toast.success(`Your page is live at ${result.url}`);
+                toast.success(`Your page is live at ${result.data.publicUrl}`);
             }
         } else {
             toast.error(`Failed to deploy page: ${result.error}`);

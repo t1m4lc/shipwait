@@ -22,7 +22,7 @@ export type Database = {
         Insert: {
           created_at?: string
           html: string
-          id?: string
+          id: string
           name: string
           project_id: string
           updated_at?: string
@@ -96,8 +96,8 @@ export type Database = {
           active: boolean | null
           created_at: string
           html: string
-          id: string
           project_id: string
+          slug: string
           title: string | null
           updated_at: string
         }
@@ -105,8 +105,8 @@ export type Database = {
           active?: boolean | null
           created_at?: string
           html: string
-          id?: string
           project_id: string
+          slug: string
           title?: string | null
           updated_at?: string
         }
@@ -114,8 +114,8 @@ export type Database = {
           active?: boolean | null
           created_at?: string
           html?: string
-          id?: string
           project_id?: string
+          slug?: string
           title?: string | null
           updated_at?: string
         }
