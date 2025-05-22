@@ -1,7 +1,6 @@
 // Unified middleware to handle project fetching, selection and navigation
 export default defineNuxtRouteMiddleware(async (to) => {
   const store = useProjectsStore();
-  const slug = to.params.projectSlug as string;
 
   try {
     // Only fetch projects if needed
@@ -27,7 +26,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     // Handle routes with a slug parameter
-    if (slug) {
+    if (to.params.projectSlug) {
+      const slug = to.params.projectSlug as string;
       const projectExists = store.projects.some((p) => p.slug === slug);
 
       // If invalid slug, redirect to first project

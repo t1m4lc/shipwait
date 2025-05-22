@@ -26,11 +26,23 @@ export const usePageStore = defineStore("page", () => {
 
   // Computed
   const publicPageUrl = computed(() => {
-    const slug = page.value?.slug;
-    return slug ? `/p/${slug}` : null;
+    try {
+      const slug = page.value?.slug;
+      return slug ? `/p/${slug}` : null;
+    } catch (error) {
+      console.error("Error computing publicPageUrl:", error);
+      return null;
+    }
   });
 
-  const hasDeployedPage = computed(() => !!page.value);
+  const hasDeployedPage = computed(() => {
+    try {
+      return !!page.value;
+    } catch (error) {
+      console.error("Error computing hasDeployedPage:", error);
+      return false;
+    }
+  });
 
   // Template functions
   async function fetchTemplate(

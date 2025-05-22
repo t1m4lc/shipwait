@@ -168,9 +168,20 @@ useEventListener('keydown', (e) => {
 
 // Initialize page data
 onMounted(async () => {
-    if (!projectId.value) {
-        validateHtmlCode();
-        return;
+    // Make sure projectId is valid before proceeding
+    if (!projectId.value || !projectSlug.value) {
+        console.warn("Missing projectId or projectSlug, waiting for projects to load");
+        // Give projects time to load, then check again
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // If still no projectId, show an error and use default content
+        if (!projectId.value || !projectSlug.value) {
+            toast.error("Missing project information, using default template");
+            htmlCode.value = LANDING_PAGE_EXAMPLE;
+            formatCode(true);
+            validateHtmlCode();
+            return;
+        }
     }
 
     try {
