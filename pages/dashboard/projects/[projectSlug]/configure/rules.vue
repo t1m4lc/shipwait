@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ['project-handler']
+  middleware: ['project-handler'],
+  layout: 'dashboard'
 })
 </script>
 

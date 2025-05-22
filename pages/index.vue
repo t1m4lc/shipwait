@@ -10,10 +10,6 @@ import HeroSection from "~/components/landing/HeroSection.vue";
 import TestimonialsSection from "~/components/landing/TestimonialsSection.vue";
 import WhyUseItSection from "~/components/landing/WhyUseItSection.vue";
 
-definePageMeta({
-  layout: "blank",
-});
-
 const user = useSupabaseUser();
 const prices = {
   monthly: {

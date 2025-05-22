@@ -27,10 +27,6 @@ import { Loader2 } from "lucide-vue-next";
 import { nextTick, onMounted, ref, watch } from "vue";
 import { usePageStore } from '~/stores/page.store';
 
-definePageMeta({
-  layout: "blank",
-});
-
 const route = useRoute();
 const slug = route.params.slug as string;
 const html = ref<string | null>(null);

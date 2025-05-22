@@ -1,7 +1,9 @@
 <!-- Page used to logout with route -->
 <script setup lang="ts">
+import { Loader2 } from 'lucide-vue-next'
+
 definePageMeta({
-  layout: 'blank',
+  layout: 'default',
 })
 
 const client = useSupabaseClient()
@@ -18,5 +20,9 @@ onMounted(() => {
 
 
 <template>
-  <p>Logging out...</p>
+  <div class="flex items-center justify-center min-h-screen">
+    <Loader2 class="animate-spin size-6">
+      <span class="sr-only">Logging out...</span>
+    </Loader2>
+  </div>
 </template>

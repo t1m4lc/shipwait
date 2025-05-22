@@ -2,7 +2,7 @@
 import ContentEmailLink from '~/components/content/EmailLink.vue';
 
 definePageMeta({
-  layout: 'blank'
+  layout: 'default'
 })
 
 const { data: post } = await useAsyncData('privacy', () => {
