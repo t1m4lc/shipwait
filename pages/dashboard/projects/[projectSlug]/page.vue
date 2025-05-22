@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useEventListener } from '@vueuse/core';
-import { html_beautify } from 'js-beautify';
+import pkg from 'js-beautify';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, watch } from "vue";
 import { toast } from "vue-sonner";
@@ -15,6 +15,7 @@ import { LANDING_PAGE_EXAMPLE } from "~/stores/landing";
 import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
 import { validateHtml } from '~/utils/validateHtml';
+const { html_beautify } = pkg;
 
 definePageMeta({
     middleware: ['project-handler'],
@@ -28,7 +29,7 @@ const projectSlug = computed(() => projectsStore.selectedProjectSlug || '');
 
 // Page store with template and page data
 const pageStore = usePageStore();
-const { template, page, isLoading: storeLoading, publicPageUrl, hasDeployedPage } = storeToRefs(pageStore);
+const { template, isLoading: storeLoading, publicPageUrl } = storeToRefs(pageStore);
 
 // Local state
 const isSaving = ref(false);

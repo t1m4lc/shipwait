@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'blank',
+})
+
 const user = useSupabaseUser()
 const redirectInfo = useSupabaseCookieRedirect()
 

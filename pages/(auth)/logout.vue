@@ -1,12 +1,14 @@
 <!-- Page used to logout with route -->
 <script setup lang="ts">
-import { onMounted } from 'vue'
+definePageMeta({
+  layout: 'blank',
+})
 
 const client = useSupabaseClient()
 
 const logout = async () => {
   await client.auth.signOut()
-  navigateTo('/login')
+  await navigateTo('/login')
 }
 
 onMounted(() => {
@@ -14,5 +16,7 @@ onMounted(() => {
 })
 </script>
 
+
 <template>
+  <p>Logging out...</p>
 </template>
