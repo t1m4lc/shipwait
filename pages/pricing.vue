@@ -19,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+
 useSeoMeta({
   title: 'Pricing Details - Ship κανείς',
   description: 'Detailed information about our flexible pricing plans.',

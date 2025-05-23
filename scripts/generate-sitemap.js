@@ -5,7 +5,8 @@
 import fs from "fs";
 import path from "path";
 
-const BASE_URL = process.env.BASE_URL || "https://shipwait.app";
+const NUXT_PUBLIC_SITE_URL =
+  process.env.NUXT_PUBLIC_SITE_URL || "https://shipwait.app";
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 const now = new Date().toISOString().slice(0, 10);
 
@@ -28,7 +29,7 @@ const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 ${pages
   .map(
     (page) => `  <url>
-    <loc>${BASE_URL}${page.url}</loc>
+    <loc>${NUXT_PUBLIC_SITE_URL}${page.url}</loc>
     <lastmod>${now}</lastmod>
     <priority>${page.priority}</priority>
   </url>`

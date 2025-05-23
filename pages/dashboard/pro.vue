@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div v-if="subscription.isLoading.value">Loading subscription status...</div>
-    <div v-else-if="subscription.isActive.value">
+    <div v-if="isLoading">Loading subscription status...</div>
+    <div v-else-if="isPro">
       <p>Welcome, Pro User!</p>
+      <Button @click="manageSubscription">Manage Subscription</Button>
     </div>
     <div v-else>
       <p>This is a Pro feature.</p>
@@ -17,5 +18,9 @@
 </template>
 
 <script setup lang="ts">
-const subscription = useSubscriptionStatus();
+const { isPro, redirectToCustomerPortal, isLoading } = useSubscriptionStatus();
+
+async function manageSubscription() {
+  await redirectToCustomerPortal();
+}
 </script>

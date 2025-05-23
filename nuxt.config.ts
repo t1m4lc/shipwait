@@ -52,7 +52,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrl: process.env.BASE_URL || "http://localhost:3000",
+      baseUrl: process.env.NUXT_PUBLIC_SITE_URL || "http://localhost:3000",
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
       // The @unlok-co/nuxt-stripe module will handle the public key via its own config
