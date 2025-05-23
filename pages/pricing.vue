@@ -22,8 +22,8 @@
 import { computed, ref } from 'vue';
 import { useSubscriptionStore } from '~/stores/subscription.store';
 
-const stripeMonthlyPriceId = ref("price_YOUR_ACTUAL_MONTHLY_PRICE_ID"); // REPLACE THIS
-const stripeYearlyPriceId = ref("price_YOUR_ACTUAL_YEARLY_PRICE_ID");   // REPLACE THIS
+const stripeMonthlyPriceId = ref(STRIPE_MONTHLY_PRICE_ID);
+const stripeYearlyPriceId = ref(STRIPE_YEARLY_PRICE_ID);
 
 const subscriptionStore = useSubscriptionStore();
 
@@ -31,7 +31,7 @@ const isUserActiveSubscriber = computed(() => subscriptionStore.isActive);
 const isLoadingSubscriptionStatus = computed(() => subscriptionStore.isLoading);
 
 useSeoMeta({
-  title: 'Pricing Details - Ship κανείς',
+  title: 'Pricing Details - Shipwait',
   description: 'Detailed information about our flexible pricing plans.',
 });
 
@@ -65,7 +65,7 @@ async function subscribeToPrice(priceId: string) {
     });
 
     if (result && result.sessionUrl) {
-      window.location.href = result.sessionUrl;
+      await navigateTo(result.sessionUrl, { external: true });
     } else {
       console.error('Checkout session URL not received from API.');
     }

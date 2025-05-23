@@ -18,9 +18,12 @@
 </template>
 
 <script setup lang="ts">
-const { isPro, redirectToCustomerPortal, isLoading } = useSubscriptionStatus();
+const subscriptionStore = useSubscriptionStore();
+const { isActive: isPro, isLoading } = storeToRefs(subscriptionStore);
 
 async function manageSubscription() {
-  await redirectToCustomerPortal();
+  await subscriptionStore.redirectToCustomerPortal();
 }
+
+
 </script>
