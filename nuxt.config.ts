@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "nuxt-gtag",
     "@nuxt/image",
     "@vueuse/motion/nuxt",
+    "@unlok-co/nuxt-stripe",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {
@@ -54,9 +55,11 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL || "http://localhost:3000",
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
+      // The @unlok-co/nuxt-stripe module will handle the public key via its own config
     },
     private: {
       supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
+      // stripeWebhookSecret will be accessed via process.env directly in the webhook handler
     },
   },
   supabase: {
@@ -67,6 +70,18 @@ export default defineNuxtConfig({
       include: ["/dashboard(/*)?"],
       exclude: [],
       saveRedirectToCookie: true,
+    },
+  },
+  stripe: {
+    server: {
+      key: process.env.STRIPE_SECRET_KEY, // Module uses this env var
+      options: {
+        apiVersion: "2025-04-30.basil",
+      },
+    },
+    client: {
+      key: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, // Module uses this env var
+      options: {},
     },
   },
   gtag: {

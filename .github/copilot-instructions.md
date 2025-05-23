@@ -12,6 +12,8 @@
 
   - `defineNuxtConfig`, `runtimeConfig` (.env)
   - Auto-import components/composables
+  - avoid using watch function because it's in prone of side effects.
+  - Use useAsyncData function to retrieve data with supabase api
 
 - **UI**: Tailwind CSS + shadcn/ui
 
