@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ChevronsUpDown, CircleUser, CreditCard, LogOut } from 'lucide-vue-next';
+import { ChevronsUpDown, CircleUser, CreditCard, LogOut, Sparkles } from 'lucide-vue-next';
+import { computed } from 'vue'; // Ensure computed and onMounted are imported
+import { useSubscriptionStore } from '~/stores/subscription.store'; // Updated path
 import { useSidebar } from '../ui/sidebar';
 
 defineProps<{
@@ -10,7 +12,13 @@ defineProps<{
   }
 }>()
 
-const { isMobile } = useSidebar()
+const { isMobile } = useSidebar();
+const subscriptionStore = useSubscriptionStore();
+
+const isUserActiveSubscriber = computed(() => subscriptionStore.isActive);
+const userHasScheduledCancellation = computed(() => subscriptionStore.hasScheduledCancellation);
+
+const redirectToCustomerPortal = () => subscriptionStore.redirectToCustomerPortal();
 </script>
 
 <template>
@@ -48,21 +56,23 @@ const { isMobile } = useSidebar()
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <!-- <DropdownMenuGroup>
-            <DropdownMenuItem @click="navigateTo('')">
-              <Sparkles />
-              Upgrade to Pro
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator /> -->
           <DropdownMenuGroup>
             <DropdownMenuItem @click="navigateTo('/dashboard/settings/profile')">
               <CircleUser />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem @click="navigateTo('/dashboard/settings/subscriptions')">
+            <DropdownMenuItem v-if="isUserActiveSubscriber" @click="redirectToCustomerPortal">
               <CreditCard />
-              Subscriptions
+              <span v-if="userHasScheduledCancellation">
+                Renew Subscription
+              </span>
+              <span v-else>
+                Manage Subscription
+              </span>
+            </DropdownMenuItem>
+            <DropdownMenuItem v-else @click="navigateTo('/pricing')">
+              <Sparkles class="text-amber-500" />
+              Upgrade to Pro
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

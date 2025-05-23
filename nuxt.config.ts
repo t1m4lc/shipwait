@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@vueuse/motion/nuxt",
     "@unlok-co/nuxt-stripe",
+    "@hebilicious/vue-query-nuxt",
   ],
   css: ["~/assets/css/tailwind.css"],
   vite: {
@@ -87,6 +88,21 @@ export default defineNuxtConfig({
   gtag: {
     id: "G-79YH0XF4RZ",
     enabled: process.env.NODE_ENV === "production",
+  },
+  vueQuery: {
+    // Nuxt module configuration for vue-query
+    queryClientOptions: {
+      defaultOptions: {
+        queries: {
+          staleTime: 5 * 60 * 1000, // 5 minutes
+          // You can add other default query options here
+        },
+      },
+    },
+    // You can also enable devtools if you install them separately
+    // devtools: {
+    //   initialIsOpen: false,
+    // },
   },
   compatibilityDate: "2024-11-01",
   devtools: {

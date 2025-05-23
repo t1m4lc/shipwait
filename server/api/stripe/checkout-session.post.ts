@@ -33,6 +33,54 @@ export default defineEventHandler(async (event) => {
   const supabaseAdminClient = await serverSupabaseServiceRole<Database>(event);
   const runtimeConfig = useRuntimeConfig(event);
 
+  // --- BEGIN SERVER-SIDE SUBSCRIPTION CHECK ---
+  const { data: existingSubscriptions, error: existingSubError } =
+    await supabaseAdminClient
+      .from("subscriptions")
+      .select("stripe_subscription_id, status, plan_id, price_id") // Select fields needed for decision
+      .eq("user_id", user.id)
+      .in("status", ["active", "trialing"]); // Check for active or trialing subscriptions
+
+  if (existingSubError) {
+    console.error(
+      `Error checking existing subscriptions for user ${user.id}:`,
+      existingSubError
+    );
+    throw createError({
+      statusCode: 500,
+      message: "Error checking existing subscriptions.",
+    });
+  }
+
+  if (existingSubscriptions && existingSubscriptions.length > 0) {
+    // User has at least one active or trialing subscription.
+    // We should prevent creating a new one and guide them to the portal.
+    // For simplicity, we take the first one found. Ideally, your webhook logic ensures only one is truly active.
+    const activeSub = existingSubscriptions[0];
+    console.log(
+      `User ${user.id} already has an active/trialing subscription: ${activeSub.stripe_subscription_id} (Status: ${activeSub.status}).`
+    );
+
+    // Option 1: Return a specific error/status to the client to handle redirection to portal
+    // The client-side pricing page can then use redirectToCustomerPortal()
+    throw createError({
+      statusCode: 409, // Conflict
+      message:
+        "User already has an active subscription. Please manage your subscription in the customer portal.",
+      data: {
+        isSubscribed: true,
+        // Optionally, you could try to generate and return the portal URL here,
+        // but it adds complexity. Simpler to let client call the dedicated portal endpoint.
+      },
+    });
+
+    // Option 2: Directly create and return a portal session URL (more complex here)
+    // This would require fetching the stripe_customer_id again if not already available
+    // and then calling stripe.billingPortal.sessions.create(...)
+    // For now, Option 1 is cleaner as the client already has portal redirection logic.
+  }
+  // --- END SERVER-SIDE SUBSCRIPTION CHECK ---
+
   let stripeCustomerId: string | undefined | null;
 
   // Log the user ID being processed
