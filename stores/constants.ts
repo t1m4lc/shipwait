@@ -7,3 +7,8 @@ export const SHIPWAIT_SNIPPET_CDN_URL =
 
 export const STRIPE_MONTHLY_PRICE_ID = "price_1RRebCAO7Z9aERoyF6gsEOeq";
 export const STRIPE_YEARLY_PRICE_ID = "price_1RRec5AO7Z9aERoyiTcYPmQR";
+
+export const FEATURE_FLAGS = {
+  PROJECT_LIMIT: "project_limit",
+  REMOVE_BRANDING_ON_PAGE: "remove_branding_on_page",
+} as const;

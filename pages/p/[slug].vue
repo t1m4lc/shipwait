@@ -14,8 +14,8 @@
   <div v-else-if="html">
     <div class="min-h-screen w-full overflow-hidden relative">
       <div v-html="html"></div>
-      <div class="fixed bottom-3 sm:bottom-6 right-3 sm:right-6">
-        <BuildWithSipwait :project-slug="slug" />
+      <div v-if="shouldShowBranding" class="fixed bottom-3 sm:bottom-6 right-3 sm:right-6">
+        <BuildWithSipwait />
       </div>
     </div>
   </div>
@@ -29,10 +29,12 @@ import { usePageStore } from '~/stores/page.store';
 
 const route = useRoute();
 const slug = route.params.slug as string;
+const path = route.fullPath
 const html = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 const projectId = ref<string | null>(null);
+const shouldShowBranding = ref(true);
 
 const submitShipwaitForm = async (form: HTMLFormElement, input: HTMLInputElement): Promise<void> => {
   if (!import.meta.client) return;
@@ -179,6 +181,24 @@ onMounted(async () => {
 
     html.value = page.html;
     projectId.value = page.project_id;
+
+    // Check if the project owner can remove branding
+    if (page.project_id) {
+      try {
+        const brandingResponse = await fetch(`/api/project/${page.project_id}/can-remove-branding`);
+        if (brandingResponse.ok) {
+          const brandingData = await brandingResponse.json();
+          shouldShowBranding.value = !brandingData.canRemoveBranding;
+        } else {
+          // If API fails, default to showing branding
+          shouldShowBranding.value = true;
+        }
+      } catch (err) {
+        console.warn('Error checking branding removal permission:', err);
+        // If check fails, default to showing branding
+        shouldShowBranding.value = true;
+      }
+    }
   } catch (err: any) {
     console.error("Error loading page:", err);
     error.value = "This page could not be found.";

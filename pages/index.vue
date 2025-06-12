@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { useSeo } from "~/composables/useSeo";
-import { useFaqSchema, useOrganizationSchema } from "~/composables/useStructuredData";
 
 // Import landing components
 import CtaSection from "~/components/landing/CtaSection.vue";
@@ -55,9 +54,6 @@ useSeo({
   title: 'ShipWait - Validate Your Ideas Before Building Them',
   description: 'Create landing pages and collect emails in minutes. Test your ideas and build only what people want.'
 });
-
-useOrganizationSchema();
-useFaqSchema(faqs);
 
 const testimonials = [
   {

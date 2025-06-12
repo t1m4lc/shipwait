@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NuxtLink } from '#components';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +15,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { ChevronsUpDown, Plus } from 'lucide-vue-next';
+import ProjectLimitDialog from '~/components/ProjectLimitDialog.vue';
 
 const props = defineProps<{
   projects: {
@@ -28,8 +28,26 @@ const props = defineProps<{
 const { isMobile } = useSidebar()
 
 const store = useProjectsStore()
+const featureFlagsStore = useFeatureFlagsStore()
 
 const { selectedProject } = storeToRefs(store);
+
+// State for the upgrade dialog
+const showUpgradeDialog = ref(false)
+
+// Check project limits
+const projectLimitCheck = computed(() => featureFlagsStore.checkProjectLimit(props.projects.length))
+
+function handleCreateProject() {
+  const limitCheck = projectLimitCheck.value
+
+  if (!limitCheck.canCreate) {
+    showUpgradeDialog.value = true
+  }
+  else {
+    navigateTo('/dashboard/projects/create')
+  }
+}
 
 function onClick(projectId: string) {
   const route = useRoute()
@@ -77,16 +95,22 @@ const customGradient = computed(() =>
             <!-- <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut> -->
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="gap-2 p-2">
+          <DropdownMenuItem class="gap-2 p-2" :class="{ 'opacity-60': !projectLimitCheck.canCreate }" @click="handleCreateProject">
             <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
               <Plus class="size-4" />
             </div>
-            <NuxtLink to="/dashboard/projects/create" class="font-medium text-muted-foreground">
+            <span class="font-medium text-muted-foreground">
               Add new project
-            </NuxtLink>
+              <span v-if="!projectLimitCheck.canCreate" class="text-xs text-amber-600 dark:text-amber-400 ml-1">
+                (Limit reached)
+              </span>
+            </span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
   </SidebarMenu>
+
+  <!-- Project limit dialog -->
+  <ProjectLimitDialog v-model:open="showUpgradeDialog" :current-project-count="props.projects.length" :project-limit="projectLimitCheck.limit" />
 </template>

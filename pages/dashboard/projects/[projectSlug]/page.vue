@@ -130,12 +130,8 @@ async function deployPage() {
             template.value
         );
 
-        if (result.success) {
-            toast.success("Page deployed successfully");
-
-            if (result.data?.publicUrl) {
-                toast.success(`Your page is live at ${result.data.publicUrl}`);
-            }
+        if (result.success && result.data?.publicUrl) {
+            toast.success(`Page deployed and live at ${result.data.publicUrl}`);
         } else {
             toast.error(`Failed to deploy page: ${result.error}`);
         }

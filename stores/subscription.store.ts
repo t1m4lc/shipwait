@@ -64,6 +64,11 @@ export const useSubscriptionStore = defineStore("subscription", () => {
     // await queryClient.invalidateQueries({ queryKey: queryKey.value });
     // Or, more directly for this specific query:
     await refetch();
+
+    // Also refresh feature flags after subscription update
+    // This ensures feature flags are updated when subscription changes
+    const featureFlagsStore = useFeatureFlagsStore();
+    await featureFlagsStore.refreshFeatureFlags();
   }
 
   async function redirectToCustomerPortal() {

@@ -1,6 +1,7 @@
 // Unified middleware to handle project fetching, selection and navigation
 export default defineNuxtRouteMiddleware(async (to) => {
   const store = useProjectsStore();
+  const featureFlagsStore = useFeatureFlagsStore();
 
   try {
     // Only fetch projects if needed
@@ -8,8 +9,24 @@ export default defineNuxtRouteMiddleware(async (to) => {
       await store.fetchProjects();
     }
 
-    // Skip handling for create project page
+    // For create project page, check project limits
     if (to.path === "/dashboard/projects/create") {
+      const limitCheck = featureFlagsStore.checkProjectLimit(
+        store.projects.length
+      );
+
+      if (!limitCheck.canCreate) {
+        // Redirect to pricing page with limit info
+        return navigateTo({
+          path: "/pricing",
+          query: {
+            error: "project_limit_reached",
+            current: store.projects.length.toString(),
+            limit: limitCheck.limit.toString(),
+          },
+        });
+      }
+
       return;
     }
 

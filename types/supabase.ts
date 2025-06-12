@@ -47,6 +47,30 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          price_configs: Json | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          price_configs?: Json | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          price_configs?: Json | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           browser: string
@@ -129,33 +153,6 @@ export type Database = {
           },
         ]
       }
-      plans: {
-        Row: {
-          active: boolean | null
-          created_at: string | null
-          description: string | null
-          id: string
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          active?: boolean | null
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          active?: boolean | null
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       prices: {
         Row: {
           active: boolean | null
@@ -165,7 +162,6 @@ export type Database = {
           id: string
           interval: string | null
           interval_count: number | null
-          plan_id: string
           stripe_price_id: string
           unit_amount: number | null
           updated_at: string | null
@@ -178,7 +174,6 @@ export type Database = {
           id?: string
           interval?: string | null
           interval_count?: number | null
-          plan_id: string
           stripe_price_id: string
           unit_amount?: number | null
           updated_at?: string | null
@@ -191,20 +186,11 @@ export type Database = {
           id?: string
           interval?: string | null
           interval_count?: number | null
-          plan_id?: string
           stripe_price_id?: string
           unit_amount?: number | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "prices_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plans"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -302,7 +288,6 @@ export type Database = {
           ended_at: string | null
           id: string
           metadata: Json | null
-          plan_id: string | null
           price_id: string | null
           status: string
           stripe_customer_id: string
@@ -321,7 +306,6 @@ export type Database = {
           ended_at?: string | null
           id?: string
           metadata?: Json | null
-          plan_id?: string | null
           price_id?: string | null
           status: string
           stripe_customer_id: string
@@ -340,7 +324,6 @@ export type Database = {
           ended_at?: string | null
           id?: string
           metadata?: Json | null
-          plan_id?: string | null
           price_id?: string | null
           status?: string
           stripe_customer_id?: string
@@ -351,13 +334,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "subscriptions_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plans"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "subscriptions_price_id_fkey"
             columns: ["price_id"]

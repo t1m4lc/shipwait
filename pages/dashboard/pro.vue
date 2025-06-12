@@ -20,10 +20,15 @@
 <script setup lang="ts">
 const subscriptionStore = useSubscriptionStore();
 const { isActive: isPro, isLoading } = storeToRefs(subscriptionStore);
+const { syncSubscriptionAndFeatures } = useSubscriptionSync();
 
 async function manageSubscription() {
   await subscriptionStore.redirectToCustomerPortal();
 }
 
-
+// Force refresh subscription and feature flags when landing on this page
+// This is especially important after a successful subscription payment
+onMounted(async () => {
+  await syncSubscriptionAndFeatures({ forceRefresh: true });
+});
 </script>

@@ -8,8 +8,9 @@ definePageMeta({
 
 const client = useSupabaseClient()
 
-const logout = async () => {
+const logout = async (): Promise<void> => {
   await client.auth.signOut()
+  localStorage.clear()
   await navigateTo('/login')
 }
 

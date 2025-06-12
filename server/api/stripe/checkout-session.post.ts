@@ -4,7 +4,6 @@ import {
   serverSupabaseUser,
 } from "#supabase/server";
 import { z } from "zod";
-import type { Database } from "~/types/supabase";
 
 const checkoutSessionSchema = z.object({
   priceId: z.string().startsWith("price_"), // Stripe Price ID
@@ -30,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
   const { priceId } = validation.data;
   const stripe = await useServerStripe(event);
-  const supabaseAdminClient = await serverSupabaseServiceRole<Database>(event);
+  const supabaseAdminClient = await serverSupabaseServiceRole(event);
   const runtimeConfig = useRuntimeConfig(event);
 
   // --- BEGIN SERVER-SIDE SUBSCRIPTION CHECK ---

@@ -1,4 +1,30 @@
 <script setup lang="ts">
+const featureFlagsStore = useFeatureFlagsStore();
+const projectsStore = useProjectsStore();
+
+// Check project limits on page load
+onMounted(async () => {
+  // Ensure projects are loaded
+  if (projectsStore.projects.length === 0) {
+    await projectsStore.fetchProjects();
+  }
+
+  // Double-check project limits as a safeguard
+  const limitCheck = featureFlagsStore.checkProjectLimit(projectsStore.projects.length);
+
+  if (!limitCheck.canCreate) {
+    // This should not happen due to middleware, but as a safeguard
+    await navigateTo({
+      path: '/pricing',
+      query: {
+        error: 'project_limit_reached',
+        current: projectsStore.projects.length.toString(),
+        limit: limitCheck.limit.toString()
+      }
+    });
+  }
+});
+
 </script>
 
 <template>

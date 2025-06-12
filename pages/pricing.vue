@@ -24,9 +24,7 @@ import { useSubscriptionStore } from '~/stores/subscription.store';
 
 const stripeMonthlyPriceId = ref(STRIPE_MONTHLY_PRICE_ID);
 const stripeYearlyPriceId = ref(STRIPE_YEARLY_PRICE_ID);
-
 const subscriptionStore = useSubscriptionStore();
-
 const isUserActiveSubscriber = computed(() => subscriptionStore.isActive);
 const isLoadingSubscriptionStatus = computed(() => subscriptionStore.isLoading);
 

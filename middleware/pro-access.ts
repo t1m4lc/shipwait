@@ -18,8 +18,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Ensure the subscription status is known before proceeding.
   // The store's fetchSubscriptionStatus handles caching and avoids redundant calls.
-  // We might want to force a refresh if navigating to a pro page directly
-  // to ensure the very latest status, but often the cached version is fine.
+  // For pro routes, we want to ensure we have the most up-to-date subscription status
+  // especially after a successful payment redirect.
   if (subscriptionStore.isLoading) {
     // If already loading, await its completion. This might need a more robust solution
     // like a watcher or an event if direct awaiting isn't feasible in middleware.
@@ -30,8 +30,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     useSupabaseUser().value
   ) {
     // If status is unknown (null) and there's a user, try to fetch it.
-    // Pass forceRefresh: false to respect cache, or true if you always want fresh data for pro routes.
-    await subscriptionStore.fetchSubscriptionStatus({ forceRefresh: false });
+    // For pro routes, we use forceRefresh: true to ensure we have the latest status
+    await subscriptionStore.fetchSubscriptionStatus({ forceRefresh: true });
+  } else if (to.path === "/dashboard/pro") {
+    // For the specific pro success page, always force refresh to ensure
+    // the subscription status is updated after payment
+    await subscriptionStore.fetchSubscriptionStatus({ forceRefresh: true });
   }
 
   // After attempting to fetch/load, check the status.
