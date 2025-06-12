@@ -258,6 +258,13 @@ export const useProjectsStore = defineStore(
       }
     };
 
+    const clearStore = () => {
+      projects.value = [];
+      selectedProjectId.value = null;
+      loading.value = false;
+      error.value = null;
+    };
+
     return {
       projects,
       loading,
@@ -272,6 +279,7 @@ export const useProjectsStore = defineStore(
       addProject,
       updateProject,
       deleteProject,
+      clearStore,
     };
   },
   {

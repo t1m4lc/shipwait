@@ -295,6 +295,16 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
+  /**
+   * Clear store data when user changes
+   */
+  function clearStore(): void {
+    template.value = null;
+    page.value = null;
+    isLoading.value = false;
+    lastError.value = null;
+  }
+
   return {
     // State
     template,
@@ -317,5 +327,6 @@ export const usePageStore = defineStore("page", () => {
 
     // Utility methods
     initializePageData,
+    clearStore,
   };
 });
