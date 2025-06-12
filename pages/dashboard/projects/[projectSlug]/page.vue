@@ -1,6 +1,32 @@
 <template>
     <div class="size-full">
-        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :is-loading="isLoading" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-template="!!template?.id" @validate="validateHtmlCode" @format="formatCode" @save="saveTemplate" @deploy="deployPage" />
+        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-active-page="hasActivePage" :templates="templates" :selected-template-id="selectedTemplateId" @validate="validateHtmlCode" @format="formatCode" @save="savePage" @deploy="deployPage" @pause="pausePage" @template-change="handleTemplateChange" />
+
+        <!-- Template Change Warning Dialog -->
+        <AlertDialog :open="showTemplateChangeWarning" @update:open="showTemplateChangeWarning = $event">
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>⚠️ Switch template?</AlertDialogTitle>
+                    <AlertDialogDescription class="space-y-2">
+                        <p>Switching templates will replace your current HTML code with the selected template.</p>
+                        <div class="rounded-md bg-orange-50 p-3 text-sm">
+                            <p class="font-medium text-orange-900">Warning:</p>
+                            <ul class="mt-1 text-orange-700 list-disc list-inside space-y-1">
+                                <li>All current code in the editor will be lost</li>
+                                <li>Any unsaved changes will be permanently deleted</li>
+                                <li>Make sure to save your work first if you want to keep it</li>
+                            </ul>
+                        </div>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel @click="cancelTemplateChange">Cancel</AlertDialogCancel>
+                    <AlertDialogAction @click="confirmTemplateChange" variant="destructive">
+                        Yes, switch template
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </div>
 </template>
 
@@ -11,7 +37,6 @@ import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 import SplitHtmlPreview from '~/components/SplitHtmlPreview.vue';
-import { LANDING_PAGE_EXAMPLE } from "~/stores/landing";
 import { usePageStore } from "~/stores/page.store";
 import { useProjectsStore } from '~/stores/projects.store';
 import { validateHtml } from '~/utils/validateHtml';
@@ -29,19 +54,25 @@ const projectSlug = computed(() => projectsStore.selectedProjectSlug || '');
 
 // Page store with template and page data
 const pageStore = usePageStore();
-const { template, isLoading: storeLoading, publicPageUrl } = storeToRefs(pageStore);
+const { selectedTemplate, templates, page, isLoading: storeLoading, publicPageUrl, hasActivePage } = storeToRefs(pageStore);
 
 // Local state
 const isSaving = ref(false);
 const isDeploying = ref(false);
 const isLoading = computed(() => storeLoading.value || isSaving.value || isDeploying.value);
-const templateName = computed(() => template.value?.name || "My Landing Page");
 const pageTitle = ref('Page Editor');
 
 // HTML editor state
 const htmlCode = ref('');
 const validationErrors = ref<string[]>([]);
 const isHtmlValid = computed(() => validationErrors.value.length === 0);
+
+// Template selection
+const selectedTemplateId = computed(() => selectedTemplate.value?.id || '');
+
+// Warning dialog state
+const showTemplateChangeWarning = ref(false);
+const pendingTemplateId = ref<string | null>(null);
 
 /**
  * Format the HTML code using js-beautify
@@ -79,9 +110,9 @@ function formatCode(silent = false) {
 }
 
 /**
- * Save the current template
+ * Save the current page
  */
-async function saveTemplate() {
+async function savePage() {
     if (!isHtmlValid.value) {
         toast.error("Cannot save invalid HTML");
         return;
@@ -90,44 +121,45 @@ async function saveTemplate() {
     isSaving.value = true;
 
     try {
-        const result = await pageStore.saveTemplate({
-            id: template.value?.id ?? undefined,
-            name: templateName.value,
-            html: htmlCode.value,
-            project_id: projectId.value,
-            created_at: template.value?.created_at || new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        });
+        const title = selectedTemplate.value?.name || "My Landing Page";
+        const result = await pageStore.savePage(
+            projectId.value,
+            projectSlug.value,
+            title,
+            htmlCode.value
+        );
 
         if (result.success) {
-            toast.success("Template saved successfully");
+            toast.success("Page saved successfully");
         } else {
-            toast.error(`Failed to save template: ${result.error}`);
+            toast.error(`Failed to save page: ${result.error}`);
         }
     } catch (error) {
-        console.error("Error saving template:", error);
-        toast.error("Failed to save template");
+        console.error("Error saving page:", error);
+        toast.error("Failed to save page");
     } finally {
         isSaving.value = false;
     }
 }
 
 /**
- * Deploy the page using the current template
+ * Deploy the page
  */
 async function deployPage() {
-    if (!template.value?.id) {
-        toast.error("Please save the template before deploying");
+    if (!isHtmlValid.value) {
+        toast.error("Cannot deploy invalid HTML");
         return;
     }
 
     isDeploying.value = true;
 
     try {
+        const title = selectedTemplate.value?.name || "My Landing Page";
         const result = await pageStore.deployPage(
             projectId.value,
             projectSlug.value,
-            template.value
+            title,
+            htmlCode.value
         );
 
         if (result.success && result.data?.publicUrl) {
@@ -141,6 +173,77 @@ async function deployPage() {
     } finally {
         isDeploying.value = false;
     }
+}
+
+/**
+ * Pause the page
+ */
+async function pausePage() {
+    isDeploying.value = true;
+
+    try {
+        const result = await pageStore.pausePage(projectId.value);
+
+        if (result.success) {
+            toast.success("Page paused successfully");
+        } else {
+            toast.error(`Failed to pause page: ${result.error}`);
+        }
+    } catch (error) {
+        console.error("Error pausing page:", error);
+        toast.error("Failed to pause page");
+    } finally {
+        isDeploying.value = false;
+    }
+}
+
+/**
+ * Handle template change with warning
+ */
+async function handleTemplateChange(templateId: string) {
+    // If there are unsaved changes, show the warning dialog
+    if (htmlCode.value.trim()) {
+        pendingTemplateId.value = templateId;
+        showTemplateChangeWarning.value = true;
+        return;
+    }
+
+    // Apply the template change directly if no content
+    await applyTemplateChange(templateId);
+}
+
+/**
+ * Apply template change
+ */
+async function applyTemplateChange(templateId: string) {
+    const result = await pageStore.selectTemplate(templateId);
+    if (result.success && result.data) {
+        htmlCode.value = result.data.html;
+        formatCode(true);
+        validateHtmlCode();
+        toast.success(`Template "${result.data.name}" loaded`);
+    } else {
+        toast.error("Failed to load template");
+    }
+}
+
+/**
+ * Confirm template change from dialog
+ */
+async function confirmTemplateChange() {
+    if (pendingTemplateId.value) {
+        await applyTemplateChange(pendingTemplateId.value);
+    }
+    showTemplateChangeWarning.value = false;
+    pendingTemplateId.value = null;
+}
+
+/**
+ * Cancel template change
+ */
+function cancelTemplateChange() {
+    showTemplateChangeWarning.value = false;
+    pendingTemplateId.value = null;
 }
 
 /**
@@ -159,7 +262,7 @@ watch(htmlCode, validateHtmlCode);
 useEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        saveTemplate();
+        savePage();
     }
 });
 
@@ -171,12 +274,9 @@ onMounted(async () => {
         // Give projects time to load, then check again
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        // If still no projectId, show an error and use default content
+        // If still no projectId, show an error and return
         if (!projectId.value || !projectSlug.value) {
-            toast.error("Missing project information, using default template");
-            htmlCode.value = LANDING_PAGE_EXAMPLE;
-            formatCode(true);
-            validateHtmlCode();
+            toast.error("Missing project information");
             return;
         }
     }
@@ -184,13 +284,20 @@ onMounted(async () => {
     try {
         const result = await pageStore.initializePageData(projectId.value);
 
-        if (result.success) {
-            // If we have a template, use its HTML
-            if (template.value) {
-                htmlCode.value = template.value.html;
+        if (result.success && result.data) {
+            // Check if we have a saved page
+            if (result.data.page && result.data.page.html) {
+                // Load the saved page
+                htmlCode.value = result.data.page.html;
+            } else if (result.data.templates && result.data.templates.length > 0) {
+                // Load the first template if no saved page exists
+                const firstTemplate = result.data.templates[0];
+                await pageStore.selectTemplate(firstTemplate.id);
+                htmlCode.value = firstTemplate.html;
             } else {
-                // Otherwise use default example
-                htmlCode.value = LANDING_PAGE_EXAMPLE;
+                // No templates available - show empty editor
+                htmlCode.value = '';
+                toast.warning("No templates available. Contact admin to add page templates.");
             }
 
             // Format the code
@@ -198,18 +305,14 @@ onMounted(async () => {
             validateHtmlCode();
         } else {
             toast.error(`Failed to load page data: ${result.error}`);
-            htmlCode.value = LANDING_PAGE_EXAMPLE;
-            formatCode(true);
-            validateHtmlCode();
+            htmlCode.value = '';
         }
     } catch (error) {
         console.error("Error loading page data:", error);
         toast.error("Failed to load page data");
 
-        // Set default content
-        htmlCode.value = LANDING_PAGE_EXAMPLE;
-        formatCode(true);
-        validateHtmlCode();
+        // Set empty content on error
+        htmlCode.value = '';
     }
 });
 </script>

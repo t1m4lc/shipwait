@@ -15,7 +15,7 @@
     <div class="min-h-screen w-full overflow-hidden relative">
       <div v-html="html"></div>
       <div v-if="shouldShowBranding" class="fixed bottom-3 sm:bottom-6 right-3 sm:right-6">
-        <BuildWithSipwait />
+        <BuildWithSipwait :ref="fullPath" />
       </div>
     </div>
   </div>
@@ -29,12 +29,17 @@ import { usePageStore } from '~/stores/page.store';
 
 const route = useRoute();
 const slug = route.params.slug as string;
-const path = route.fullPath
 const html = ref<string | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 const projectId = ref<string | null>(null);
 const shouldShowBranding = ref(true);
+const fullPath = computed(() => {
+  if (import.meta.client) {
+    return window.location.href;
+  }
+  return route.fullPath || '/';
+});
 
 const submitShipwaitForm = async (form: HTMLFormElement, input: HTMLInputElement): Promise<void> => {
   if (!import.meta.client) return;
@@ -114,7 +119,33 @@ const showMessage = (form: HTMLFormElement, message: string): void => {
       messageEl.style.color = '#8A4FFF';
     }
   } else {
-    alert(message);
+    // Create a temporary message display if no message element exists
+    const tempMessage = document.createElement('div');
+    tempMessage.textContent = message;
+    tempMessage.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${message.toLowerCase().includes('error') || message.toLowerCase().includes('failed') ? '#ef4444' : '#8A4FFF'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 9999;
+      font-weight: 600;
+      font-size: 14px;
+      max-width: 300px;
+      word-wrap: break-word;
+    `;
+
+    document.body.appendChild(tempMessage);
+
+    // Remove message after 5 seconds
+    setTimeout(() => {
+      if (tempMessage && tempMessage.parentNode) {
+        tempMessage.parentNode.removeChild(tempMessage);
+      }
+    }, 5000);
   }
 };
 

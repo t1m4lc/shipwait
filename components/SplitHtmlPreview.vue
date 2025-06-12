@@ -10,6 +10,21 @@
                 <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
                 <h2 class="lg:text-lg font-semibold line-clamp-1">{{ title }}</h2>
               </div>
+
+              <!-- Template Selector -->
+              <div class="flex items-center gap-2">
+                <Select v-if="templates && templates.length > 0" :model-value="selectedTemplateId" @update:model-value="handleTemplateChange">
+                  <SelectTrigger class="w-[200px]">
+                    <SelectValue placeholder="Select template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="template in templates" :key="template.id" :value="template.id">
+                      {{ template.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div class="flex gap-1 sm:gap-2">
                 <Button :disabled="!isHtmlValid || isSaving || isDeploying" variant="outline" size="sm" class="gap-1.5" @click="$emit('save')" :class="{ 'opacity-50': isSaving }">
                   <Loader2 v-if="isSaving" class="size-4 animate-spin" />
@@ -24,25 +39,71 @@
                   </NuxtLink>
                 </Button>
 
-                <AlertDialog>
+                <!-- Deploy/Pause Button -->
+                <AlertDialog v-if="!hasActivePage">
                   <AlertDialogTrigger as-child>
-                    <Button :disabled="!isHtmlValid || !hasTemplate || isSaving || isDeploying" size="sm" class="gap-1.5">
-                      <Rocket class="size-4" />
-                      <span class="hidden lg:inline">Deploy</span>
+                    <Button :disabled="!isHtmlValid || isSaving || isDeploying" size="sm" class="gap-1.5">
+                      <Loader2 v-if="isDeploying" class="size-4 animate-spin" />
+                      <Rocket v-else class="size-4" />
+                      <span class="hidden lg:inline">{{ isDeploying ? 'Deploying...' : 'Deploy' }}</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Deploy your landing page?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will publish your landing page to the live server and
-                        make it visible to your visitors. You can always make
-                        changes and redeploy later.
+                      <AlertDialogTitle>🚀 Deploy your landing page</AlertDialogTitle>
+                      <AlertDialogDescription class="space-y-2">
+                        <p>This will publish your landing page and make it live for visitors.</p>
+                        <div class="rounded-md bg-blue-50 p-3 text-sm">
+                          <p class="font-medium text-blue-900">What happens next:</p>
+                          <ul class="mt-1 text-blue-700 list-disc list-inside space-y-1">
+                            <li>Your page will be published to a public URL</li>
+                            <li>Visitors can access your landing page</li>
+                            <li>Form submissions will be collected</li>
+                            <li>You can make changes and redeploy anytime</li>
+                          </ul>
+                        </div>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction @click.prevent="$emit('deploy')">Yes, deploy!</AlertDialogAction>
+                      <AlertDialogAction @click.prevent="$emit('deploy')" class="bg-green-600 hover:bg-green-700">
+                        <Rocket class="size-4 mr-2" />
+                        Deploy Now
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <!-- Pause Button (when page is active) -->
+                <AlertDialog v-else>
+                  <AlertDialogTrigger as-child>
+                    <Button :disabled="isSaving || isDeploying" variant="outline" size="sm" class="gap-1.5">
+                      <Pause class="size-4" />
+                      <span class="hidden lg:inline">Pause</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>⏸️ Pause your landing page</AlertDialogTitle>
+                      <AlertDialogDescription class="space-y-2">
+                        <p>This will temporarily take your landing page offline.</p>
+                        <div class="rounded-md bg-yellow-50 p-3 text-sm">
+                          <p class="font-medium text-yellow-900">What happens:</p>
+                          <ul class="mt-1 text-yellow-700 list-disc list-inside space-y-1">
+                            <li>Your page will no longer be accessible to visitors</li>
+                            <li>The public URL will show a "page not found" error</li>
+                            <li>No new form submissions will be collected</li>
+                            <li>You can redeploy it anytime to make it live again</li>
+                          </ul>
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction @click.prevent="$emit('pause')" variant="destructive">
+                        <Pause class="size-4 mr-2" />
+                        Pause Page
+                      </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
@@ -107,10 +168,11 @@
 import { html } from "@codemirror/lang-html";
 import { EditorView } from "@codemirror/view";
 import { useWindowSize } from "@vueuse/core";
-import { ExternalLink, Loader2, Rocket, Save, WrapText } from "lucide-vue-next";
+import { ExternalLink, Loader2, Pause, Rocket, Save, WrapText } from "lucide-vue-next";
 import { Pane, Splitpanes } from "splitpanes";
 import { computed, shallowRef } from "vue";
 import { Codemirror } from "vue-codemirror";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 // Props and emits
 const props = defineProps<{
@@ -121,7 +183,9 @@ const props = defineProps<{
   isDeploying: boolean;
   title?: string;
   publicPageUrl?: string;
-  hasTemplate?: boolean;
+  hasActivePage?: boolean;
+  templates?: any[];
+  selectedTemplateId?: string;
 }>();
 
 const emit = defineEmits<{
@@ -130,6 +194,8 @@ const emit = defineEmits<{
   (e: 'format'): void;
   (e: 'save'): void;
   (e: 'deploy'): void;
+  (e: 'pause'): void;
+  (e: 'template-change', templateId: string): void;
 }>();
 
 // Create a local computed property for two-way binding
@@ -140,6 +206,13 @@ const localModelValue = computed({
     emit('validate', value);
   }
 });
+
+// Handle template change
+const handleTemplateChange = (value: any) => {
+  if (typeof value === 'string') {
+    emit('template-change', value);
+  }
+};
 
 // Window size for responsive layout
 const { width } = useWindowSize();

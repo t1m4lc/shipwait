@@ -9,44 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      custom_page_template: {
-        Row: {
-          created_at: string
-          html: string
-          id: string
-          name: string
-          project_id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          html: string
-          id: string
-          name: string
-          project_id: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          html?: string
-          id?: string
-          name?: string
-          project_id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "custom_page_template_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       feature_flags: {
         Row: {
           created_at: string
@@ -114,6 +76,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      page_template: {
+        Row: {
+          created_at: string
+          description: string | null
+          html: string
+          id: string
+          name: string
+          order: number | null
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          html: string
+          id?: string
+          name: string
+          order?: number | null
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          html?: string
+          id?: string
+          name?: string
+          order?: number | null
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       pages: {
         Row: {

@@ -1,13 +1,22 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue';
+
+const props = defineProps<{
   ref?: string;
 }>();
 
+// Use current URL as fallback if ref is not provided
+const currentUrl = computed(() => {
+  if (import.meta.client) {
+    return window.location.href;
+  }
+  return props.ref || '/';
+});
 </script>
 
 <template>
   <button as-child class="custom-button">
-    <NuxtLink :to="`/?ref=${ref}`">
+    <NuxtLink :to="`/?ref=${encodeURIComponent(currentUrl)}`">
       Built with 🚢 Shipwait
     </NuxtLink>
   </button>
