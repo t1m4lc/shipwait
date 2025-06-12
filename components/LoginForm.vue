@@ -52,7 +52,15 @@ const user = useSupabaseUser()
 
 watchEffect(() => {
   if (user.value) {
-    navigateTo('/dashboard')
+    // Check for redirect parameter
+    const route = useRoute();
+    const redirectTo = route.query.redirect as string;
+
+    if (redirectTo && redirectTo.startsWith('/')) {
+      navigateTo(redirectTo);
+    } else {
+      navigateTo('/dashboard');
+    }
   }
 })
 

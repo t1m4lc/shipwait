@@ -21,10 +21,6 @@ export function useSubscriptionSync() {
 
       // Then refresh feature flags to ensure they're in sync with the new subscription
       await featureFlagsStore.refreshFeatureFlags();
-
-      console.log(
-        "[useSubscriptionSync] Successfully synchronized subscription and feature flags"
-      );
     } catch (error) {
       console.error(
         "[useSubscriptionSync] Error synchronizing subscription and feature flags:",

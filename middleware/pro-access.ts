@@ -43,9 +43,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     // User does not have an active subscription.
     // Redirect them to the pricing page or a generic access-denied page.
     // You can also add a query parameter to show a message on the pricing page.
-    console.log(
-      "[Pro Access Middleware] User does not have an active subscription. Redirecting to /pricing."
-    );
     // Store the intended destination to redirect back after successful subscription/login.
     // Using a query parameter is a common approach.
     if (to.fullPath && to.fullPath !== "/") {

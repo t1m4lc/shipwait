@@ -18,12 +18,54 @@ export const usePageStore = defineStore("page", () => {
   const supabase = useSupabaseClient<Database>();
   const config = useRuntimeConfig();
 
+  // Import subscription store for template access control
+  const subscriptionStore = useSubscriptionStore();
+
   // State
   const selectedTemplate = ref<PageTemplate | null>(null);
   const templates = ref<PageTemplate[]>([]);
   const page = ref<Page | null>(null);
   const isLoading = ref(false);
   const lastError = ref<string | null>(null);
+
+  // Computed properties for template access control
+  const freeTemplates = computed(() => {
+    return templates.value.filter((template) => {
+      return template.is_free === true || template.is_free === null;
+    });
+  });
+
+  const premiumTemplates = computed(() => {
+    return templates.value.filter((template) => template.is_free === false);
+  });
+
+  const accessibleTemplates = computed(() => {
+    if (subscriptionStore.isActive) {
+      // Pro users can access all templates
+      return templates.value;
+    }
+    // Free users can only access free templates
+    return freeTemplates.value;
+  });
+
+  const restrictedTemplates = computed(() => {
+    if (subscriptionStore.isActive) {
+      return [];
+    }
+    return premiumTemplates.value;
+  });
+
+  // Helper function to check if user can access a specific template
+  const canAccessTemplate = (templateId: string): boolean => {
+    const template = templates.value.find((t) => t.id === templateId);
+    if (!template) return false;
+
+    // Free templates (is_free = true or null) are accessible to everyone
+    if (template.is_free === true || template.is_free === null) return true;
+
+    // Premium templates (is_free = false) require active subscription
+    return subscriptionStore.isActive;
+  };
 
   // Computed
   const publicPageUrl = computed(() => {
@@ -76,6 +118,15 @@ export const usePageStore = defineStore("page", () => {
   ): Promise<ApiResponse<PageTemplate | null>> {
     const template = templates.value.find((t) => t.id === templateId);
     if (template) {
+      // Check if user can access this template
+      if (!canAccessTemplate(templateId)) {
+        return {
+          success: false,
+          error:
+            "This template requires a Pro subscription. Please upgrade to access premium templates.",
+        };
+      }
+
       selectedTemplate.value = template;
       return { success: true, data: template };
     }
@@ -327,6 +378,13 @@ export const usePageStore = defineStore("page", () => {
     // Computed
     publicPageUrl,
     hasActivePage,
+    freeTemplates,
+    premiumTemplates,
+    accessibleTemplates,
+    restrictedTemplates,
+
+    // Helper functions
+    canAccessTemplate,
 
     // Template methods
     fetchTemplates,

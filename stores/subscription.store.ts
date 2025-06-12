@@ -49,8 +49,6 @@ export const useSubscriptionStore = defineStore("subscription", () => {
   });
 
   const hasScheduledCancellation = computed(() => {
-    console.log("activeSubscription", activeSubscription.value);
-
     return (
       !!activeSubscription.value &&
       (activeSubscription.value.status === "active" ||

@@ -19,7 +19,14 @@
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem v-for="template in templates" :key="template.id" :value="template.id">
-                      {{ template.name }}
+                      <div class="flex items-center justify-between w-full gap-1.5">
+                        <span>{{ template.name }}</span>
+                        <div class="flex items-center gap-1">
+                          <Badge v-if="template.is_free" variant="outline" class="text-xs px-1.5 py-0.5">
+                            FREE
+                          </Badge>
+                        </div>
+                      </div>
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -161,6 +168,9 @@
         </div>
       </template>
     </ClientOnly>
+
+    <!-- Template Upgrade Dialog -->
+    <TemplateUpgradeDialog v-model:open="showTemplateUpgradeDialog" :template-name="selectedPremiumTemplate" />
   </div>
 </template>
 
@@ -172,6 +182,9 @@ import { ExternalLink, Loader2, Pause, Rocket, Save, WrapText } from "lucide-vue
 import { Pane, Splitpanes } from "splitpanes";
 import { computed, shallowRef } from "vue";
 import { Codemirror } from "vue-codemirror";
+import TemplateUpgradeDialog from "~/components/TemplateUpgradeDialog.vue";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
 // Props and emits
@@ -198,6 +211,13 @@ const emit = defineEmits<{
   (e: 'template-change', templateId: string): void;
 }>();
 
+// Get subscription store for template access control
+const subscriptionStore = useSubscriptionStore();
+
+// State for template upgrade dialog
+const showTemplateUpgradeDialog = ref(false);
+const selectedPremiumTemplate = ref<string>('');
+
 // Create a local computed property for two-way binding
 const localModelValue = computed({
   get: () => props.modelValue,
@@ -210,6 +230,14 @@ const localModelValue = computed({
 // Handle template change
 const handleTemplateChange = (value: any) => {
   if (typeof value === 'string') {
+    // Check if user can access this template
+    const template = props.templates?.find(t => t.id === value);
+    if (template && template.is_free === false && !subscriptionStore.isActive) {
+      // Show upgrade dialog instead of changing template
+      selectedPremiumTemplate.value = template.name;
+      showTemplateUpgradeDialog.value = true;
+      return;
+    }
     emit('template-change', value);
   }
 };

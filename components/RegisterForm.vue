@@ -38,7 +38,15 @@ const onSubmit = handleSubmit(async (values: RegisterFormValues, ctx) => {
     return
   }
 
-  const emailRedirectTo = `${config.public.baseUrl}/welcome`
+  // Check for redirect parameter
+  const route = useRoute();
+  const redirectTo = route.query.redirect as string;
+  let emailRedirectTo = `${config.public.baseUrl}/welcome`;
+
+  // Include redirect parameter in email verification link if present
+  if (redirectTo && redirectTo.startsWith('/')) {
+    emailRedirectTo = `${config.public.baseUrl}/confirm?redirect=${encodeURIComponent(redirectTo)}`;
+  }
 
   try {
     const { data, error } = await client.auth.signUp({

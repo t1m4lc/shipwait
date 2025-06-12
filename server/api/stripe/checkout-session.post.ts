@@ -20,6 +20,10 @@ export default defineEventHandler(async (event) => {
   const validation = checkoutSessionSchema.safeParse(body);
 
   if (!validation.success) {
+    console.error(
+      "[Checkout Session API] Validation failed:",
+      validation.error.issues
+    );
     throw createError({
       statusCode: 400,
       message: "Invalid request body",
@@ -28,6 +32,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const { priceId } = validation.data;
+  console.log("[Checkout Session API] Processing for price ID:", priceId);
+
   const stripe = await useServerStripe(event);
   const supabaseAdminClient = await serverSupabaseServiceRole(event);
   const runtimeConfig = useRuntimeConfig(event);
@@ -36,7 +42,7 @@ export default defineEventHandler(async (event) => {
   const { data: existingSubscriptions, error: existingSubError } =
     await supabaseAdminClient
       .from("subscriptions")
-      .select("stripe_subscription_id, status, plan_id, price_id") // Select fields needed for decision
+      .select("stripe_subscription_id, status, price_id") // Removed plan_id as it doesn't exist
       .eq("user_id", user.id)
       .in("status", ["active", "trialing"]); // Check for active or trialing subscriptions
 

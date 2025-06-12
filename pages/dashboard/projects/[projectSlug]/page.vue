@@ -222,6 +222,14 @@ async function applyTemplateChange(templateId: string) {
         formatCode(true);
         validateHtmlCode();
         toast.success(`Template "${result.data.name}" loaded`);
+    } else if (result.error && result.error.includes('Pro subscription')) {
+        // Show upgrade prompt for premium templates
+        toast.error(result.error, {
+            action: {
+                label: "Upgrade to Pro",
+                onClick: () => navigateTo('/pricing')
+            }
+        });
     } else {
         toast.error("Failed to load template");
     }

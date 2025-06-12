@@ -40,10 +40,6 @@ export const useFeatureFlagsStore = defineStore("featureFlags", () => {
       // If user has a subscription, get the stripe_price_id from the prices table
       let stripePriceId: string | null = null;
       if (subscription?.price_id) {
-        console.log(
-          "[FeatureFlagsStore] Fetching stripe_price_id for price_id:",
-          subscription.price_id
-        );
         const { data: priceData } = await supabase
           .from("prices")
           .select("stripe_price_id")
@@ -51,10 +47,6 @@ export const useFeatureFlagsStore = defineStore("featureFlags", () => {
           .single();
 
         stripePriceId = priceData?.stripe_price_id || null;
-        console.log(
-          "[FeatureFlagsStore] Found stripe_price_id:",
-          stripePriceId
-        );
       }
 
       const { data, error: queryError } = await supabase
@@ -219,9 +211,6 @@ export const useFeatureFlagsStore = defineStore("featureFlags", () => {
         newPriceId !== oldPriceId &&
         (newPriceId !== undefined || oldPriceId !== undefined)
       ) {
-        console.log(
-          "[FeatureFlagsStore] Subscription price_id changed, refreshing feature flags"
-        );
         refreshFeatureFlags();
       }
     }
