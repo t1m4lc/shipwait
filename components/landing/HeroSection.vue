@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
   <section class="container mx-auto px-4 py-16 md:px-6 md:py-30">
     <div class="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-6 text-center">
       <h1 class="text-4xl font-bold leading-tight tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-        Launch in <span class="gradient-text">5 minutes</span>
+        Launch in <span class="gradient-text">minutes</span>, not days
       </h1>
       <p class="max-w-3xl text-muted-foreground sm:text-2xl">
-        Publish your next idea and start collecting feedback as you build.
+        Publish your next idea page and start collecting feedback as you build.
       </p>
       <div class="flex flex-col gap-4 sm:flex-row pt-10">
         <Button size="lg" as-child class="bg-primary hover:bg-primary/90 text-lg">

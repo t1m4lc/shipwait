@@ -2,31 +2,39 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-type PriceType = {
-  free: number;
-  pro: number;
-  ultimate: number;
-};
+import { Check, X } from "lucide-vue-next";
 
 defineProps<{
-  prices: {
-    monthly: PriceType;
-    yearly: PriceType;
-  };
-  billingCycle: 'monthly' | 'yearly';
+  showHeading?: boolean;
 }>();
 
-defineEmits<{
-  (e: 'update:billingCycle', value: 'monthly' | 'yearly'): void;
-}>();
+const billingCycle = ref<'monthly' | 'yearly'>('yearly');
+
+const prices = {
+  monthly: {
+    free: 0,
+    pro: 7
+  },
+  yearly: {
+    free: 0,
+    pro: 3.5
+  },
+  lifetime: 79
+};
+
+const saving = computed(() => {
+
+  return Math.round((1 - prices.yearly.pro / prices.monthly.pro) * 100)
+});
+
+
 </script>
 
 <template>
-  <section class="py-24">
+  <section class="py-16">
     <div class="container mx-auto px-4 md:px-6">
       <div class="mx-auto max-w-6xl">
-        <div class="text-center mb-12">
+        <div v-if="showHeading" class="text-center mb-12">
           <h2 class="text-3xl font-bold sm:text-4xl mb-3">
             Simple, Transparent Pricing
           </h2>
@@ -36,16 +44,23 @@ defineEmits<{
         </div>
 
         <div class="flex justify-center mb-8">
-          <Tabs v-model="billingCycle" class="w-[250px]" @update:modelValue="(val) => $emit('update:billingCycle', val)">
-            <TabsList class="grid w-full grid-cols-2">
-              <TabsTrigger value="monthly">Monthly</TabsTrigger>
-              <TabsTrigger value="yearly">Yearly</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div class="text-center space-y-4">
+            <Tabs v-model="billingCycle" class="w-[280px]">
+              <TabsList class="grid w-full grid-cols-2">
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                <TabsTrigger value="yearly" class="relative">
+                  Yearly
+                  <span class="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                    Save {{ saving }}%
+                  </span>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-          <Card class="shadow-md">
+          <Card class="shadow-md flex flex-col">
             <CardHeader>
               <CardTitle>Free</CardTitle>
               <CardDescription>Perfect for testing your first idea</CardDescription>
@@ -54,41 +69,31 @@ defineEmits<{
                 <span class="ml-1 text-muted-foreground">/forever</span>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent class="flex-grow">
               <ul class="space-y-3 text-sm">
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  1 project
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span class="text-muted-foreground">1 project <span class="text-xs">(vs unlimited in Pro)</span></span>
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  1 landing page template
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span class="text-muted-foreground">1 landing page template <span class="text-xs">(vs unlimited in Pro)</span></span>
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
                   1 page
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
                   Unlimited emails
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  "Built with ShipWait" badge on page
+                <li class="flex items-center gap-1">
+                  <X class="mr-2 h-4 w-4 text-red-500" />
+                  <span class="text-muted-foreground">"Built with ShipWait" badge required</span>
                 </li>
               </ul>
             </CardContent>
-            <CardFooter>
+            <CardFooter class="mt-auto">
               <Button class="w-full" variant="outline" as-child>
                 <NuxtLink to="/register" class="inline-flex h-9 w-full items-center justify-center">
                   Get Started Free
@@ -97,61 +102,52 @@ defineEmits<{
             </CardFooter>
           </Card>
 
-          <Card class="shadow-md border-primary relative">
+          <Card class="shadow-md border-primary relative flex flex-col">
             <div class="absolute -top-3 left-0 right-0 flex justify-center">
-              <span class="bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-medium">
+              <!-- <span class="bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-medium">
                 MOST POPULAR
-              </span>
+              </span> -->
             </div>
             <CardHeader>
               <CardTitle>Pro</CardTitle>
               <CardDescription>For serious makers and startups</CardDescription>
-              <div class="mt-4 flex items-baseline">
-                <span class="text-4xl font-bold">€{{ prices[billingCycle]['pro'] }}</span>
-                <span class="ml-1 text-muted-foreground">/month</span>
+              <div class="mt-4 space-y-1">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-bold">€{{ prices[billingCycle]['pro'] }}</span>
+                  <span class="ml-1 text-muted-foreground">/month</span>
+                  <span v-if="billingCycle === 'yearly'" class="text-sm line-through text-muted-foreground">€{{ prices.monthly.pro }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span v-if="billingCycle === 'yearly'" class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
+                    Save {{ saving }}% yearly
+                  </span>
+                  <span class="text-xs text-muted-foreground">
+                    {{ billingCycle === 'yearly' ? `€${prices.yearly.pro * 12}/year` : 'Billed monthly' }}
+                  </span>
+                </div>
               </div>
-              <span v-if="billingCycle === 'yearly'" class="text-xs text-green-600 font-medium">
-                You're saving 40% with yearly billing!
-              </span>
-              <span v-else class="text-xs text-primary font-medium cursor-pointer hover:underline" @click="$emit('update:billingCycle', 'yearly')">
-                👉 Save 40% with yearly plan
-              </span>
             </CardHeader>
-            <CardContent>
+            <CardContent class="flex-grow">
               <ul class="space-y-3 text-sm">
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <strong>Unlimited</strong> projects
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
+                  <span class="font-bold">Unlimited </span> projects
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <strong>Unlimited</strong> templates
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
+                  <span class="font-bold">Unlimited</span> templates
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  1 page per project
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
+                  <span class="font-bold">Unlimited </span> emails
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <strong>Unlimited</strong> emails
-                </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  No "Built with ShipWait" badge
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
+                  No branding, badge removed
                 </li>
               </ul>
             </CardContent>
-            <CardFooter>
+            <CardFooter class="mt-auto">
               <Button class="w-full" as-child>
                 <NuxtLink to="/register?plan=pro" class="inline-flex h-9 w-full items-center justify-center">
                   Get Started
@@ -160,59 +156,47 @@ defineEmits<{
             </CardFooter>
           </Card>
 
-          <Card class="shadow-md">
+          <Card class="shadow-md border-2 border-amber-400 relative flex flex-col">
+            <div class="absolute -top-3 left-0 right-0 flex justify-center">
+              <span class="bg-amber-400 text-amber-900 text-xs px-3 py-1 rounded-full font-medium">
+                LIFETIME DEAL
+              </span>
+            </div>
             <CardHeader>
-              <CardTitle>Ultimate</CardTitle>
-              <CardDescription>For power users and growing businesses</CardDescription>
-              <div class="mt-4 flex items-baseline">
-                <span class="text-4xl font-bold">€{{ prices[billingCycle]['ultimate'] }}</span>
-                <span class="ml-1 text-muted-foreground">/month</span>
+              <CardTitle>Lifetime Access</CardTitle>
+              <CardDescription>Pay once, use forever</CardDescription>
+              <div class="mt-4 space-y-1">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-bold">€ {{ prices.lifetime }}</span>
+                  <span class="ml-1 text-muted-foreground">/lifetime</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-1 rounded">
+                    No recurring fees
+                  </span>
+                </div>
               </div>
-              <span v-if="billingCycle === 'yearly'" class="text-xs text-green-600 font-medium">
-                You're saving 40% with yearly billing!
-              </span>
-              <span v-else class="text-xs text-primary font-medium cursor-pointer hover:underline" @click="$emit('update:billingCycle', 'yearly')">
-                👉 Save 40% with yearly plan
-              </span>
             </CardHeader>
-            <CardContent>
+            <CardContent class="flex-grow">
               <ul class="space-y-3 text-sm">
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
                   <span>Everything in Pro</span>
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  <strong>Unlimited</strong> pages
-                </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  AI-generated landing pages
-                </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
                   Priority support
                 </li>
-                <li class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4 text-primary">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                  Advanced analytics
+                <li class="flex items-center gap-1">
+                  <Check class="mr-2 h-4 w-4 text-primary" />
+                  <span>Lifetime updates</span>
                 </li>
               </ul>
             </CardContent>
-            <CardFooter>
-              <Button class="w-full" variant="outline" as-child>
-                <NuxtLink to="/register?plan=ultimate" class="inline-flex h-9 w-full items-center justify-center">
-                  Get Started
+            <CardFooter class="mt-auto">
+              <Button class="w-full" as-child>
+                <NuxtLink to="/register?plan=lifetime" class="inline-flex h-9 w-full items-center justify-center">
+                  Get Lifetime Access
                 </NuxtLink>
               </Button>
             </CardFooter>

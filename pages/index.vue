@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
 import { useSeo } from "~/composables/useSeo";
 
-// Import landing components
 import CtaSection from "~/components/landing/CtaSection.vue";
 import FaqSection from "~/components/landing/FaqSection.vue";
 import HeroSection from "~/components/landing/HeroSection.vue";
+import PricingSection from "~/components/landing/PricingSection.vue";
 import TestimonialsSection from "~/components/landing/TestimonialsSection.vue";
 import WhyUseItSection from "~/components/landing/WhyUseItSection.vue";
 
-const user = useSupabaseUser();
+definePageMeta({
+  layout: 'landing'
+});
+
 const prices = {
   monthly: {
     free: 0,
@@ -42,7 +44,7 @@ const faqs = [
   },
   {
     question: "Can I export my waitlist emails?",
-    answer: "Yes! You can export your email list at any time in CSV format, making it easy to import into your favorite email marketing tool when you're ready to launch."
+    answer: "Exporting your email list as a CSV is available on Pro and Ultimate plans. Upgrade anytime to unlock this feature and easily import your waitlist into your favorite email marketing tool."
   },
   {
     question: "What happens after I collect emails?",
@@ -102,52 +104,10 @@ const testimonials = [
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col">
-    <header class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div class="container mx-auto px-4 md:px-6">
-        <div class="mx-auto max-w-6xl flex h-16 items-center justify-between">
-          <div class="flex items-center gap-2 font-medium">
-            <span class="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              S</span>
-            ShipWait
-          </div>
-          <Button variant="outline" as-child>
-            <NuxtLink v-if="user" to="/dashboard" class="inline-flex h-9 items-center justify-center">
-              Dashboard
-            </NuxtLink>
-            <NuxtLink v-else to="/register" class="inline-flex h-9 items-center justify-center">
-              Get Started
-            </NuxtLink>
-          </Button>
-        </div>
-      </div>
-    </header>
-    <main class="flex-1">
-
-      <HeroSection />
-      <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
-
-      <!-- <HowItWorksSection class="bg-muted/30" />
-      <PricingSection 
-      :prices="prices" 
-      v-model:billing-cycle="billingCycle" 
-      /> -->
-      <FaqSection :faqs="faqs" />
-      <WhyUseItSection class="bg-muted/30" />
-      <CtaSection class="bg-muted/80" />
-    </main>
-    <footer>
-      <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center gap-4 max-w-6xl">
-        <p class="text-center text-sm text-muted-foreground mt-4 md:mt-0">
-          © 2025 ShipWait. All rights reserved.
-        </p>
-        <nav class="flex flex-wrap gap-6 items-center text-sm">
-          <NuxtLink :to="INSIGHTO" class="text-muted-foreground hover:text-foreground">Feedback</NuxtLink>
-          <NuxtLink to="/privacy" class="text-muted-foreground hover:text-foreground">Privacy</NuxtLink>
-          <NuxtLink to="/terms" class="text-muted-foreground hover:text-foreground">Terms</NuxtLink>
-          <NuxtLink :to="SOCIAL_X" class="text-muted-foreground hover:text-foreground">Contact</NuxtLink>
-        </nav>
-      </div>
-    </footer>
-  </div>
+  <HeroSection />
+  <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
+  <FaqSection :faqs="faqs" />
+  <WhyUseItSection class="bg-muted/30" />
+  <PricingSection :showHeading="true" :prices="prices" v-model:billing-cycle="billingCycle" />
+  <CtaSection class="bg-muted/80" />
 </template>
