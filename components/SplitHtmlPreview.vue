@@ -13,7 +13,7 @@
 
               <!-- Template Selector -->
               <div class="flex items-center gap-2">
-                <Select v-if="templates && templates.length > 0" :model-value="selectedTemplateId" @update:model-value="handleTemplateChange">
+                <Select v-if="templates && templates.length > 0" :model-value="selectedTemplateId" :disabled="isLoading" @update:model-value="handleTemplateChange">
                   <SelectTrigger class="w-[200px]">
                     <SelectValue placeholder="Select template" />
                   </SelectTrigger>
@@ -33,7 +33,7 @@
               </div>
 
               <div class="flex gap-1 sm:gap-2">
-                <Button :disabled="!isHtmlValid || isSaving || isDeploying" variant="outline" size="sm" class="gap-1.5" @click="$emit('save')" :class="{ 'opacity-50': isSaving }">
+                <Button :disabled="!isHtmlValid || isSaving || isDeploying || isLoading" variant="outline" size="sm" class="gap-1.5" @click="$emit('save')" :class="{ 'opacity-50': isSaving }">
                   <Loader2 v-if="isSaving" class="size-4 animate-spin" />
                   <Save v-else class="size-4" />
                   <span class="hidden lg:inline">Save</span>
@@ -49,7 +49,7 @@
                 <!-- Deploy/Pause Button -->
                 <AlertDialog v-if="!hasActivePage">
                   <AlertDialogTrigger as-child>
-                    <Button :disabled="!isHtmlValid || isSaving || isDeploying" size="sm" class="gap-1.5">
+                    <Button :disabled="!isHtmlValid || isSaving || isDeploying || isLoading" size="sm" class="gap-1.5">
                       <Loader2 v-if="isDeploying" class="size-4 animate-spin" />
                       <Rocket v-else class="size-4" />
                       <span class="hidden lg:inline">{{ isDeploying ? 'Deploying...' : 'Deploy' }}</span>
@@ -118,6 +118,14 @@
             </header>
             <div class="relative size-full flex-1 font-medium overflow-hidden">
               <Codemirror v-model="localModelValue" :extensions="extensions" class="html-editor h-full" placeholder="Paste your HTML landing page here..." />
+
+              <!-- Loading Overlay -->
+              <div v-if="isLoading" class="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+                <div class="flex flex-col items-center gap-3">
+                  <Loader2 class="size-8 animate-spin text-primary" />
+                  <p class="text-sm text-muted-foreground">Loading page data...</p>
+                </div>
+              </div>
 
               <div class="absolute top-3 right-3 flex items-center gap-3">
                 <Badge v-if="!validationErrors.length" class="tracking-wider rounded-full bg-accent text-primary-background space-x-1 border border-primary-background">
@@ -194,6 +202,7 @@ const props = defineProps<{
   isHtmlValid: boolean;
   isSaving: boolean;
   isDeploying: boolean;
+  isLoading?: boolean;
   title?: string;
   publicPageUrl?: string;
   hasActivePage?: boolean;

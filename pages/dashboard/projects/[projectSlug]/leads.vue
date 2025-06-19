@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { columns } from '~/components/leads/columns';
+import { Skeleton } from '~/components/ui/skeleton';
 import type { Database } from '~/types/supabase';
 
 const title = ref('Leads')
@@ -47,5 +48,39 @@ const { data: leads, pending: loading, refresh } = useAsyncData(
     </p>
   </div>
 
-  <LeadsTable v-if="leads" :data="leads" :columns="columns" :loading="loading" @refetch-leads="refresh()" />
+  <!-- Loading State -->
+  <div v-if="loading" class="space-y-4">
+    <!-- Toolbar skeleton -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <Skeleton class="h-10 w-[300px]" />
+        <Skeleton class="h-10 w-[120px]" />
+      </div>
+      <Skeleton class="h-10 w-[100px]" />
+    </div>
+
+    <!-- Table skeleton -->
+    <div class="rounded-md border">
+      <div class="p-4">
+        <!-- Header row -->
+        <div class="flex justify-between gap-2 mb-4">
+          <Skeleton class="h-6 w-[120px]" />
+          <Skeleton class="h-6 w-[200px]" />
+          <Skeleton class="h-6 w-[150px]" />
+          <Skeleton class="h-6 w-[100px]" />
+        </div>
+
+        <!-- Data rows -->
+        <div v-for="i in 5" :key="i" class="flex justify-between gap-2 py-3">
+          <Skeleton class="h-5 w-[120px]" />
+          <Skeleton class="h-5 w-[200px]" />
+          <Skeleton class="h-5 w-[150px]" />
+          <Skeleton class="h-5 w-[100px]" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data loaded state -->
+  <LeadsTable v-else-if="leads" :data="leads" :columns="columns" :loading="loading" @refetch-leads="refresh()" />
 </template>

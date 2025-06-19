@@ -1,6 +1,6 @@
 <template>
     <div class="size-full">
-        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-active-page="hasActivePage" :templates="templates" :selected-template-id="selectedTemplateId" @validate="validateHtmlCode" @format="formatCode" @save="savePage" @deploy="deployPage" @pause="pausePage" @template-change="handleTemplateChange" />
+        <SplitHtmlPreview v-model="htmlCode" :validation-errors="validationErrors" :is-html-valid="isHtmlValid" :is-saving="isSaving" :is-deploying="isDeploying" :is-loading="isLoading" :title="pageTitle" :public-page-url="publicPageUrl ?? undefined" :has-active-page="hasActivePage" :templates="templates" :selected-template-id="selectedTemplateId" @validate="validateHtmlCode" @format="formatCode" @save="savePage" @deploy="deployPage" @pause="pausePage" @template-change="handleTemplateChange" />
 
         <!-- Template Change Warning Dialog -->
         <AlertDialog :open="showTemplateChangeWarning" @update:open="showTemplateChangeWarning = $event">
