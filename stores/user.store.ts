@@ -62,7 +62,7 @@ export const useUserStore = defineStore("user", () => {
       pageStore.clearStore();
 
       // Sign out the user
-      navigateTo("logout");
+      navigateTo("/logout");
 
       return { success: true };
     } catch (err: any) {
