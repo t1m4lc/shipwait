@@ -8,18 +8,15 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 })
 
 const user = useSupabaseUser()
+const userStore = useUserStore();
 const store = user.value ? useProjectsStore() : null;
 
-const userData = computed(() => {
-  if (!user.value) return null
-
-  return {
-    name: user.value.user_metadata?.full_name || user.value.email?.split('@')[0].split('.')[0] || 'User',
-    email: user.value.email || '',
-    avatar: user.value.user_metadata?.avatar_url || null
+// Ensure there's always a selected project (default to first one)
+watch(() => store?.projects, (projects) => {
+  if (store && projects && projects.length > 0 && !store.selectedProjectId) {
+    store.setSelectedProjectId(projects[0].id);
   }
-})
-
+}, { immediate: true });
 
 const navMain = [
   {
@@ -51,10 +48,10 @@ const navMain = [
       <LayoutProjectSwitcher v-if="store" :projects="store.projects" />
     </SidebarHeader>
     <SidebarContent>
-      <LayoutNavMain :items="navMain" />
+      <LayoutNavMain v-if="store && store.projects.length > 0" :items="navMain" />
     </SidebarContent>
     <SidebarFooter>
-      <LayoutNavUser v-if="userData" :user="userData" />
+      <LayoutNavUser v-if="userStore.userData" :user="userStore.userData" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

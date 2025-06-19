@@ -315,6 +315,42 @@ export const usePageStore = defineStore("page", () => {
     }
   }
 
+  /**
+   * Delete page - will be handled by CASCADE when project is deleted
+   * This method is mainly for direct page deletion if needed
+   */
+  async function deletePage(projectId: string): Promise<ApiResponse<void>> {
+    isLoading.value = true;
+    lastError.value = null;
+
+    try {
+      if (!user.value) {
+        throw new Error("No authenticated user");
+      }
+
+      // Simple delete - CASCADE from project deletion usually handles this
+      const { error: deleteError } = await supabase
+        .from("pages")
+        .delete()
+        .eq("project_id", projectId);
+
+      if (deleteError) throw deleteError;
+
+      // Clear local state if this was the current page
+      if (page.value?.project_id === projectId) {
+        page.value = null;
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      console.error("Error deleting page:", err);
+      lastError.value = err.message;
+      return { success: false, error: err.message };
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Initialize page data for project
   async function initializePageData(projectId: string): Promise<
     ApiResponse<{
@@ -396,6 +432,7 @@ export const usePageStore = defineStore("page", () => {
     savePage,
     deployPage,
     pausePage,
+    deletePage,
 
     // Utility methods
     initializePageData,

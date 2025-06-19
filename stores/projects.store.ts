@@ -251,10 +251,49 @@ export const useProjectsStore = defineStore(
       }
     };
 
-    const deleteProject = (projectId: string) => {
-      const index = projects.value.findIndex((p) => p.id === projectId);
-      if (index !== -1) {
-        projects.value.splice(index, 1);
+    /**
+     * Delete project - database CASCADE will handle all related data deletion
+     */
+    const deleteProject = async (
+      projectId: string
+    ): Promise<{ success: boolean; error?: string }> => {
+      loading.value = true;
+      error.value = null;
+
+      try {
+        if (!user.value) {
+          throw new Error("Authentication required to delete project");
+        }
+
+        // Simple delete - CASCADE handles all related data (leads, pages, behaviors)
+        const { error: deleteError } = await supabase
+          .from("projects")
+          .delete()
+          .eq("id", projectId)
+          .eq("user_id", user.value.id); // Security: ensure user owns the project
+
+        if (deleteError) throw deleteError;
+
+        // Remove from local store
+        const index = projects.value.findIndex((p) => p.id === projectId);
+        if (index !== -1) {
+          projects.value.splice(index, 1);
+        }
+
+        // Clear selected project if it was the deleted one
+        if (selectedProjectId.value === projectId) {
+          selectedProjectId.value = null;
+          const pageStore = usePageStore();
+          pageStore.clearStore();
+        }
+
+        return { success: true };
+      } catch (err: any) {
+        console.error("Error deleting project:", err);
+        error.value = err;
+        return { success: false, error: err.message };
+      } finally {
+        loading.value = false;
       }
     };
 

@@ -5,7 +5,7 @@
 definePageMeta({
     layout: 'dashboard',
     middleware: [
-        () => navigateTo('/dashboard/settings/profile')
+        () => navigateTo('/dashboard/settings/account')
     ]
 });
 </script>

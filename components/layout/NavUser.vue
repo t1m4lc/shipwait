@@ -57,9 +57,9 @@ const redirectToCustomerPortal = () => subscriptionStore.redirectToCustomerPorta
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem @click="navigateTo('/dashboard/settings/profile')">
+            <DropdownMenuItem @click="navigateTo('/dashboard/settings/account')">
               <CircleUser />
-              Profile
+              Account
             </DropdownMenuItem>
             <DropdownMenuItem v-if="isUserActiveSubscriber" @click="redirectToCustomerPortal">
               <CreditCard />
