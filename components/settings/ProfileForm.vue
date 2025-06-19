@@ -4,7 +4,7 @@ import { useForm } from 'vee-validate'
 import * as z from 'zod'
 import { toast } from 'vue-sonner'
 
-const generalFormSchema = toTypedSchema(z.object({
+const profileFormSchema = toTypedSchema(z.object({
   name: z.string({
     required_error: 'Required.',
   })
@@ -20,7 +20,7 @@ const generalFormSchema = toTypedSchema(z.object({
 }))
 
 const { handleSubmit } = useForm({
-  validationSchema: generalFormSchema,
+  validationSchema: profileFormSchema,
   initialValues: {
     name: '',
     email: '',

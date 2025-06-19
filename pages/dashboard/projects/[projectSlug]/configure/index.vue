@@ -7,6 +7,6 @@ definePageMeta({
 
 <template>
   <ConfigureLayout>
-    <ConfigureGeneralForm />
+    <ConfigureProjectForm />
   </ConfigureLayout>
 </template>
