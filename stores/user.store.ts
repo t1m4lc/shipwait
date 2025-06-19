@@ -20,7 +20,7 @@ export const useUserStore = defineStore("user", () => {
         "User",
       email: user.value.email || "",
       id: user.value.id || "",
-      avatar: user.value.user_metadata?.avatar_url || null,
+      avatar_url: user.value.user_metadata?.avatar_url || null,
     };
   });
 
