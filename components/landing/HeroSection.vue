@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
         Launch in <span class="gradient-text">minutes</span>, not days
       </h1>
       <p class="max-w-3xl text-muted-foreground sm:text-2xl">
-        Publish your next idea page and start collecting feedback as you build.
+        Create a customizable landing page and start collecting emails.
       </p>
       <div class="flex flex-col gap-4 sm:flex-row pt-10">
         <Button size="lg" as-child class="bg-primary hover:bg-primary/90 text-lg">

@@ -18,7 +18,7 @@
   </section>
 
   <!-- Pricing Section -->
-  <PricingSection :prices="prices" v-model:billing-cycle="billingCycle" :show-heading="false" />
+  <PricingSection v-model:billing-cycle="billingCycle" :show-heading="false" :on-subscribe="handleSubscriptionAttempt" :is-loading-subscription="isLoadingSubscriptionStatus" />
 
   <!-- Comparison Table -->
   <section class="py-16 bg-muted/30">
@@ -135,7 +135,6 @@ import AuthenticationDialog from '~/components/AuthenticationDialog.vue';
 import ErrorDialog from '~/components/ErrorDialog.vue';
 import PricingSection from '~/components/landing/PricingSection.vue';
 import { useSeo } from '~/composables/useSeo';
-import { STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID } from '~/stores/constants';
 import { useSubscriptionStore } from '~/stores/subscription.store';
 
 definePageMeta({
@@ -148,25 +147,9 @@ useSeo({
   description: 'Choose the perfect plan for your needs. Start free and upgrade as you grow. Save up to 44% with yearly billing.'
 });
 
-// Pricing data
-const prices = {
-  monthly: {
-    free: 0,
-    pro: 9,
-    ultimate: 49,
-  },
-  yearly: {
-    free: 0,
-    pro: 5,
-    ultimate: 29,
-  },
-};
-
-type BillingCycle = keyof typeof prices;
+type BillingCycle = 'monthly' | 'yearly';
 const billingCycle = ref<BillingCycle>("yearly"); // Default to yearly
 
-const stripeMonthlyPriceId = ref(STRIPE_MONTHLY_PRICE_ID);
-const stripeYearlyPriceId = ref(STRIPE_YEARLY_PRICE_ID);
 const subscriptionStore = useSubscriptionStore();
 const isUserActiveSubscriber = computed(() => subscriptionStore.isActive);
 const isLoadingSubscriptionStatus = computed(() => subscriptionStore.isLoading);

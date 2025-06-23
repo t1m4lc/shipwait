@@ -2,15 +2,27 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check, X } from "lucide-vue-next";
+import { Check, Loader2, X } from "lucide-vue-next";
+import { computed, reactive, ref, watch } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   showHeading?: boolean;
+  onSubscribe?: (priceId: string) => Promise<void>;
+  isLoadingSubscription?: boolean;
+}>();
+
+const emit = defineEmits<{
+  'update:billing-cycle': [value: 'monthly' | 'yearly'];
 }>();
 
 const billingCycle = ref<'monthly' | 'yearly'>('yearly');
+const isInternalLoading = ref(false);
 
-const prices = {
+// Combine external loading state with internal loading state
+const isLoading = computed(() => props.isLoadingSubscription || isInternalLoading.value);
+
+// Always use these default prices - make it reactive
+const prices = reactive({
   monthly: {
     free: 0,
     pro: 7
@@ -20,12 +32,53 @@ const prices = {
     pro: 3.5
   },
   lifetime: 79
-};
+});
+
+// Import Stripe price IDs
+const { STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID, STRIPE_LIFETIME_PRICE_ID } = await import('~/stores/constants');
 
 const saving = computed(() => {
-
   return Math.round((1 - prices.yearly.pro / prices.monthly.pro) * 100)
 });
+
+// Watch billing cycle and emit to parent
+watch(billingCycle, (newValue) => {
+  emit('update:billing-cycle', newValue);
+});
+
+// Handle subscription attempt
+const handleSubscription = async (plan: 'pro' | 'lifetime') => {
+  if (!props.onSubscribe) {
+    // Fallback to registration if no subscription handler
+    if (plan === 'lifetime') {
+      navigateTo('/register?plan=lifetime');
+    } else {
+      navigateTo('/register?plan=pro');
+    }
+    return;
+  }
+
+  let priceId: string;
+  if (plan === 'lifetime') {
+    priceId = STRIPE_LIFETIME_PRICE_ID;
+  } else if (billingCycle.value === 'yearly') {
+    priceId = STRIPE_YEARLY_PRICE_ID;
+  } else {
+    priceId = STRIPE_MONTHLY_PRICE_ID;
+  }
+
+  // Set internal loading state
+  isInternalLoading.value = true;
+
+  try {
+    await props.onSubscribe(priceId);
+  } catch (error) {
+    console.error('Subscription error:', error);
+  } finally {
+    // Reset loading state
+    isInternalLoading.value = false;
+  }
+};
 
 
 </script>
@@ -148,10 +201,9 @@ const saving = computed(() => {
               </ul>
             </CardContent>
             <CardFooter class="mt-auto">
-              <Button class="w-full" as-child>
-                <NuxtLink to="/register?plan=pro" class="inline-flex h-9 w-full items-center justify-center">
-                  Get Started
-                </NuxtLink>
+              <Button class="w-full" @click="handleSubscription('pro')" :disabled="isLoading">
+                <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                {{ isLoading ? 'Processing...' : 'Get Started' }}
               </Button>
             </CardFooter>
           </Card>
@@ -194,10 +246,9 @@ const saving = computed(() => {
               </ul>
             </CardContent>
             <CardFooter class="mt-auto">
-              <Button class="w-full" as-child>
-                <NuxtLink to="/register?plan=lifetime" class="inline-flex h-9 w-full items-center justify-center">
-                  Get Lifetime Access
-                </NuxtLink>
+              <Button class="w-full" @click="handleSubscription('lifetime')" :disabled="isLoading">
+                <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                {{ isLoading ? 'Processing...' : 'Get Lifetime Access' }}
               </Button>
             </CardFooter>
           </Card>

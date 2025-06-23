@@ -177,6 +177,20 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Get query parameters to check for redirect
+  const query = getQuery(event);
+  const redirectParam = query.redirect as string;
+
+  // Validate and construct success URL
+  let successUrl = `${runtimeConfig.public.baseUrl}/dashboard`; // Default to dashboard
+
+  if (redirectParam && typeof redirectParam === "string") {
+    // Security: Only allow relative URLs that start with / and don't contain protocol
+    if (redirectParam.startsWith("/") && !redirectParam.includes("://")) {
+      successUrl = `${runtimeConfig.public.baseUrl}${redirectParam}`;
+    }
+  }
+
   try {
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
@@ -188,7 +202,7 @@ export default defineEventHandler(async (event) => {
         },
       ],
       mode: "subscription",
-      success_url: `${runtimeConfig.public.baseUrl}/dashboard/pro`,
+      success_url: successUrl,
       cancel_url: `${runtimeConfig.public.baseUrl}/pricing`, // Or a specific cancellation feedback page
       metadata: {
         supabase_user_id: user.id,
