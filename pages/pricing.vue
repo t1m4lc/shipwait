@@ -226,7 +226,7 @@ async function subscribeToPrice(priceId: string) {
       showDetails: true,
       actionText: 'Contact Support',
       actionHandler: () => {
-        window.open('mailto:support@shipwait.com?subject=Pricing Configuration Error', '_blank');
+        window.open('mailto:timothy.alcaide@gmail.com?subject=Pricing Configuration Error', '_blank');
       }
     });
     return;
@@ -291,7 +291,7 @@ async function subscribeToPrice(priceId: string) {
           : 'If this problem persists, please contact our support team.',
         actionText: 'Contact Support',
         actionHandler: () => {
-          window.open('mailto:support@shipwait.com?subject=Subscription Error&body=' + encodeURIComponent(`Error details: ${errorMessage}`), '_blank');
+          window.open('mailto:timothy.alcaide@gmail.com?subject=Subscription Error&body=' + encodeURIComponent(`Error details: ${errorMessage}`), '_blank');
         }
       });
     }
