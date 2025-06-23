@@ -18,36 +18,18 @@ import { Button } from "@/components/ui/button";
             Start for Free
           </NuxtLink>
         </Button>
-        <Button size="lg" variant="outline" class="text-lg hidden lg:block">
-          See How It Works
-        </Button>
       </div>
     </div>
 
     <div class="mt-16 md:mt-24">
       <div class="container mx-auto px-4 md:px-6">
         <div class="mx-auto max-w-6xl">
-          <!-- <div v-motion-fade class="relative aspect-video w-full overflow-hidden rounded-lg shadow-xl border">
-            <iframe class="size-full aspect-video object-cover" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-            </iframe>
-          </div> -->
-          <div v-motion-fade class="group relative aspect-video w-full overflow-hidden rounded-lg shadow-xl border flex items-center justify-center bg-gradient-to-br from-muted to-background">
-            <div class="flex flex-col items-center justify-center w-full h-full">
-              <svg class="mx-auto mb-4 text-muted-foreground" width="64" height="64" fill="none" viewBox="0 0 64 64" aria-hidden="true">
-                <rect width="64" height="64" rx="16" fill="currentColor" fill-opacity="0.08" />
-                <path d="M26 22v20l16-10-16-10z" fill="currentColor" fill-opacity="0.2" />
-                <path d="M26 22v20l16-10-16-10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-              </svg>
-              <span class="text-muted-foreground text-lg font-medium">
-                Tutorial screencast coming soon
-              </span>
-              <span class="text-muted-foreground text-sm mt-1">
-                This section will feature a step-by-step video walkthrough.
-              </span>
-            </div>
+          <div v-motion-fade class="relative aspect-video w-full overflow-hidden rounded-lg shadow-xl border">
+            <iframe class="size-full aspect-video object-cover" src="https://www.tella.tv/video/cmc980mco000h0bl5hex1byjh/embed?b=1&title=0&a=1&loop=1&t=0&muted=0&wt=1" allowfullscreen allowtransparency></iframe>
           </div>
+
           <p class="mt-4 text-center text-muted-foreground text-sm sm:text-lg">
-            Watch how easy it is to set up your waitlist and start collecting emails in minutes.
+            Watch how easy it is to set up your landing page and start collecting emails in minutes.
           </p>
         </div>
       </div>
