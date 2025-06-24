@@ -1,9 +1,0 @@
-# robots.txt for ShipWait
-# All crawlers
-User-agent: *
-Allow: /
-Disallow: /dashboard/
-Disallow: /dashboard/*
-
-# Sitemap
-Sitemap: https://shipwait.app/sitemap.xml

@@ -6,8 +6,13 @@ export const useSeo = (options: {
   description: string;
   image?: string;
   url?: string;
-  type?: string;
+  type?: "website" | "article";
   robots?: string;
+  keywords?: string[];
+  articleTags?: string[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
 }) => {
   const config = useRuntimeConfig();
   const route = useRoute();
@@ -15,32 +20,87 @@ export const useSeo = (options: {
   const {
     title,
     description,
-    image = "/img/og-image.jpg",
+    image = "/img/og-image.svg",
     url = `${config.public.baseUrl}${route.path}`,
     type = "website",
     robots = "index, follow",
+    keywords = [],
+    articleTags = [],
+    publishedTime,
+    modifiedTime,
+    author = "ShipWait",
   } = options;
 
-  useHead({
+  const fullImageUrl = image.startsWith("http")
+    ? image
+    : `${config.public.baseUrl}${image}`;
+
+  // Use the enhanced SEO capabilities from @nuxtjs/seo
+  useSeoMeta({
     title,
+    description,
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: fullImageUrl,
+    ogType: type,
+    ogUrl: url,
+    ogSiteName: "ShipWait",
+    twitterCard: "summary_large_image",
+    twitterTitle: title,
+    twitterDescription: description,
+    twitterImage: fullImageUrl,
+    twitterSite: "@shipwait",
+    twitterCreator: "@shipwait",
+    robots,
+    keywords: keywords.join(", "),
+  });
+
+  // Additional meta tags using useHead
+  useHead({
     meta: [
-      { name: "description", content: description },
-      { name: "robots", content: robots },
-      // Open Graph
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:image", content: image },
-      { property: "og:type", content: type },
-      { property: "og:url", content: url },
-      // Twitter Card
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: title },
-      { name: "twitter:description", content: description },
-      { name: "twitter:image", content: image },
-      // Additional
-      { name: "author", content: "ShipWait" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "author", content: author },
+      { name: "format-detection", content: "telephone=no" },
+      ...(type === "article" && publishedTime
+        ? [{ name: "article:published_time", content: publishedTime }]
+        : []),
+      ...(type === "article" && modifiedTime
+        ? [{ name: "article:modified_time", content: modifiedTime }]
+        : []),
+      ...(articleTags.length > 0
+        ? articleTags.map((tag) => ({ name: "article:tag", content: tag }))
+        : []),
     ],
+  });
+
+  // Enhanced structured data for better rich snippets
+  if (type === "website") {
+    useSchemaOrg([
+      defineWebSite({
+        name: "ShipWait",
+        url: config.public.baseUrl,
+        description:
+          "Create landing pages and collect emails in minutes. Test your ideas and build only what people want.",
+        potentialAction: [
+          {
+            "@type": "SearchAction",
+            target: `${config.public.baseUrl}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        ],
+      }),
+      defineOrganization({
+        name: "ShipWait",
+        url: config.public.baseUrl,
+        logo: `${config.public.baseUrl}/img/logo.png`,
+        description:
+          "Create landing pages and collect emails in minutes. Test your ideas and build only what people want.",
+        sameAs: ["https://twitter.com/shipwait"],
+      }),
+    ]);
+  }
+
+  // Set canonical URL
+  useHead({
     link: [{ rel: "canonical", href: url }],
   });
 };

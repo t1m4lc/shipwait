@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    "@nuxtjs/seo",
     "@nuxt/content",
     "@nuxt/eslint",
     "@pinia/nuxt",
@@ -24,13 +25,50 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       meta: [
-        {
-          name: "description",
-          content:
-            "ShipWait - Create landing pages and collect emails in minutes. Test your ideas and build only what people want.",
-        },
         { name: "format-detection", content: "telephone=no" },
+        { name: "theme-color", content: "#3b82f6" },
+        { name: "msapplication-TileColor", content: "#3b82f6" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       ],
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/apple-touch-icon.png",
+        },
+        { rel: "mask-icon", href: "/safari-pinned-tab.svg", color: "#3b82f6" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossorigin: "",
+        },
+        { rel: "dns-prefetch", href: "https://api.shipwait.com" },
+      ],
+    },
+  },
+  site: {
+    url:
+      process.env.NODE_ENV === "production"
+        ? "https://www.shipwait.com"
+        : "http://localhost:3000",
+    name: "ShipWait",
+    description:
+      "Create landing pages and collect emails in minutes. Test your ideas and build only what people want.",
+    defaultLocale: "en",
+  },
+  seo: {
+    redirectToCanonicalSiteUrl: true,
+  },
+  schemaOrg: {
+    identity: {
+      type: "Organization",
+      name: "ShipWait",
+      url: "https://www.shipwait.com",
+      logo: "https://www.shipwait.com/img/logo.png",
+      sameAs: ["https://twitter.com/shipwait"],
     },
   },
   routeRules: {

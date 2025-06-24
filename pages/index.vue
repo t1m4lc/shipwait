@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSeo } from "~/composables/useSeo";
+import { generateLandingPageStructuredData } from "~/composables/useStructuredData";
 
 import CtaSection from "~/components/landing/CtaSection.vue";
 import FaqSection from "~/components/landing/FaqSection.vue";
@@ -54,7 +55,32 @@ const faqs = [
 
 useSeo({
   title: 'ShipWait - Validate Your Ideas Before Building Them',
-  description: 'Create landing pages and collect emails in minutes. Test your ideas and build only what people want.'
+  description: 'Create landing pages and collect emails in minutes. Test your ideas and build only what people want. Start validating your startup ideas today with ShipWait\'s simple waitlist builder.',
+  keywords: [
+    'landing page builder',
+    'email collection',
+    'startup validation',
+    'waitlist builder',
+    'idea validation',
+    'product launch',
+    'email marketing',
+    'lead generation',
+    'MVP validation',
+    'pre-launch marketing',
+    'startup tools',
+    'no-code builder'
+  ]
+});
+
+// Enhanced structured data for better search visibility
+const structuredData = generateLandingPageStructuredData();
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify(structuredData)
+    }
+  ]
 });
 
 const testimonials = [
