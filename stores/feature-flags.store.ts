@@ -201,6 +201,37 @@ export const useFeatureFlagsStore = defineStore("featureFlags", () => {
     await refetch();
   };
 
+  /**
+   * Check email collection limit for a specific project
+   */
+  const checkEmailCollectionLimit = (currentEmailCount: number) => {
+    const limit = getFeatureLimit(FEATURE_FLAGS.EMAIL_COLLECTION_LIMIT);
+
+    if (limit === "unlimited") {
+      return {
+        canCollect: true,
+        limit: "unlimited",
+        current: currentEmailCount,
+      };
+    }
+
+    if (typeof limit === "string" && !isNaN(Number(limit))) {
+      const maxEmails = Number(limit);
+      return {
+        canCollect: currentEmailCount < maxEmails,
+        limit: maxEmails,
+        current: currentEmailCount,
+        remaining: Math.max(0, maxEmails - currentEmailCount),
+      };
+    }
+
+    return {
+      canCollect: false,
+      limit: Number(limit),
+      current: currentEmailCount,
+    };
+  };
+
   // Watch for subscription changes and automatically refresh feature flags
   // This provides an additional layer of synchronization
   watch(
@@ -227,6 +258,7 @@ export const useFeatureFlagsStore = defineStore("featureFlags", () => {
     getFeatureLimit,
     canPerformAction,
     checkProjectLimit,
+    checkEmailCollectionLimit,
     canRemoveBranding,
     refreshFeatureFlags,
   };

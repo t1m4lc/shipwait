@@ -138,7 +138,7 @@ const handleSubscription = async (plan: 'pro' | 'lifetime') => {
                 </li>
                 <li class="flex items-center gap-1">
                   <Check class="mr-2 h-4 w-4 text-primary" />
-                  Unlimited emails
+                  20 emails per project
                 </li>
                 <li class="flex items-center gap-1">
                   <X class="mr-2 h-4 w-4 text-red-500" />

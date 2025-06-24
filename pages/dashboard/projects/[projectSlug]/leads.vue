@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { columns } from '~/components/leads/columns';
+import EmailLimitIndicator from '~/components/leads/EmailLimitIndicator.vue';
 import { Skeleton } from '~/components/ui/skeleton';
 import type { Database } from '~/types/supabase';
 
@@ -82,5 +83,8 @@ const { data: leads, pending: loading, refresh } = useAsyncData(
   </div>
 
   <!-- Data loaded state -->
-  <LeadsTable v-else-if="leads" :data="leads" :columns="columns" :loading="loading" @refetch-leads="refresh()" />
+  <div class="space-y-4" v-else-if="leads">
+    <EmailLimitIndicator :project-id="projectId" />
+    <LeadsTable :data="leads" :columns="columns" :loading="loading" @refetch-leads="refresh()" />
+  </div>
 </template>

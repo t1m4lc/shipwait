@@ -22,4 +22,5 @@ export const STRIPE_LIFETIME_PRICE_ID = isProduction
 export const FEATURE_FLAGS = {
   PROJECT_LIMIT: "project_limit",
   REMOVE_BRANDING_ON_PAGE: "remove_branding_on_page",
+  EMAIL_COLLECTION_LIMIT: "email_collection_limit",
 } as const;

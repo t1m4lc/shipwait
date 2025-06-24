@@ -58,9 +58,9 @@
               </tr>
               <tr class="border-b">
                 <td class="p-4 font-medium">Email Collection</td>
-                <td class="text-center p-4">✓</td>
-                <td class="text-center p-4 bg-primary/5">✓</td>
-                <td class="text-center p-4 text-muted-foreground">✓</td>
+                <td class="text-center p-4">20 emails/project</td>
+                <td class="text-center p-4 bg-primary/5">Unlimited</td>
+                <td class="text-center p-4 text-muted-foreground">Unlimited</td>
               </tr>
               <tr class="border-b">
                 <td class="p-4 font-medium">Remove Branding</td>

@@ -44,7 +44,7 @@ const faqs = [
   },
   {
     question: "Can I export my waitlist emails?",
-    answer: "Exporting your email list as a CSV is available on Pro and Ultimate plans. Upgrade anytime to unlock this feature and easily import your waitlist into your favorite email marketing tool."
+    answer: "Exporting your email list as a CSV is available on Pro plan. Upgrade anytime to unlock this feature and easily import your waitlist into your favorite email marketing tool."
   },
   {
     question: "What happens after I collect emails?",
@@ -105,9 +105,9 @@ const testimonials = [
 
 <template>
   <HeroSection />
-  <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
-  <FaqSection :faqs="faqs" />
   <WhyUseItSection class="bg-muted/30" />
+  <FaqSection :faqs="faqs" />
+  <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
   <PricingSection :showHeading="true" :prices="prices" v-model:billing-cycle="billingCycle" />
   <CtaSection class="bg-muted/80" />
 </template>

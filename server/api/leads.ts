@@ -82,6 +82,104 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // Get project owner to check their subscription and email limits
+  const { data: project, error: projectError } = await client
+    .from("projects")
+    .select("user_id")
+    .eq("id", actualProjectId)
+    .single();
+
+  if (projectError || !project) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Project not found",
+    });
+  }
+
+  // Get current email count for this project
+  const { count: currentEmailCount, error: countError } = await client
+    .from("leads")
+    .select("*", { count: "exact", head: true })
+    .eq("project_id", actualProjectId);
+
+  if (countError) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Error checking current email count",
+    });
+  }
+
+  // Check user's subscription and email collection limits
+  const { data: subscription } = await client
+    .from("subscriptions")
+    .select(
+      `
+      status,
+      prices (
+        stripe_price_id
+      )
+    `
+    )
+    .eq("user_id", project.user_id)
+    .eq("status", "active")
+    .single();
+
+  // Get email collection limit feature flag
+  const { data: emailLimitFeature, error: featureError } = await client
+    .from("feature_flags")
+    .select("price_configs")
+    .eq("name", "email_collection_limit")
+    .single();
+
+  if (featureError || !emailLimitFeature) {
+    // If feature flag doesn't exist, allow unlimited collection (fallback)
+    console.warn(
+      "Email collection limit feature flag not found, allowing unlimited collection"
+    );
+  } else {
+    const priceConfigs = Array.isArray(emailLimitFeature.price_configs)
+      ? (emailLimitFeature.price_configs as Array<{
+          price_id: string | null;
+          limit: string | boolean;
+        }>)
+      : [];
+
+    let userLimit: string | boolean | null = null;
+
+    if (subscription?.prices?.stripe_price_id) {
+      // User has a subscription, check their limit
+      const userConfig = priceConfigs.find(
+        (config) =>
+          subscription.prices &&
+          config.price_id === subscription.prices.stripe_price_id
+      );
+      if (userConfig) {
+        userLimit = userConfig.limit;
+      }
+    } else {
+      // User has no subscription, use free tier limit
+      const freeConfig = priceConfigs.find(
+        (config) => config.price_id === null
+      );
+      if (freeConfig) {
+        userLimit = freeConfig.limit;
+      }
+    }
+
+    // Only check limits if we found a valid configuration
+    if (userLimit !== null && userLimit !== "unlimited" && userLimit !== true) {
+      const maxEmails = typeof userLimit === "string" ? Number(userLimit) : 0;
+      const currentCount = currentEmailCount || 0;
+
+      if (currentCount >= maxEmails) {
+        throw createError({
+          statusCode: 429, // Too Many Requests
+          statusMessage: `Email collection limit reached. You can collect up to ${maxEmails} emails per project on your current plan. Upgrade to Pro for unlimited email collection.`,
+        });
+      }
+    }
+  }
+
   const uaString = event.node.req.headers["user-agent"] || "";
   const parser = new UAParser(uaString);
   const result = parser.getResult();
