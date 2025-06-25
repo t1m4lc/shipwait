@@ -74,43 +74,22 @@ const testimonials = [
     name: "Alex Johnson",
     handle: "@alexbuilds",
     avatar: "https://i.pravatar.cc/150?img=3",
-    text: "Started collecting emails for my SaaS idea last night. Woke up to 43 signups! ShipWait made this stupidly simple. 🚀",
+    text: "Finally! I've been looking for a simple way to validate ideas before building. Can't wait to try ShipWait for my next launch! 🚀",
     date: "2d ago"
   },
   {
     name: "Sarah Chen",
     handle: "@sarahcodes",
     avatar: "https://i.pravatar.cc/150?img=5",
-    text: "Finally validated my course idea without writing a single line of code. ShipWait is the tool I've been looking for all this time.",
+    text: "This is exactly what I need for my pre-launch strategy. Building anticipation before launching has always been a challenge for solo founders.",
     date: "1w ago"
   },
   {
     name: "Mike Rivera",
     handle: "@mikebuilds",
     avatar: "https://i.pravatar.cc/150?img=11",
-    text: "Made $4.2K in pre-sales from a landing page I set up in 10 minutes with ShipWait. Ship first, build later!",
+    text: "Love the concept! I've wasted so much time building features nobody wanted. ShipWait could have saved me months of development time.",
     date: "3d ago"
-  },
-  {
-    name: "Emma Lewis",
-    handle: "@emmafounder",
-    avatar: "https://i.pravatar.cc/150?img=9",
-    text: "Used ShipWait to test 3 different ideas in a weekend. Found my winner and saved months of development time. Game changer!",
-    date: "5d ago"
-  },
-  {
-    name: "Jamal Thompson",
-    handle: "@jamalmakes",
-    avatar: "https://i.pravatar.cc/150?img=8",
-    text: "My waitlist hit 500 signups in 48 hours. The conversion rate blew my mind. This tool pays for itself instantly.",
-    date: "2w ago"
-  },
-  {
-    name: "Lisa Wong",
-    handle: "@lisaproduct",
-    avatar: "https://i.pravatar.cc/150?img=7",
-    text: "As a non-technical founder, ShipWait has been a lifesaver. Launched my MVP without hiring a developer. Highly recommended!",
-    date: "1w ago"
   }
 ];
 </script>
