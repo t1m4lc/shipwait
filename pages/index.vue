@@ -5,6 +5,7 @@ import { generateLandingPageStructuredData } from "~/composables/useStructuredDa
 import CtaSection from "~/components/landing/CtaSection.vue";
 import FaqSection from "~/components/landing/FaqSection.vue";
 import HeroSection from "~/components/landing/HeroSection.vue";
+import LaunchAlert from "~/components/landing/LaunchAlert.vue";
 import PricingSection from "~/components/landing/PricingSection.vue";
 import TestimonialsSection from "~/components/landing/TestimonialsSection.vue";
 import WhyUseItSection from "~/components/landing/WhyUseItSection.vue";
@@ -13,21 +14,6 @@ definePageMeta({
   layout: 'landing'
 });
 
-const prices = {
-  monthly: {
-    free: 0,
-    pro: 9,
-    ultimate: 49,
-  },
-  yearly: {
-    free: 0,
-    pro: 5,
-    ultimate: 29,
-  },
-};
-
-type BillingCycle = keyof typeof prices;
-const billingCycle = ref<BillingCycle>("yearly"); // Default to yearly billing
 
 // FAQs data
 const faqs = [
@@ -134,6 +120,7 @@ const testimonials = [
   <WhyUseItSection class="bg-muted/30" />
   <FaqSection :faqs="faqs" />
   <TestimonialsSection class="bg-muted/30" :testimonials="testimonials" />
-  <PricingSection :showHeading="true" :prices="prices" v-model:billing-cycle="billingCycle" />
+  <PricingSection :showHeading="true" />
   <CtaSection class="bg-muted/80" />
+  <LaunchAlert />
 </template>

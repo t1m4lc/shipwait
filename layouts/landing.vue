@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen flex-col">
+  <div class="flex min-h-screen flex-col pb-20 sm:pb-24 lg:pb-20">
     <header class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div class="container mx-auto px-4 md:px-6">
         <div class="mx-auto max-w-6xl flex h-16 items-center justify-between">

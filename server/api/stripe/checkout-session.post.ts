@@ -202,6 +202,7 @@ export default defineEventHandler(async (event) => {
         },
       ],
       mode: "subscription",
+      allow_promotion_codes: true,
       success_url: successUrl,
       cancel_url: `${runtimeConfig.public.baseUrl}/pricing`, // Or a specific cancellation feedback page
       metadata: {
