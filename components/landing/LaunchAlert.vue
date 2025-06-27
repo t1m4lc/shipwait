@@ -9,7 +9,7 @@
               <span class="text-lg" role="img" aria-label="Rocket">🚀</span>
               <span id="launch-alert-title" class="font-medium">Launch promotion</span>
             </div>
-            <span class="text-sm text-gray-700">First 50 users get 30% off with code:</span>
+            <span class="text-sm text-gray-700">First 50 users get 30% off the Pro plan with code:</span>
             <div class="flex items-center space-x-2">
               <div class="relative">
                 <code class="bg-gray-100 px-3 py-1 rounded-md font-mono font-semibold text-gray-800 cursor-pointer select-all hover:bg-gray-200 transition-colors border border-gray-300" @click="handleCopy" title="Click to copy discount code" tabindex="0" @keydown.enter="handleCopy" @keydown.space.prevent="handleCopy" role="button" aria-label="Copy discount code FRIENDS30">

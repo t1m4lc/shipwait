@@ -31,6 +31,30 @@ async function createProjectApi(
   >
 ) {
   try {
+    // First, ensure the user profile exists in the profiles table
+    // This prevents the foreign key constraint error
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", userId)
+      .single();
+
+    if (!existingProfile) {
+      // Create the profile if it doesn't exist
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: userId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+
+      if (profileError) {
+        console.error("Failed to create user profile:", profileError);
+        throw new Error(
+          `Unable to create user profile: ${profileError.message}`
+        );
+      }
+    }
+
     const { data: project, error: projectError } = await supabase
       .from("projects")
       .insert({
