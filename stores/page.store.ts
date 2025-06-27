@@ -27,6 +27,7 @@ export const usePageStore = defineStore("page", () => {
   const page = ref<Page | null>(null);
   const isLoading = ref(false);
   const lastError = ref<string | null>(null);
+  const hasPendingChanges = ref(false); // Track if there are saved changes ready to deploy
 
   // Computed properties for template access control
   const freeTemplates = computed(() => {
@@ -71,9 +72,8 @@ export const usePageStore = defineStore("page", () => {
   const publicPageUrl = computed(() => {
     try {
       const slug = page.value?.slug;
-      const isActive = page.value?.active;
-      // Only return URL if page exists, has a slug, AND is deployed (active = true)
-      return slug && isActive ? `/p/${slug}` : null;
+      // Return URL if page exists and has a slug, regardless of active status
+      return slug ? `/p/${slug}` : null;
     } catch (error) {
       console.error("Error computing publicPageUrl:", error);
       return null;
@@ -154,6 +154,10 @@ export const usePageStore = defineStore("page", () => {
       if (fetchError) throw fetchError;
 
       page.value = data;
+
+      // Reset pending changes when loading a page
+      hasPendingChanges.value = false;
+
       return { success: true, data };
     } catch (err: any) {
       console.error("Error fetching page:", err);
@@ -222,6 +226,9 @@ export const usePageStore = defineStore("page", () => {
       // Update the local state
       page.value = data;
 
+      // Mark that there are pending changes ready to deploy
+      hasPendingChanges.value = true;
+
       return { success: true, data };
     } catch (err: any) {
       console.error("Error saving page:", err);
@@ -265,6 +272,9 @@ export const usePageStore = defineStore("page", () => {
       // Update the local state
       page.value = data;
 
+      // Clear pending changes since page is now deployed
+      hasPendingChanges.value = false;
+
       const publicUrl = `${config.public.baseUrl}/p/${projectSlug}`;
       return { success: true, data: { publicUrl } };
     } catch (err: any) {
@@ -305,6 +315,9 @@ export const usePageStore = defineStore("page", () => {
       // Update the local state
       page.value = data;
 
+      // Clear pending changes since page is now paused
+      hasPendingChanges.value = false;
+
       return { success: true, data };
     } catch (err: any) {
       console.error("Error pausing page:", err);
@@ -339,6 +352,7 @@ export const usePageStore = defineStore("page", () => {
       // Clear local state if this was the current page
       if (page.value?.project_id === projectId) {
         page.value = null;
+        hasPendingChanges.value = false;
       }
 
       return { success: true };
@@ -401,6 +415,7 @@ export const usePageStore = defineStore("page", () => {
     page.value = null;
     isLoading.value = false;
     lastError.value = null;
+    hasPendingChanges.value = false;
   }
 
   return {
@@ -410,6 +425,7 @@ export const usePageStore = defineStore("page", () => {
     page,
     isLoading,
     lastError,
+    hasPendingChanges,
 
     // Computed
     publicPageUrl,

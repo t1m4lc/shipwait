@@ -49,7 +49,7 @@
                 <!-- Deploy/Pause Button -->
                 <AlertDialog v-if="!hasActivePage">
                   <AlertDialogTrigger as-child>
-                    <Button :disabled="!isHtmlValid || isSaving || isDeploying || isLoading" size="sm" class="gap-1.5">
+                    <Button :disabled="!isHtmlValid || isSaving || isDeploying || isLoading || !hasPendingChanges" size="sm" class="gap-1.5">
                       <Loader2 v-if="isDeploying" class="size-4 animate-spin" />
                       <Rocket v-else class="size-4" />
                       <span class="hidden lg:inline">{{ isDeploying ? 'Deploying...' : 'Deploy' }}</span>
@@ -206,6 +206,7 @@ const props = defineProps<{
   title?: string;
   publicPageUrl?: string;
   hasActivePage?: boolean;
+  hasPendingChanges?: boolean;
   templates?: any[];
   selectedTemplateId?: string;
 }>();
